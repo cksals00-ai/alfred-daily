@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>롱블랙 데일리 대시보드</title>
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1: #fcfcfb;
+    --page: #f9f9f7;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --muted: #898781;
+    --grid: #e1e0d9;
+    --baseline: #c3c2b7;
+    --border: rgba(11,11,11,0.10);
+    --series-1: #2a78d6; /* 창업 */
+    --series-2: #008300; /* 커리어 */
+    --series-3: #e87ba4; /* 브랜딩 */
+    --chip-bg: #f0efec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --surface-1: #1a1a19;
+      --page: #0d0d0d;
+      --text-primary: #ffffff;
+      --text-secondary: #c3c2b7;
+      --muted: #898781;
+      --grid: #2c2c2a;
+      --baseline: #383835;
+      --border: rgba(255,255,255,0.10);
+      --series-1: #3987e5;
+      --series-2: #008300;
+      --series-3: #d55181;
+      --chip-bg: #262624;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-1: #1a1a19;
+    --page: #0d0d0d;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --muted: #898781;
+    --grid: #2c2c2a;
+    --baseline: #383835;
+    --border: rgba(255,255,255,0.10);
+    --series-1: #3987e5;
+    --series-2: #008300;
+    --series-3: #d55181;
+    --chip-bg: #262624;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--page);
+    color: var(--text-primary);
+    line-height: 1.6;
+    padding: 20px 16px 60px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  header { margin-bottom: 20px; }
+  header h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.01em; }
+  header p { color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px; }
+  .theme-toggle {
+    float: right; border: 1px solid var(--border); background: var(--surface-1);
+    color: var(--text-secondary); border-radius: 8px; padding: 4px 10px;
+    font-size: 0.78rem; cursor: pointer;
+  }
+
+  /* stat tiles */
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0; }
+  .tile {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+  }
+  .tile .label { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.02em; }
+  .tile .value { font-size: 1.5rem; font-weight: 700; margin-top: 2px; }
+  .tile .sub { font-size: 0.72rem; color: var(--text-secondary); }
+
+  /* aggregate perspective bars */
+  .agg {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px; margin-bottom: 18px;
+  }
+  .agg h2 { font-size: 0.9rem; margin-bottom: 4px; }
+  .agg .desc { font-size: 0.75rem; color: var(--muted); margin-bottom: 12px; }
+  .bar-row { display: grid; grid-template-columns: 110px 1fr 42px; align-items: center; gap: 10px; margin: 8px 0; }
+  .bar-row .name { font-size: 0.8rem; color: var(--text-secondary); }
+  .bar-track { height: 14px; background: var(--chip-bg); border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 0 4px 4px 0; }
+  .bar-val { font-size: 0.8rem; font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+
+  /* filters */
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
+  .filters .flabel { font-size: 0.75rem; color: var(--muted); margin-right: 2px; }
+  .chip {
+    border: 1px solid var(--border); background: var(--surface-1);
+    color: var(--text-secondary); border-radius: 999px; padding: 5px 12px;
+    font-size: 0.78rem; cursor: pointer; transition: all .15s;
+  }
+  .chip.active { background: var(--text-primary); color: var(--page); border-color: var(--text-primary); }
+  .chip .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: 1px; }
+
+  /* note cards */
+  .card {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px; margin-bottom: 16px;
+  }
+  .card .meta { font-size: 0.72rem; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; }
+  .card h3 { font-size: 1.05rem; margin: 6px 0 2px; line-height: 1.4; }
+  .card .subject { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 10px; }
+  .card .summary { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 14px; }
+
+  .scores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+  .score {
+    border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px;
+  }
+  .score .sname { font-size: 0.68rem; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .score .sval { font-size: 1.05rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .score .strack { height: 6px; background: var(--chip-bg); border-radius: 3px; margin-top: 4px; overflow: hidden; }
+  .score .sfill { height: 100%; border-radius: 0 3px 3px 0; }
+
+  details { border-top: 1px solid var(--grid); }
+  details summary {
+    cursor: pointer; padding: 10px 0; font-size: 0.82rem; font-weight: 600;
+    color: var(--text-secondary); list-style: none; display: flex; align-items: center; gap: 6px;
+  }
+  details summary::before { content: "▸"; font-size: 0.7rem; color: var(--muted); transition: transform .15s; }
+  details[open] summary::before { transform: rotate(90deg); }
+  details .body { padding: 0 0 12px; font-size: 0.85rem; }
+  details ul { padding-left: 18px; }
+  details li { margin: 5px 0; color: var(--text-secondary); }
+  details li strong { color: var(--text-primary); font-weight: 600; }
+  .full-summary p { color: var(--text-secondary); margin-bottom: 10px; text-align: justify; }
+  .full-summary p:last-child { margin-bottom: 0; }
+  blockquote {
+    border-left: 3px solid var(--baseline); padding: 2px 0 2px 12px;
+    margin: 8px 0; color: var(--text-secondary); font-size: 0.84rem; font-style: italic;
+  }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .tag { background: var(--chip-bg); color: var(--text-secondary); border-radius: 6px; padding: 3px 8px; font-size: 0.72rem; }
+  .card a.link { font-size: 0.75rem; color: var(--series-1); text-decoration: none; }
+  .empty { text-align: center; color: var(--muted); padding: 40px 0; font-size: 0.85rem; }
+  footer { margin-top: 24px; font-size: 0.72rem; color: var(--muted); text-align: center; }
+
+  @media (max-width: 560px) {
+    .tiles { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+    .tile { padding: 10px 12px; }
+    .tile .value { font-size: 1.2rem; }
+    .scores { grid-template-columns: 1fr; }
+    .bar-row { grid-template-columns: 90px 1fr 38px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <button class="theme-toggle" onclick="toggleTheme()">☀ / ☾</button>
+  <h1>롱블랙 데일리 대시보드</h1>
+  <p>매일 읽은 노트를 세 가지 관점으로 정리하고, 나에게 맞는 주제를 찾아갑니다.</p>
+</header>
+
+<div class="tiles">
+  <div class="tile"><div class="label">누적 노트</div><div class="value" id="t-count">–</div><div class="sub" id="t-range"></div></div>
+  <div class="tile"><div class="label">평균 적합도</div><div class="value" id="t-avg">–</div><div class="sub">5점 만점</div></div>
+  <div class="tile"><div class="label">가장 끌린 관점</div><div class="value" id="t-top" style="font-size:1.05rem;">–</div><div class="sub" id="t-top-sub"></div></div>
+</div>
+
+<div class="agg">
+  <h2>관점별 평균 적합도</h2>
+  <div class="desc">데이터가 쌓일수록 어떤 관점의 노트가 나에게 잘 맞는지 패턴이 드러납니다.</div>
+  <div id="agg-bars"></div>
+</div>
+
+<div class="filters" id="perspective-filters">
+  <span class="flabel">관점</span>
+  <button class="chip active" data-p="all">전체</button>
+  <button class="chip" data-p="startup"><span class="dot" style="background:var(--series-1)"></span>창업·사이드프로젝트</button>
+  <button class="chip" data-p="career"><span class="dot" style="background:var(--series-2)"></span>커리어·삶의 방향</button>
+  <button class="chip" data-p="branding"><span class="dot" style="background:var(--series-3)"></span>브랜딩·마케팅</button>
+</div>
+
+<div id="cards"></div>
+<div class="empty" id="empty" style="display:none;">이 관점에서 적합도 4.0 이상인 노트가 아직 없어요.</div>
+
+<footer>새 노트가 추가될 때마다 이 대시보드가 업데이트됩니다 · 적합도는 세 관점 기준 0~5점</footer>
+
+<script>
+const PERSPECTIVES = {
+  startup:  { name: "창업·사이드프로젝트", color: "var(--series-1)" },
+  career:   { name: "커리어·삶의 방향",   color: "var(--series-2)" },
+  branding: { name: "브랜딩·마케팅",     color: "var(--series-3)" },
+};
+
+/* ── 노트 데이터: 새 노트는 이 배열 맨 앞에 추가 ───────────── */
+const NOTES = [
+  {
+    id: 2050,
+    date: "2026-07-17",
+    title: "월간 산 윤성중 : 산에 오르며 내 인생이 꼬였다, 그러나 또 산에 오른다",
+    subject: "윤성중 · 월간 산 기자, '등산 시렁' 연재 (국내 3대 산악 잡지를 모두 거친 유일한 기자)",
+    url: "https://longblack.co/note/2050",
+    summary: "신소재공학과 자퇴 → 사진 전공 → 12년간 8곳의 매체를 전전하며 사진·마케팅·일러스트 기술을 쌓은 윤성중 기자. 2021년 월간 산에서 '등산을 싫어하는 사람을 산에 데려가는' 연재 '등산 시렁'을 시작해 5년째 이어가고, 2024년 단행본으로 출간했다.",
+    tags: ["콘텐츠 제작", "커리어 전환", "니치 미디어", "커뮤니티", "취미의 업(業)화", "연재·꾸준함"],
+    scores: { startup: 2.5, career: 4.5, branding: 4.0 },
+    fullSummary: [
+      "1982년생 윤성중은 수능 직후인 2000년 한국등산학교 동계반에서 암벽등반을 배우며 산과 연을 맺었다. 신소재공학과에 진학했지만 적성에 맞지 않아 자퇴하고, 사진 학원을 거쳐 서울예대 사진과에 재입학했다. 2009년 산악 잡지 「사람과 산」에 기자로 입사한 뒤 「월간 마운틴」, 「고 아웃」, 「러너스월드」 등 12년간 8곳의 매체를 옮겨 다니며 사진, 마케팅, 디자인, 기획 기술을 하나씩 쌓았다. 그는 이 시기를 \"인생이 꼬였다\"고 표현하지만, 결과적으로 이 조각들이 그의 경쟁력이 됐다.",
+      "2021년 7월 이재진 편집장의 제안으로 「월간 산」에 합류하면서 대표 연재 '등산 시렁'을 시작했다. 콘셉트는 역발상 — 등산 잡지가 '등산을 싫어하는 사람'을 산에 데려가는 것. 원칙은 세 가지다. 낮고 쉬운 산을 천천히 오르고, 끊임없는 질문으로 힘든 걸 잊게 하고(30~40분 내 정상), 산에서 명상·낚시·시 낭송 같은 '딴짓'을 권한다. 「김밥 산행」(산 아래 맛집), 「山줌마가 간다」(중년 여성 등산객 인터뷰) 등 진입장벽을 낮춘 코너도 함께 만들었다.",
+      "그는 기사만 쓰지 않는다. 일러스트를 직접 그리고 페이지 구성까지 담당한다. 월평균 5개 기사를 5년째 쓰고 있으며, 2024년에는 3년치 연재를 모아 단행본 『등산 시렁』을 출간했다. '등산 시렁 산악회' 대장으로 독자를 오프라인 참여자로 전환시키기도 했다. 좋아하는 산이 업이 되면서 \"심드렁해진 지 오래\"라고 솔직하게 인정하면서도, 트레일러닝으로 산을 다시 '원초적 본능을 자극하는 판타지 공간'으로 재정의하며 계속 오른다. \"산은 내가 뿌리내린 토양이고, 나는 글과 그림이라는 열매를 맺는 나무\"라는 게 그의 결론이다."
+    ],
+    insights: {
+      startup: [
+        "<strong>연재 → 단행본 → 커뮤니티</strong> — 하나의 콘텐츠 자산('등산 시렁')이 책 출간과 산악회 운영으로 확장. 콘텐츠 기반 사이드프로젝트의 전형적 확장 경로",
+        "<strong>직접 창업 사례는 아님</strong> — 조직 안에서 자기 브랜드를 만든 '사내 창업'에 가까운 케이스. 독립 없이도 자기 자산을 쌓을 수 있다는 관점에서 참고"
+      ],
+      career: [
+        "<strong>12년간 8곳</strong> — 잦은 이직이 실패가 아니라 사진·마케팅·디자인·기획을 겹겹이 쌓는 과정이었음. '꼬인 인생'이 다재다능이라는 경쟁우위가 됨",
+        "<strong>적성 불일치의 빠른 손절</strong> — 신소재공학과가 안 맞자 자퇴하고 사진으로 전환. 매몰비용보다 방향 수정을 택한 사례",
+        "<strong>취미 = 토양, 일 = 열매</strong> — \"산은 내가 뿌리내려 양분을 빨아먹는 토양, 나는 글과 그림이라는 열매를 맺는 나무.\" 좋아하는 것과 직업의 통합 모델",
+        "<strong>솔직한 권태 인정</strong> — 좋아하는 일도 업이 되면 심드렁해진다는 것을 숨기지 않음. 그래도 계속하는 방식(트레일러닝으로 재정의)이 지속의 비결"
+      ],
+      branding: [
+        "<strong>반대 서사(counter-narrative)</strong> — 등산 잡지가 '등산 싫어하는 사람'을 인터뷰. 업계의 기본 톤을 뒤집는 것이 그 자체로 특종이 됨",
+        "<strong>진입점 다층 설계</strong> — 초심자용 폭포 여행, 중년 여성용 '山줌마', 맛집 중심 '김밥 산행' 등 같은 매체 안에서 다중 페르소나 공략",
+        "<strong>결과가 아닌 과정의 콘텐츠화</strong> — 정상 정복 대신 대화·딴짓·느낌을 기록. '정답 없음'이 브랜드 메시지가 됨",
+        "<strong>온라인 팬 → 오프라인 전환</strong> — '등산 시렁 산악회'로 독자를 참여자로 바꿔 5년 연재의 지속성을 확보"
+      ]
+    },
+    quotes: [
+      "산은 '내가 뿌리를 내려 양분을 빨아먹는 토양'이라고. 저는 그걸로 '글과 그림이라는 열매를 맺는 나무'인 셈이죠.",
+      "사실 산에 관한 마음은 무뎌지고 심드렁해진 지 오래입니다. 점점 체력은 줄어드는데 언제까지 일로 산을 타야 하나 고민도 하죠.",
+      "산에는 정답이 없다."
+    ],
+    actions: [
+      "내 분야에서 '모두가 당연하게 여기는 톤'을 뒤집으면 어떤 콘텐츠가 나올지 하나 적어보기",
+      "이직·경력의 조각들(내 경우의 사진·마케팅·디자인에 해당하는 것)을 하나의 결과물에 겹쳐 쓸 방법 찾기",
+      "꾸준함의 단위를 정하기 — 월 1회라도 5년 지속 가능한 연재형 프로젝트 형태 구상"
+    ]
+  },
+  {
+    id: 2049,
+    date: "2026-07-16",
+    title: "세발서점 : 대기업 퇴사 후 차린 삼륜차 책방, 속초의 풍경을 바꾸다",
+    subject: "박영아 · 세발서점 (속초 삼륜차 이동식 서점)",
+    url: "https://longblack.co/note/2049",
+    summary: "GS리테일에서 상권 분석을 하던 박영아 대표가 2019년 속초 여행 중 퇴사를 결심, 펍 '아프리카'를 거쳐 2025년 5월 삼륜차 이동식 서점 '세발서점'을 열었다. 책이 아니라 '바다에서 책 읽는 추억'을 파는 경험 비즈니스.",
+    tags: ["로컬 비즈니스", "스몰 브랜드", "경험 설계", "퇴사·전직", "서점", "속초"],
+    scores: { startup: 4.5, career: 4.0, branding: 4.5 },
+    fullSummary: [
+      "1988년 광주에서 5남매 중 첫째로 태어난 박영아는 어릴 때부터 책에 빠져 살았다. \"몸의 70%가 책과 글로 이뤄진 느낌\"이었다고 할 정도. 2016년 GS리테일에 입사해 3년간 영업과 상권 분석을 담당하다, 2019년 5월 홀로 떠난 속초 여행에서 전환점을 맞는다. 2016년 동해고속도로 개통 이후 떠오르는 속초를 상권 분석가의 눈으로 보며 '블루오션'이라 판단했고, 돌아오는 버스 안에서 아이디어를 쏟아낸 뒤 곧바로 사표를 냈다. 5개월 준비 끝에 2019년 10월 속초 동명동에 펍 '아프리카'를 열었다.",
+      "세발서점의 씨앗은 2021년경 요시타케 신스케의 『있으려나 서점』에서 얻었다. 이동식 서점을 구상했지만 상용화된 삼륜 트럭이 없어 용접 기사에게 퇴짜를 맞는 등 4년간 난항을 겪었고, 2025년 봄 농업용 삼륜차를 발견하면서 실마리가 풀렸다. 컨테이너를 분홍색으로 칠하고 책장을 짜 넣어 2025년 5월 속초 영랑해안길 279 해변에서 첫 영업을 시작했다. 실내 공간은 없다 — 해변이 곧 독서 공간이다. 캐노피 의자와 돗자리를 무료로 빌려주고 워터프루프 책도 갖췄다. 월 12회 정도, 하루 4~5시간만 연다.",
+      "타깃은 책 애호가가 아니라 '성수동에 자주 가는 힙스터 여행자'. \"사진 찍으러 오세요\"라고 말하며 진입장벽을 낮추고, 혼자 온 손님에겐 인증샷을 찍어준다. 큐레이션 기준은 체류 시간에 맞춘 '4~5시간 내 완독 가능한 150페이지 안팎의 책' — 읽고 나면 산뜻해지는 소설, 에세이, 시집 위주다. 책 추천은 하지 않는다. 고르는 시간 자체가 소중한 경험이라 믿기 때문. 폭우가 쏟아진 날에도 문을 열었더니 '3개월간 바다 독서를 희망으로 버텼다'는 연극배우 손님 한 명이 찾아왔다. 그가 지키는 철칙은 하나 — 약속한 날짜에 반드시 그 자리에 있는 것."
+    ],
+    insights: {
+      startup: [
+        "<strong>초소형·저고정비 모델</strong> — 실내 공간 없이 삼륜차 + 해변(공공 공간)을 매장으로 활용. 임대료 리스크를 구조적으로 제거",
+        "<strong>월 12회, 하루 4~5시간 영업</strong> — '희소한 개장'이 오히려 팝업스토어 같은 방문 동기를 만듦. 풀타임이 아니어도 되는 사이드프로젝트형 구조",
+        "<strong>단계적 확장</strong> — 펍(고정 매장)으로 지역·고객을 먼저 배우고, 그 다음 이동식 서점으로 확장. 검증 후 확장의 교과서적 순서",
+        "<strong>4년 개발 기간</strong> — 상용 삼륜 트럭이 없어 용접 퇴짜까지 겪음. 아이디어보다 실행 수단 확보가 병목이 될 수 있다는 교훈"
+      ],
+      career: [
+        "<strong>본업이 창업의 자산</strong> — GS리테일 영업·상권 분석 경험이 '속초는 블루오션'이라는 판단의 근거가 됨. 퇴사가 단절이 아니라 이전(transfer)",
+        "<strong>결심의 속도</strong> — 여행 중 확신이 서자 버스 안에서 메모하고 귀가 즉시 사표. 다만 오픈까지는 5개월을 준비함 (결심은 빠르게, 실행은 착실하게)",
+        "<strong>'몸의 70%가 책'</strong> — 어릴 때부터의 애착 대상을 업으로 전환. 나에게 그런 대상이 무엇인지 묻게 하는 사례"
+      ],
+      branding: [
+        "<strong>타깃의 재정의</strong> — 책 애호가가 아니라 '성수동 다니는 힙스터 여행자'를 타깃. '사진 찍으러 오세요'로 진입 장벽을 낮춤",
+        "<strong>경험의 상품화</strong> — 캐노피 의자·돗자리 무료 대여, 워터프루프 책으로 '바다 독서'라는 고유 경험을 설계",
+        "<strong>완독 가능한 큐레이션</strong> — 150페이지 안팎, 4~5시간 내 완독 가능한 책만. 체류 시간과 상품을 일치시킨 큐레이션",
+        "<strong>추천하지 않는 접객</strong> — 손님이 고르는 시간 자체를 경험으로 존중. 트럭 모양 책 도장, 인증샷 서비스 등 기억이 아닌 '추억' 설계"
+      ]
+    },
+    quotes: [
+      "사람 몸의 70%가 수분인 것처럼, 제 몸의 70%는 마치 책과 글이 이루는 느낌이었어요.",
+      "제가 자영업자로 일하며 지키는 철칙은 '거짓말쟁이'가 되지 않는 것. 내가 약속한 날짜는 꼭 지키는 것.",
+      "어떤 책을 읽을지 고민하고 고르는 시간 자체가 소중하다고 생각하기 때문이에요."
+    ],
+    actions: [
+      "내 커리어에서 '상권 분석'처럼 창업에 이전 가능한 기술이 무엇인지 목록화해보기",
+      "고정 공간 없이 시작할 수 있는 사이드프로젝트 형태(이동식·팝업·온라인) 브레인스토밍",
+      "'무엇을 파는가'가 아니라 '어떤 경험을 파는가'로 아이디어를 다시 써보기"
+    ]
+  }
+];
+/* ──────────────────────────────────────────────────────────── */
+
+function render(filter = "all") {
+  const cards = document.getElementById("cards");
+  const shown = filter === "all" ? NOTES : NOTES.filter(n => n.scores[filter] >= 4.0);
+  document.getElementById("empty").style.display = shown.length ? "none" : "block";
+  cards.innerHTML = shown.map(n => `
+    <div class="card">
+      <div class="meta"><span>${n.date}</span><span>note #${n.id}</span></div>
+      <h3>${n.title}</h3>
+      <div class="subject">${n.subject}</div>
+      <div class="summary">${n.summary}</div>
+      <div class="scores">
+        ${Object.keys(PERSPECTIVES).map(k => `
+          <div class="score">
+            <div class="sname"><span class="dot" style="background:${PERSPECTIVES[k].color};width:7px;height:7px;border-radius:50%;display:inline-block;"></span>${PERSPECTIVES[k].name}</div>
+            <div class="sval">${n.scores[k].toFixed(1)}</div>
+            <div class="strack"><div class="sfill" style="width:${n.scores[k]/5*100}%;background:${PERSPECTIVES[k].color}"></div></div>
+          </div>`).join("")}
+      </div>
+      <details open>
+        <summary>노트 요약</summary>
+        <div class="body full-summary">${(n.fullSummary || []).map(p => `<p>${p}</p>`).join("")}</div>
+      </details>
+      ${Object.keys(PERSPECTIVES).map(k => `
+        <details ${filter === k ? "open" : ""}>
+          <summary><span class="dot" style="background:${PERSPECTIVES[k].color};width:8px;height:8px;border-radius:50%;display:inline-block;"></span>${PERSPECTIVES[k].name} 인사이트</summary>
+          <div class="body"><ul>${n.insights[k].map(i => `<li>${i}</li>`).join("")}</ul></div>
+        </details>`).join("")}
+      <details>
+        <summary>인용문</summary>
+        <div class="body">${n.quotes.map(q => `<blockquote>"${q}"</blockquote>`).join("")}</div>
+      </details>
+      <details>
+        <summary>나에게 적용해볼 것</summary>
+        <div class="body"><ul>${n.actions.map(a => `<li>${a}</li>`).join("")}</ul></div>
+      </details>
+      <div class="tags">${n.tags.map(t => `<span class="tag">#${t}</span>`).join("")}</div>
+      <div style="margin-top:10px;"><a class="link" href="${n.url}" target="_blank">원문 보기 →</a></div>
+    </div>`).join("");
+}
+
+function renderStats() {
+  document.getElementById("t-count").textContent = NOTES.length;
+  const dates = NOTES.map(n => n.date).sort();
+  document.getElementById("t-range").textContent = dates.length > 1 ? `${dates[0]} ~ ${dates[dates.length-1]}` : dates[0];
+  const keys = Object.keys(PERSPECTIVES);
+  const avgs = {};
+  keys.forEach(k => { avgs[k] = NOTES.reduce((s, n) => s + n.scores[k], 0) / NOTES.length; });
+  const overall = keys.reduce((s, k) => s + avgs[k], 0) / keys.length;
+  document.getElementById("t-avg").textContent = overall.toFixed(1);
+  const top = keys.sort((a, b) => avgs[b] - avgs[a])[0];
+  document.getElementById("t-top").textContent = PERSPECTIVES[top].name;
+  document.getElementById("t-top-sub").textContent = `평균 ${avgs[top].toFixed(1)}점`;
+  document.getElementById("agg-bars").innerHTML = Object.keys(PERSPECTIVES).map(k => `
+    <div class="bar-row">
+      <div class="name">${PERSPECTIVES[k].name}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${avgs[k]/5*100}%;background:${PERSPECTIVES[k].color}"></div></div>
+      <div class="bar-val">${avgs[k].toFixed(1)}</div>
+    </div>`).join("");
+}
+
+document.getElementById("perspective-filters").addEventListener("click", e => {
+  const btn = e.target.closest(".chip");
+  if (!btn) return;
+  document.querySelectorAll("#perspective-filters .chip").forEach(c => c.classList.remove("active"));
+  btn.classList.add("active");
+  render(btn.dataset.p);
+});
+
+function toggleTheme() {
+  const r = document.documentElement;
+  const cur = r.getAttribute("data-theme");
+  const isDark = cur ? cur === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  r.setAttribute("data-theme", isDark ? "light" : "dark");
+}
+
+renderStats();
+render();
+</script>
+</body>
+</html>
