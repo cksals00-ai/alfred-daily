@@ -94,6 +94,30 @@
   .bar-fill { height: 100%; border-radius: 0 4px 4px 0; }
   .bar-val { font-size: 0.8rem; font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
 
+  /* weekly brief (pinned) */
+  .brief {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-left: 4px solid var(--series-1);
+    border-radius: 14px; padding: 20px; margin-bottom: 18px;
+  }
+  .brief .b-kicker { font-size: 0.7rem; letter-spacing: 0.08em; color: var(--series-1); font-weight: 700; }
+  .brief h2 { font-size: 1.05rem; margin: 4px 0 2px; }
+  .brief .b-period { font-size: 0.75rem; color: var(--muted); margin-bottom: 12px; }
+  .brief h3 { font-size: 0.8rem; margin: 14px 0 6px; color: var(--text-primary); letter-spacing: 0.01em; }
+  .brief p { font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 6px; }
+  .brief ul { padding-left: 18px; }
+  .brief li { font-size: 0.85rem; color: var(--text-secondary); margin: 5px 0; }
+  .brief li strong { color: var(--text-primary); font-weight: 600; }
+  .brief .todo { list-style: none; padding-left: 2px; }
+  .brief .todo li { display: flex; gap: 8px; align-items: flex-start; }
+  .brief .todo input { margin-top: 4px; accent-color: var(--series-1); }
+  .verse {
+    margin-top: 14px; background: var(--chip-bg); border-radius: 10px; padding: 12px 14px;
+  }
+  .verse .v-label { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .verse .v-text { font-size: 0.9rem; line-height: 1.7; color: var(--text-primary); }
+  .verse .v-ref { font-size: 0.75rem; color: var(--text-secondary); margin-top: 6px; text-align: right; }
+
   /* filters */
   .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
   .filters .flabel { font-size: 0.75rem; color: var(--muted); margin-right: 2px; }
@@ -175,6 +199,8 @@
   <div id="agg-bars"></div>
 </div>
 
+<div class="brief" id="weekly-brief"></div>
+
 <div class="filters" id="perspective-filters">
   <span class="flabel">관점</span>
   <button class="chip active" data-p="all">전체</button>
@@ -193,6 +219,34 @@ const PERSPECTIVES = {
   startup:  { name: "창업·사이드프로젝트", color: "var(--series-1)" },
   career:   { name: "커리어·삶의 방향",   color: "var(--series-2)" },
   branding: { name: "브랜딩·마케팅",     color: "var(--series-3)" },
+};
+
+/* ── 주간 브리핑: 매주 일요일 갱신 ─────────────────────────── */
+const WEEKLY_BRIEF = {
+  period: "2026.07.16 ~ 07.22 · 노트 9개 기준 (다음 갱신: 7/26 주일)",
+  summary: "이번 주 노트들은 하나의 문장으로 수렴합니다 — \"성공은 의지나 규모가 아니라, 나의 위화감을 관찰해서 작게·깊게 설계한 데서 나온다.\" 세발서점·아레나·바이닐 성수는 모두 자기 불편함에서 출발해 규모 대신 밀도를 택한 비즈니스였고, 니체·심플·건강 노트는 남의 기준(척하기, 알고리즘, 자책)을 벗고 내 기준을 만드는 삶의 기술이었습니다. 덴츠와 AX 노트는 그 둘을 잇는 방법론(관찰, 언어화)을 줬습니다.",
+  suggestions: [
+    "<strong>창업 탐색은 '위화감 수집'부터</strong> — 시장 조사 대신, 일상에서 느끼는 어색함과 불편을 기록하는 것이 세발서점·아레나·덴츠가 공통으로 증명한 출발점입니다.",
+    "<strong>크게보다 오래를 기준으로</strong> — 점수가 높았던 비즈니스는 모두 '2.5만 명의 50%', '월 12회 영업'처럼 작지만 깊은 구조였습니다. 아이디어를 평가할 때 규모 대신 지속 연수를 물어보세요.",
+    "<strong>지금 직장을 수업료 없는 학교로</strong> — 박영아(상권 분석), 권효민(공간 운영), 윤성중(8곳의 기술) 모두 본업이 창업의 자산이 됐습니다. 지금 배우는 것의 목록을 만들어두세요."
+  ],
+  reflections: [
+    "나는 최근에 어떤 위화감을 그냥 흘려보냈는가? 그것을 언어화하면 무엇이 되는가?",
+    "내 커리어는 지금 낙타(견디며 힘 기르기) · 사자(규칙 거부) · 아이(내 가치 창조) 중 어느 단계인가?",
+    "'영원히 반복되어도 좋을 순간'이 내 하루에 있는가 — 없다면 무엇을 바꿔야 하는가?"
+  ],
+  actions: [
+    "이번 주 위화감 3개를 메모장에 수집하고, 하나를 '위화감→상식→의심→가설' 4단계로 분해하기",
+    "미루던 습관 하나를 if/when-then 형식으로 다시 쓰고 실행하기 (예: 아침 커피를 내리면 → 10분 책 읽기)",
+    "잠들기 전 '오늘 행복했던 순간 3가지' 기록 — 일주일 연속 실험",
+    "지금 일에서 배우고 있는 '이전 가능한 기술' 목록 만들기 (박영아의 상권 분석에 해당하는 것)",
+    "이번 주 암송 구절을 하루 한 번 소리 내어 읽기"
+  ],
+  verse: {
+    text: "너희는 이 세대를 본받지 말고 오직 마음을 새롭게 함으로 변화를 받아 하나님의 선하시고 기뻐하시고 온전하신 뜻이 무엇인지 분별하도록 하라",
+    ref: "로마서 12:2 (개역개정)",
+    why: "알고리즘(아레나)과 척하기(로로)와 세상의 상식(덴츠)을 따르지 않고 자기 기준을 분별하라는 이번 주 노트들의 메시지와 맞닿은 말씀입니다."
+  }
 };
 
 /* ── 노트 데이터: 새 노트는 이 배열 맨 앞에 추가 ───────────── */
@@ -623,6 +677,27 @@ function render(filter = "all") {
     </div>`).join("");
 }
 
+function renderBrief() {
+  const b = WEEKLY_BRIEF;
+  document.getElementById("weekly-brief").innerHTML = `
+    <div class="b-kicker">주간 브리핑 · 고정</div>
+    <h2>이번 주 요약과 제언</h2>
+    <div class="b-period">${b.period}</div>
+    <p>${b.summary}</p>
+    <h3>제언</h3>
+    <ul>${b.suggestions.map(s => `<li>${s}</li>`).join("")}</ul>
+    <h3>성찰 질문</h3>
+    <ul>${b.reflections.map(r => `<li>${r}</li>`).join("")}</ul>
+    <h3>이번 주 행동 리스트</h3>
+    <ul class="todo">${b.actions.map(a => `<li><input type="checkbox"><span>${a}</span></li>`).join("")}</ul>
+    <div class="verse">
+      <div class="v-label">이번 주 암송 구절</div>
+      <div class="v-text">"${b.verse.text}"</div>
+      <div class="v-ref">— ${b.verse.ref}</div>
+      <p style="margin-top:8px; font-size:0.78rem;">${b.verse.why}</p>
+    </div>`;
+}
+
 function renderStats() {
   document.getElementById("t-count").textContent = NOTES.length;
   const dates = NOTES.map(n => n.date).sort();
@@ -658,6 +733,7 @@ function toggleTheme() {
   r.setAttribute("data-theme", isDark ? "light" : "dark");
 }
 
+renderBrief();
 renderStats();
 render();
 </script>
