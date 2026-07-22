@@ -129,15 +129,50 @@
   .chip.active { background: var(--text-primary); color: var(--page); border-color: var(--text-primary); }
   .chip .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: 1px; }
 
-  /* note cards */
-  .card {
-    background: var(--surface-1); border: 1px solid var(--border);
-    border-radius: 14px; padding: 20px; margin-bottom: 16px;
+  /* week groups */
+  details.week { border: none; margin-bottom: 14px; }
+  details.week > summary {
+    padding: 10px 4px; font-size: 0.85rem; font-weight: 700; color: var(--text-primary);
+    display: flex; align-items: center; gap: 8px; cursor: pointer; list-style: none;
   }
+  details.week > summary::before { content: "▸"; font-size: 0.75rem; color: var(--muted); transition: transform .15s; }
+  details.week[open] > summary::before { transform: rotate(90deg); }
+  details.week > summary .wk-count { font-size: 0.72rem; font-weight: 500; color: var(--muted); }
+  details.week > summary .wk-now {
+    font-size: 0.66rem; font-weight: 600; color: var(--page); background: var(--series-1);
+    border-radius: 999px; padding: 2px 8px;
+  }
+
+  /* note cards (collapsed by default) */
+  details.ncard {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 14px; margin-bottom: 10px; overflow: hidden;
+  }
+  details.ncard > summary {
+    cursor: pointer; list-style: none; padding: 14px 16px !important;
+    display: block !important;
+  }
+  details.ncard > summary::before { content: none !important; }
+  details.ncard > summary::-webkit-details-marker { display: none; }
+  details.ncard { border-top: 1px solid var(--border); }
+  details.week > summary { display: flex !important; padding: 10px 4px !important; }
+  details.week { border-top: none; }
+  .nc-meta { font-size: 0.7rem; color: var(--muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .nc-meta .nc-scores { display: inline-flex; gap: 6px; margin-left: auto; }
+  .nc-meta .nc-s { display: inline-flex; align-items: center; gap: 3px; font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); }
+  .nc-title { font-size: 0.95rem; font-weight: 700; line-height: 1.45; margin: 5px 0 3px; color: var(--text-primary); }
+  .nc-sum {
+    font-size: 0.8rem; color: var(--text-secondary); line-height: 1.55;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  details.ncard[open] .nc-sum { display: none; }
+  .nc-open-hint { font-size: 0.68rem; color: var(--muted); margin-top: 6px; }
+  details.ncard[open] .nc-open-hint { display: none; }
+  .ncard-body { padding: 0 16px 16px; border-top: 1px solid var(--grid); }
   .card .meta { font-size: 0.72rem; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; }
   .card h3 { font-size: 1.05rem; margin: 6px 0 2px; line-height: 1.4; }
-  .card .subject { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 10px; }
-  .card .summary { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 14px; }
+  .ncard-body .subject { font-size: 0.8rem; color: var(--text-secondary); margin: 12px 0 10px; }
+  .ncard-body .summary { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 14px; }
 
   .scores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
   .score {
@@ -637,44 +672,85 @@ const NOTES = [
 ];
 /* ──────────────────────────────────────────────────────────── */
 
+function weekStartOf(dateStr) {
+  const d = new Date(dateStr + "T00:00:00");
+  d.setDate(d.getDate() - d.getDay()); // 일요일 시작
+  return d;
+}
+function fmtMD(d) { return `${d.getMonth() + 1}/${d.getDate()}`; }
+
+function noteCard(n, filter) {
+  const miniScores = Object.keys(PERSPECTIVES).map(k => `
+    <span class="nc-s"><span class="dot" style="background:${PERSPECTIVES[k].color};width:7px;height:7px;border-radius:50%;display:inline-block;"></span>${n.scores[k].toFixed(1)}</span>`).join("");
+  return `
+    <details class="ncard">
+      <summary>
+        <div class="nc-meta"><span>${n.date}</span><span>#${n.id}</span><span class="nc-scores">${miniScores}</span></div>
+        <div class="nc-title">${n.title}</div>
+        <div class="nc-sum">${n.summary}</div>
+        <div class="nc-open-hint">탭해서 전체 보기 ▾</div>
+      </summary>
+      <div class="ncard-body">
+        <div class="subject">${n.subject}</div>
+        <div class="summary">${n.summary}</div>
+        <div class="scores">
+          ${Object.keys(PERSPECTIVES).map(k => `
+            <div class="score">
+              <div class="sname"><span class="dot" style="background:${PERSPECTIVES[k].color};width:7px;height:7px;border-radius:50%;display:inline-block;"></span>${PERSPECTIVES[k].name}</div>
+              <div class="sval">${n.scores[k].toFixed(1)}</div>
+              <div class="strack"><div class="sfill" style="width:${n.scores[k]/5*100}%;background:${PERSPECTIVES[k].color}"></div></div>
+            </div>`).join("")}
+        </div>
+        <details open>
+          <summary>노트 요약</summary>
+          <div class="body full-summary">${(n.fullSummary || []).map(p => `<p>${p}</p>`).join("")}</div>
+        </details>
+        ${Object.keys(PERSPECTIVES).map(k => `
+          <details ${filter === k ? "open" : ""}>
+            <summary><span class="dot" style="background:${PERSPECTIVES[k].color};width:8px;height:8px;border-radius:50%;display:inline-block;"></span>${PERSPECTIVES[k].name} 인사이트</summary>
+            <div class="body"><ul>${n.insights[k].map(i => `<li>${i}</li>`).join("")}</ul></div>
+          </details>`).join("")}
+        <details>
+          <summary>인용문</summary>
+          <div class="body">${n.quotes.map(q => `<blockquote>"${q}"</blockquote>`).join("")}</div>
+        </details>
+        <details>
+          <summary>나에게 적용해볼 것</summary>
+          <div class="body"><ul>${n.actions.map(a => `<li>${a}</li>`).join("")}</ul></div>
+        </details>
+        <div class="tags">${n.tags.map(t => `<span class="tag">#${t}</span>`).join("")}</div>
+        <div style="margin-top:10px;"><a class="link" href="${n.url}" target="_blank">원문 보기 →</a></div>
+      </div>
+    </details>`;
+}
+
 function render(filter = "all") {
   const cards = document.getElementById("cards");
-  const shown = filter === "all" ? NOTES : NOTES.filter(n => n.scores[filter] >= 4.0);
+  const shown = (filter === "all" ? NOTES : NOTES.filter(n => n.scores[filter] >= 4.0))
+    .slice().sort((a, b) => b.date.localeCompare(a.date));
   document.getElementById("empty").style.display = shown.length ? "none" : "block";
-  cards.innerHTML = shown.map(n => `
-    <div class="card">
-      <div class="meta"><span>${n.date}</span><span>note #${n.id}</span></div>
-      <h3>${n.title}</h3>
-      <div class="subject">${n.subject}</div>
-      <div class="summary">${n.summary}</div>
-      <div class="scores">
-        ${Object.keys(PERSPECTIVES).map(k => `
-          <div class="score">
-            <div class="sname"><span class="dot" style="background:${PERSPECTIVES[k].color};width:7px;height:7px;border-radius:50%;display:inline-block;"></span>${PERSPECTIVES[k].name}</div>
-            <div class="sval">${n.scores[k].toFixed(1)}</div>
-            <div class="strack"><div class="sfill" style="width:${n.scores[k]/5*100}%;background:${PERSPECTIVES[k].color}"></div></div>
-          </div>`).join("")}
-      </div>
-      <details open>
-        <summary>노트 요약</summary>
-        <div class="body full-summary">${(n.fullSummary || []).map(p => `<p>${p}</p>`).join("")}</div>
-      </details>
-      ${Object.keys(PERSPECTIVES).map(k => `
-        <details ${filter === k ? "open" : ""}>
-          <summary><span class="dot" style="background:${PERSPECTIVES[k].color};width:8px;height:8px;border-radius:50%;display:inline-block;"></span>${PERSPECTIVES[k].name} 인사이트</summary>
-          <div class="body"><ul>${n.insights[k].map(i => `<li>${i}</li>`).join("")}</ul></div>
-        </details>`).join("")}
-      <details>
-        <summary>인용문</summary>
-        <div class="body">${n.quotes.map(q => `<blockquote>"${q}"</blockquote>`).join("")}</div>
-      </details>
-      <details>
-        <summary>나에게 적용해볼 것</summary>
-        <div class="body"><ul>${n.actions.map(a => `<li>${a}</li>`).join("")}</ul></div>
-      </details>
-      <div class="tags">${n.tags.map(t => `<span class="tag">#${t}</span>`).join("")}</div>
-      <div style="margin-top:10px;"><a class="link" href="${n.url}" target="_blank">원문 보기 →</a></div>
-    </div>`).join("");
+
+  // 주간(일요일 시작) 그룹핑
+  const groups = new Map();
+  shown.forEach(n => {
+    const ws = weekStartOf(n.date);
+    const key = ws.toISOString().slice(0, 10);
+    if (!groups.has(key)) groups.set(key, { start: ws, notes: [] });
+    groups.get(key).notes.push(n);
+  });
+
+  const todayKey = weekStartOf(new Date().toISOString().slice(0, 10)).toISOString().slice(0, 10);
+  const sorted = [...groups.entries()].sort((a, b) => b[0].localeCompare(a[0]));
+
+  cards.innerHTML = sorted.map(([key, g], i) => {
+    const end = new Date(g.start); end.setDate(end.getDate() + 6);
+    const isNow = key === todayKey;
+    return `
+      <details class="week" ${i === 0 ? "open" : ""}>
+        <summary>${fmtMD(g.start)} – ${fmtMD(end)} <span class="wk-count">노트 ${g.notes.length}개</span>${isNow ? '<span class="wk-now">이번 주</span>' : ""}</summary>
+        ${g.notes.map(n => noteCard(n, filter)).join("")}
+      </details>`;
+  }).join("");
 }
 
 function renderBrief() {
