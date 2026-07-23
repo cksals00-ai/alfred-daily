@@ -19,6 +19,7 @@
     --series-2: #008300; /* 커리어 */
     --series-3: #e87ba4; /* 브랜딩 */
     --series-6: #eb6834; /* 뉴스 액센트 */
+    --series-5: #1baf7a; /* GS 액센트 */
     --chip-bg: #f0efec;
   }
   @media (prefers-color-scheme: dark) {
@@ -36,6 +37,7 @@
       --series-2: #008300;
       --series-3: #d55181;
       --series-6: #d95926;
+      --series-5: #199e70;
       --chip-bg: #262624;
     }
   }
@@ -53,6 +55,7 @@
     --series-2: #008300;
     --series-3: #d55181;
     --series-6: #d95926;
+    --series-5: #199e70;
     --chip-bg: #262624;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -243,6 +246,7 @@
 <div class="tabs">
   <button class="tab active" data-tab="notes">📚 롱블랙 노트</button>
   <button class="tab" data-tab="news">📮 데일리 뉴스</button>
+  <button class="tab" data-tab="gs">🏨 GS 데일리</button>
 </div>
 
 <div id="view-notes">
@@ -276,6 +280,11 @@
   <div class="brief" id="news-brief" style="border-left-color: var(--series-6, #eb6834);"></div>
   <div id="news-cards"></div>
 </div><!-- /view-news -->
+
+<div id="view-gs" style="display:none;">
+  <div class="brief" id="gs-brief" style="border-left-color: var(--series-5, #1baf7a);"></div>
+  <div id="gs-cards"></div>
+</div><!-- /view-gs -->
 
 <footer>새 노트가 추가될 때마다 이 대시보드가 업데이트됩니다 · 적합도는 세 관점 기준 0~5점</footer>
 
@@ -1031,12 +1040,109 @@ function renderNews() {
 
 fetch("news.json").then(r => r.json()).then(data => { NEWS = data; renderNews(); }).catch(() => {});
 
+/* ── GS 데일리: SONO & TRINITY GS팀 리포트 요약본 (매일 추가, 최신이 앞) ── */
+const GS_DAILY = [
+  {
+    date: "2026-07-24",
+    kpiLine: "7월 OTB 92.3% 달성 · 매출 99.8% (YoY +6.1%) · TOP 쏠비치남해 +143%",
+    kpi: [
+      "<strong>7월</strong> OTB 82,501실 · 달성 92.3% · YoY +523실 · FCST 86,924실 (97.3%)",
+      "<strong>8월</strong> OTB 59,656실 · 달성 61.9% · YoY +2,308실 · FCST 99,567실 (103.3%)",
+      "<strong>9월</strong> OTB 11,194실 · 달성 16.4% · FCST 71,251실 (104.6%)",
+      "<strong>7월 매출</strong> 99.8% (YoY +6.1%)",
+      "<strong>TOP</strong> 쏠비치남해 +143.0% · 소노문해운대 +43.3% · 델피노 +21.7%",
+      "<strong>BOTTOM</strong> 소노벨단양 -31.5% · 캄비발디 -29.1% · 쏠비치진도 -23.8%"
+    ],
+    sono: [
+      "<strong>소노벨 경주 감포 개관</strong> — 경주 두 번째 거점 확보 (7개 매체 동시 보도)",
+      "<strong>원산도 관광단지 계획 보완</strong> — IPO 앞둔 '시간벌기' 비판 기사 (리스크 이슈)",
+      "여름 워터파크·인피니티풀 전면 개장 (성수기 개시)",
+      "쏠비치 남해 개관 1주년 — \"남해와 함께 크는 게 목표\"",
+      "이천 쌀 활용 음료·베이커리 7종 한정 출시"
+    ],
+    hotel: [
+      "한화호텔 '마티에' 평촌 신규 오픈 — 부산 이어 확장 (경쟁사 신규 거점)",
+      "일본 호텔들, 한국 FIT → 인센티브 시장 확대 움직임",
+      "평창 휘닉스, 벌써 스키 시즌패스 판매 돌입 — 겨울 조기 선점 경쟁"
+    ],
+    ota: [
+      "여기어때, 일본 호텔 직계약 확대 — 숙소 경쟁력 강화",
+      "\"AI로 준비하고 OTA로 예약\" — 고물가에도 해외여행 의향 95% (국내 리조트 역풍 신호)",
+      "신한카드 × 트립닷컴 제휴 — 호텔 예약 최대 20% 할인, 카드사 여행 혜택 경쟁"
+    ],
+    insight: "쏠비치남해 +143%와 '개관 1주년' 기사가 맞물린 날 — 신규 사업장의 지역 스토리텔링이 실적으로 이어지는 패턴이 확인됩니다. 반면 '해외여행 의향 95%' 기사와 8월 달성률 61.9%는 성수기 후반 수요 이탈 리스크 신호로 함께 볼 것. 원산도 IPO 비판 기사는 대외 커뮤니케이션 관점에서 모니터링 필요."
+  }
+];
+
+function renderGsBrief() {
+  const latest = GS_DAILY[0];
+  document.getElementById("gs-brief").innerHTML = `
+    <div class="b-kicker" style="color: var(--series-5);">GS 데일리 요약 · 원본 대시보드 요약본</div>
+    <h2>SONO & TRINITY GS팀 리포트</h2>
+    <div class="b-period">최신: ${latest ? latest.date : "-"} · 카테고리별 중요한 것만 담은 하루 1장 요약</div>
+    <p>매일 원본 대시보드에서 실적(KPI)과 소노·호텔/리조트·OTA 핵심 기사만 추려 쌓습니다.
+    <a class="link" href="https://cksals00-ai.github.io/gs_daily_trend_news_public_temp/index.html" target="_blank">원본 대시보드 열기 →</a></p>`;
+}
+
+function gsDayCard(g) {
+  const sec = (title, arr, color) => `
+    <details ${title === "실적 KPI" ? "open" : ""}>
+      <summary><span class="dot" style="background:${color};width:8px;height:8px;border-radius:50%;display:inline-block;"></span>${title}</summary>
+      <div class="body"><ul>${arr.map(i => `<li>${i}</li>`).join("")}</ul></div>
+    </details>`;
+  return `
+    <details class="ncard">
+      <summary>
+        <div class="nc-meta"><span>${g.date}</span><span>GS 데일리 요약</span></div>
+        <div class="issue-chips">
+          <div class="issue-chip" style="font-weight:600;"><span>${g.kpiLine}</span></div>
+          ${[g.sono[0], g.sono[1]].filter(Boolean).map(t => `<div class="issue-chip"><span>${t.replace(/<[^>]+>/g, "")}</span></div>`).join("")}
+        </div>
+        <div class="nc-open-hint">탭해서 전체 요약 보기 ▾</div>
+      </summary>
+      <div class="ncard-body">
+        ${sec("실적 KPI", g.kpi, "var(--series-5)")}
+        ${sec("소노", g.sono, "var(--series-1)")}
+        ${sec("호텔/리조트", g.hotel, "var(--series-3)")}
+        ${sec("OTA/여행", g.ota, "var(--series-6)")}
+        ${g.insight ? `<details open><summary>오늘의 시사점</summary><div class="body"><p style="font-size:0.85rem;color:var(--text-secondary);">${g.insight}</p></div></details>` : ""}
+      </div>
+    </details>`;
+}
+
+function renderGs() {
+  const el = document.getElementById("gs-cards");
+  const sorted = GS_DAILY.slice().sort((a, b) => b.date.localeCompare(a.date));
+  const groups = new Map();
+  sorted.forEach(g => {
+    const ws = weekStartOf(g.date);
+    const key = ws.toISOString().slice(0, 10);
+    if (!groups.has(key)) groups.set(key, { start: ws, days: [] });
+    groups.get(key).days.push(g);
+  });
+  const todayKey = weekStartOf(new Date().toISOString().slice(0, 10)).toISOString().slice(0, 10);
+  const weeks = [...groups.entries()].sort((a, b) => b[0].localeCompare(a[0]));
+  el.innerHTML = weeks.map(([key, g], i) => {
+    const end = new Date(g.start); end.setDate(end.getDate() + 6);
+    const isNow = key === todayKey;
+    return `
+      <details class="week" ${i === 0 ? "open" : ""}>
+        <summary>${fmtMD(g.start)} – ${fmtMD(end)} <span class="wk-count">리포트 ${g.days.length}일치</span>${isNow ? '<span class="wk-now" style="background: var(--series-5);">이번 주</span>' : ""}</summary>
+        ${g.days.map(gsDayCard).join("")}
+      </details>`;
+  }).join("");
+}
+
 document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
   document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
   t.classList.add("active");
   document.getElementById("view-notes").style.display = t.dataset.tab === "notes" ? "" : "none";
   document.getElementById("view-news").style.display = t.dataset.tab === "news" ? "" : "none";
+  document.getElementById("view-gs").style.display = t.dataset.tab === "gs" ? "" : "none";
 }));
+
+renderGsBrief();
+renderGs();
 
 renderBrief();
 renderStats();
