@@ -159,6 +159,10 @@
   details.week > summary::before { content: "▸"; font-size: 0.75rem; color: var(--muted); transition: transform .15s; }
   details.week[open] > summary::before { transform: rotate(90deg); }
   details.week > summary .wk-count { font-size: 0.72rem; font-weight: 500; color: var(--muted); }
+  details.week > summary .wk-year {
+    font-size: 11px; font-weight: 600; color: var(--text-secondary);
+    background: var(--gridline); border-radius: 4px; padding: 1px 5px; margin-left: 2px;
+  }
   details.week > summary .wk-now {
     font-size: 0.66rem; font-weight: 600; color: var(--page); background: var(--series-1);
     border-radius: 999px; padding: 2px 8px;
@@ -896,6 +900,11 @@ function weekStartOf(dateStr) {
   return d;
 }
 function fmtMD(d) { return `${d.getMonth() + 1}/${d.getDate()}`; }
+function fmtWeek(start, end) {
+  const y = start.getFullYear();
+  const cur = new Date().getFullYear();
+  return `${fmtMD(start)} – ${fmtMD(end)}${y !== cur ? ` <span class="wk-year">${y}</span>` : ""}`;
+}
 
 function noteCard(n, filter) {
   const miniScores = Object.keys(PERSPECTIVES).map(k => `
@@ -965,7 +974,7 @@ function render(filter = "all") {
     const isNow = key === todayKey;
     return `
       <details class="week" ${i === 0 ? "open" : ""}>
-        <summary>${fmtMD(g.start)} – ${fmtMD(end)} <span class="wk-count">노트 ${g.notes.length}개</span>${isNow ? '<span class="wk-now">이번 주</span>' : ""}</summary>
+        <summary>${fmtWeek(g.start, end)} <span class="wk-count">노트 ${g.notes.length}개</span>${isNow ? '<span class="wk-now">이번 주</span>' : ""}</summary>
         ${g.notes.map(n => noteCard(n, filter)).join("")}
       </details>`;
   }).join("");
@@ -1095,7 +1104,7 @@ function newsWeeksHtml(days) { // days: 최신순
     const isNow = key === todayKey;
     return `
       <details class="week" ${i === 0 ? "open" : ""} style="margin-left: 6px;">
-        <summary>${fmtMD(g.start)} – ${fmtMD(end)} <span class="wk-count">뉴스 ${g.days.length}일치</span>${isNow ? '<span class="wk-now" style="background: var(--series-6);">이번 주</span>' : ""}</summary>
+        <summary>${fmtWeek(g.start, end)} <span class="wk-count">뉴스 ${g.days.length}일치</span>${isNow ? '<span class="wk-now" style="background: var(--series-6);">이번 주</span>' : ""}</summary>
         ${g.days.map(newsDayCard).join("")}
       </details>`;
   }).join("");
@@ -1220,7 +1229,7 @@ function renderGs() {
     const isNow = key === todayKey;
     return `
       <details class="week" ${i === 0 ? "open" : ""}>
-        <summary>${fmtMD(g.start)} – ${fmtMD(end)} <span class="wk-count">리포트 ${g.days.length}일치</span>${isNow ? '<span class="wk-now" style="background: var(--series-5);">이번 주</span>' : ""}</summary>
+        <summary>${fmtWeek(g.start, end)} <span class="wk-count">리포트 ${g.days.length}일치</span>${isNow ? '<span class="wk-now" style="background: var(--series-5);">이번 주</span>' : ""}</summary>
         ${g.days.map(gsDayCard).join("")}
       </details>`;
   }).join("");
