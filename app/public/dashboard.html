@@ -295,6 +295,17 @@
   .mv-tag { font-size: 0.62rem; font-weight: 700; color: var(--text-secondary); border: 1px solid var(--border); border-radius: 999px; padding: 1px 7px; margin-right: 7px; }
   .trend-note { font-size: 0.68rem; color: var(--text-secondary); margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 9px; line-height: 1.65; }
   .trend-note em { font-style: normal; font-weight: 700; color: var(--text-primary); }
+
+  /* ── 커피챗 댓글 초안 ───────────────────────────── */
+  .cchat > summary { color: var(--series-3); }
+  .cc-text { white-space: pre-line; font-size: 0.82rem; line-height: 1.8; color: var(--text-primary);
+             background: var(--chip-bg); border-left: 3px solid var(--series-3);
+             border-radius: 0 6px 6px 0; padding: 12px 14px; }
+  .cc-copy { margin-top: 9px; font: inherit; font-size: 0.72rem; font-weight: 600;
+             color: var(--text-primary); background: var(--surface-1);
+             border: 1px solid var(--border); border-radius: 999px;
+             padding: 6px 15px; cursor: pointer; }
+  .cc-copy:active { background: var(--chip-bg); }
 </style>
 </head>
 <body>
@@ -398,6 +409,7 @@ const WEEKLY_BRIEF = {
 const NOTES = [
   {
     id: 2067,
+    comment: "“2년 문 닫죠. 이건 팔면 안 됩니다.” 이 문장에서 한참 멈췄습니다.\n\n저는 숫자가 흔들리면 늘 파는 쪽부터 손댔습니다. 프로모션을 걸고, 채널을 늘리고, 문구를 바꾸고. 정작 파는 물건 자체를 다시 만들어본 적은 없었어요. 만포농산은 매출이 전성기의 30% 아래로 떨어진 상태에서 2년을 더 썼는데, 그게 후퇴가 아니라 순서를 바로잡은 거였네요.\n\n가장 인상 깊었던 건 편차를 없애지 않은 지점입니다. 장독마다 맛이 다른 걸 결함으로 보고 표준화했다면 그냥 균일한 된장이 됐을 텐데, 위스키 블렌딩을 가져와 편차를 재료로 바꿨죠. 문제를 지우는 대신 문법을 바꾼 겁니다.\n\n이번 주엔 제가 맡은 상품 하나를 골라, 파는 방법 말고 만드는 방법을 뜯어보려 합니다. 어디서 편차가 가장 큰지부터 적어보는 걸로 시작하겠습니다.",
     date: "2026-07-31",
     title: "만포농산 : 된장에도 솔루션이 필요하다, 전략 컨설턴트의 가업 회생기",
     subject: "정병우 만포농산 대표 · 경북 영주 · 브랜드 '무량수' · 미쉐린 3스타가 쓰는 장",
@@ -1382,6 +1394,14 @@ function fmtWeek(start, end) {
   return `${fmtMD(start)} – ${fmtMD(end)}${y !== cur ? ` <span class="wk-year">${y}</span>` : ""}`;
 }
 
+function copyComment(id, btn) {
+  const t = document.getElementById("cc-" + id).innerText;
+  const done = () => { btn.textContent = "복사됨 \u2713"; setTimeout(() => btn.textContent = "댓글 복사", 1800); };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(t).then(done).catch(() => { btn.textContent = "길게 눌러 복사하세요"; });
+  } else { btn.textContent = "길게 눌러 복사하세요"; }
+}
+
 function noteCard(n, filter) {
   const miniScores = Object.keys(PERSPECTIVES).map(k => `
     <span class="nc-s"><span class="dot" style="background:${PERSPECTIVES[k].color};width:7px;height:7px;border-radius:50%;display:inline-block;"></span>${n.scores[k].toFixed(1)}</span>`).join("");
@@ -1421,6 +1441,14 @@ function noteCard(n, filter) {
           <summary>나에게 적용해볼 것</summary>
           <div class="body"><ul>${n.actions.map(a => `<li>${a}</li>`).join("")}</ul></div>
         </details>
+        ${n.comment ? `
+        <details class="cchat">
+          <summary>커피챗 댓글 초안</summary>
+          <div class="body">
+            <div class="cc-text" id="cc-${n.id}">${n.comment}</div>
+            <button class="cc-copy" onclick="copyComment(${n.id}, this)">댓글 복사</button>
+          </div>
+        </details>` : ""}
         <div class="tags">${n.tags.map(t => `<span class="tag">#${t}</span>`).join("")}</div>
         <div style="margin-top:10px;"><a class="link" href="${n.url}" target="_blank">원문 보기 →</a></div>
       </div>
