@@ -306,6 +306,102 @@
              border: 1px solid var(--border); border-radius: 999px;
              padding: 6px 15px; cursor: pointer; }
   .cc-copy:active { background: var(--chip-bg); }
+
+  /* ── GS 실적 시각화 ─────────────────────────────── */
+  :root { --st-good: #0ca30c; --st-warn: #fab219; --st-serious: #ec835a; --st-critical: #d03b3b;
+          --series-8: #e34948; --dv-pos: #2a78d6; --dv-neg: #e34948; }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) { --series-8: #e66767; --dv-pos: #3987e5; --dv-neg: #e66767; }
+  }
+  :root[data-theme="dark"] { --series-8: #e66767; --dv-pos: #3987e5; --dv-neg: #e66767; }
+
+  #gs-perf { margin-bottom: 22px; }
+  .perf-head { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; margin: 4px 0 8px; }
+  .perf-head h3 { font-size: 0.98rem; margin: 0; }
+  .perf-when { font-size: 0.68rem; color: var(--text-secondary); }
+  .perf-lede { font-size: 0.79rem; line-height: 1.75; color: var(--text-secondary);
+               border-left: 3px solid var(--series-5); background: var(--surface-1);
+               border-radius: 0 8px 8px 0; padding: 11px 14px; margin-bottom: 16px; }
+  .perf-lede b { color: var(--text-primary); }
+  .perf-lede b.up, .mb-nums .up, .dv-val.pos { color: var(--dv-pos); }
+  .perf-lede b.down, .mb-nums .down, .dv-val.neg { color: var(--dv-neg); }
+
+  .perf-sec { background: var(--surface-1); border: 1px solid var(--border);
+              border-radius: 10px; padding: 14px 14px 12px; margin-bottom: 12px; }
+  .perf-sec h4 { font-size: 0.82rem; margin: 0 0 12px; display: flex; gap: 8px;
+                 align-items: baseline; flex-wrap: wrap; }
+  .perf-sec h4 span { font-weight: 400; font-size: 0.68rem; color: var(--text-secondary); }
+  .perf-note { font-size: 0.67rem; color: var(--text-secondary); line-height: 1.7;
+               margin-top: 10px; border-top: 1px solid var(--border); padding-top: 8px; }
+  .perf-note b { color: var(--text-primary); }
+  .perf-note i { display: inline-block; width: 9px; height: 9px; vertical-align: -1px; }
+  .lg-fcst { border-left: 2px solid var(--text-primary); height: 10px !important; width: 2px !important; }
+  .lg-bud { border-left: 2px dashed var(--muted); height: 10px !important; width: 2px !important; }
+  .perf-more > summary { font-size: 0.7rem; color: var(--text-secondary); cursor: pointer;
+                         padding: 7px 0 4px; }
+
+  /* 월별 bullet */
+  .mb-row { margin-bottom: 14px; }
+  .mb-top { display: flex; align-items: baseline; gap: 8px; margin-bottom: 5px; }
+  .mb-name { font-size: 0.8rem; font-weight: 700; min-width: 30px; }
+  .mb-ach { font-size: 1.02rem; font-weight: 700; }
+  .mb-ach .u { font-size: 0.66rem; font-weight: 600; opacity: 0.55; margin-left: 1px; }
+  .mb-badge { margin-left: auto; font-size: 0.63rem; font-weight: 700; border: 1px solid;
+              border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
+  .mb-track { position: relative; height: 9px; background: var(--chip-bg);
+              border-radius: 4px; overflow: visible; }
+  .mb-fill { height: 100%; background: var(--series-5); border-radius: 4px; }
+  .mb-tick { position: absolute; top: -3px; height: 15px; width: 2px; }
+  .mb-fcst { background: var(--text-primary); }
+  .mb-bud { background: repeating-linear-gradient(var(--muted) 0 3px, transparent 3px 5px); }
+  .mb-nums { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 0.68rem;
+             color: var(--text-secondary); margin-top: 6px; font-variant-numeric: tabular-nums; }
+  .mb-nums b { color: var(--text-primary); }
+
+  /* SVG 차트 */
+  .vz-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.7rem;
+               color: var(--text-secondary); margin-bottom: 6px; }
+  .vz-lg i, .vz-tip i { display: inline-block; width: 9px; height: 9px; border-radius: 2px;
+                        margin-right: 5px; vertical-align: -1px; }
+  .vz-wrap { position: relative; }
+  .vz-grid { stroke: var(--grid); stroke-width: 1; }
+  .vz-base { stroke: var(--baseline); stroke-width: 1; }
+  .vz-cross { stroke: var(--baseline); stroke-width: 1; }
+  .vz-tick { fill: var(--muted); font-size: 9px; font-variant-numeric: tabular-nums; }
+  .vz-hit { cursor: crosshair; touch-action: pan-y; }
+  .vz-tip { position: absolute; top: 4px; background: var(--surface-1); border: 1px solid var(--border);
+            border-radius: 7px; padding: 7px 10px; font-size: 0.7rem; pointer-events: none;
+            box-shadow: 0 3px 14px rgba(0,0,0,0.16); white-space: nowrap; z-index: 5; }
+  .vz-tip b { font-variant-numeric: tabular-nums; }
+  .vz-tip span { display: block; color: var(--text-secondary); margin-top: 2px; }
+
+  /* 발산형 막대 */
+  .dv-row { display: grid; grid-template-columns: 102px 1fr 54px; align-items: center;
+            gap: 8px; margin-bottom: 5px; }
+  .dv-name { font-size: 0.7rem; color: var(--text-secondary); overflow: hidden;
+             text-overflow: ellipsis; white-space: nowrap; }
+  .dv-track { position: relative; height: 11px; }
+  .dv-mid { position: absolute; left: 50%; top: -1px; bottom: -1px; width: 1px; background: var(--baseline); }
+  .dv-bar { position: absolute; top: 1px; height: 9px; }
+  .dv-bar.pos { background: var(--dv-pos); border-radius: 0 4px 4px 0; margin-left: 2px; }
+  .dv-bar.neg { background: var(--dv-neg); border-radius: 4px 0 0 4px; margin-right: 2px; }
+  .dv-val { font-size: 0.7rem; font-weight: 700; text-align: right;
+            font-variant-numeric: tabular-nums; }
+
+  /* 채널 테이블 */
+  .ct-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .ct { border-collapse: separate; border-spacing: 2px; font-size: 0.66rem;
+        font-variant-numeric: tabular-nums; width: 100%; }
+  .ct th { font-weight: 600; color: var(--text-secondary); text-align: left;
+           white-space: nowrap; padding: 3px 6px; }
+  .ct thead th { font-size: 0.62rem; text-align: center; }
+  .ct tbody th { position: sticky; left: 0; background: var(--surface-1); }
+  .ct td { text-align: right; padding: 4px 7px; border-radius: 3px;
+           color: var(--text-primary); white-space: nowrap; }
+  .ct-tot td { background: none !important; font-weight: 700; border-top: 1px solid var(--border); }
+
+  .gs-news-head { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em;
+                  color: var(--text-secondary); margin: 22px 0 8px; }
 </style>
 </head>
 <body>
@@ -356,6 +452,8 @@
 
 <div id="view-gs" style="display:none;">
   <div class="brief" id="gs-brief" style="border-left-color: var(--series-5, #1baf7a);"></div>
+  <div id="gs-perf"></div>
+  <div class="gs-news-head">뉴스 · 이슈 아카이브</div>
   <div id="gs-cards"></div>
 </div><!-- /view-gs -->
 
@@ -1710,6 +1808,239 @@ const GS_DAILY = [
   }
 ];
 
+/* GS 실적 — 원본 대시보드에서 매일 자동 추출 (gs_scrape.py) */
+const GS_PERF = {"src":"https://cksals00-ai.github.io/gs_daily_trend_news_public_temp/index.html","asOf":"20260729","asOfLabel":"07/29","curMonth":"7월","months":[{"label":"7월","actual":85160,"budget":89360,"ach":95.3,"fcst":84837,"fcstAch":94.9,"todayNet":196.0,"yoyRn":5.1,"yoyRev":22.4,"yoyAdr":16.6,"cyRn":85690,"lyRn":81563},{"label":"8월","actual":71264,"budget":96433,"ach":73.9,"fcst":99918,"fcstAch":103.7,"todayNet":1551.0,"yoyRn":14.2,"yoyRev":0.0,"yoyAdr":null,"cyRn":79585,"lyRn":69685},{"label":"9월","actual":14465,"budget":68231,"ach":21.2,"fcst":70116,"fcstAch":102.9,"todayNet":520.0,"yoyRn":-1.7,"yoyRev":null,"yoyAdr":null,"cyRn":16242,"lyRn":16530}],"daily":{"cy":[{"l":"07/17","p":5020,"c":3018,"n":2002},{"l":"07/18","p":4468,"c":2752,"n":1716},{"l":"07/19","p":5838,"c":3272,"n":2566},{"l":"07/20","p":10178,"c":6112,"n":4066},{"l":"07/21","p":8118,"c":4688,"n":3430},{"l":"07/22","p":8343,"c":4376,"n":3967},{"l":"07/23","p":7929,"c":5135,"n":2794},{"l":"07/24","p":8473,"c":5452,"n":3021},{"l":"07/25","p":5607,"c":3335,"n":2272},{"l":"07/26","p":6253,"c":3597,"n":2656},{"l":"07/27","p":9211,"c":6339,"n":2872},{"l":"07/28","p":9227,"c":5365,"n":3862},{"l":"07/29","p":6620,"c":4535,"n":2085},{"l":"07/30","p":451,"c":316,"n":135}],"ly":[{"l":"07/18","p":6745,"c":4322,"n":2423},{"l":"07/19","p":4481,"c":2825,"n":1656},{"l":"07/20","p":5432,"c":3182,"n":2250},{"l":"07/21","p":7624,"c":5179,"n":2445},{"l":"07/22","p":7533,"c":4383,"n":3150},{"l":"07/23","p":6858,"c":4294,"n":2564},{"l":"07/24","p":6937,"c":4190,"n":2747},{"l":"07/25","p":8723,"c":9102,"n":-379},{"l":"07/26","p":4633,"c":2575,"n":2058},{"l":"07/27","p":5252,"c":2828,"n":2424},{"l":"07/28","p":7594,"c":4302,"n":3292},{"l":"07/29","p":6368,"c":3487,"n":2881},{"l":"07/30","p":5745,"c":3442,"n":2303},{"l":"07/31","p":5548,"c":3303,"n":2245}]},"seg":{"weekly":{"OTA":[1553,1140,817,722,1213,1549,878,1444,1469,1404,1388,1729,1784,1524],"G-OTA":[602,699,664,625,927,1105,720,745,852,929,1040,1027,1085,906],"Inbound":[413,97,101,177,126,137,122,87,115,123,109,85,91,88]},"today":{"OTA":{"booking":2460,"cancel":1197,"net":1263,"net_rev":3.5},"G-OTA":{"booking":2318,"cancel":1103,"net":1215,"net_rev":3.0},"Inbound":{"booking":38,"cancel":46,"net":-8,"net_rev":-0.0}},"labels":["07/17","07/18","07/19","07/20","07/21","07/22","07/23","07/24","07/25","07/26","07/27","07/28","07/29","07/30"],"allToday":[{"n":"OTA","net":1263,"pickup":2460,"cancel":1197},{"n":"G-OTA","net":1215,"pickup":2318,"cancel":1103},{"n":"회원PKG","net":242,"pickup":818,"cancel":576},{"n":"자사 패키지","net":164,"pickup":934,"cancel":770},{"n":"일반단체","net":21,"pickup":23,"cancel":2},{"n":"D멤버스","net":9,"pickup":29,"cancel":20},{"n":"Inbound","net":-8,"pickup":38,"cancel":46},{"n":"FIT","net":-99,"pickup":0,"cancel":99},{"n":"H/U","net":-722,"pickup":0,"cancel":722}]},"chan":[{"l":"06/22","ch":{"야놀자":1584,"여기어때":1263,"트립닷컴":359,"트립비토즈":508,"아고다":-458,"스마트인피니":319,"기타":688},"total":4263},{"l":"06/29","ch":{"야놀자":1266,"여기어때":731,"트립닷컴":600,"트립비토즈":927,"아고다":-532,"스마트인피니":21,"기타":959},"total":3972},{"l":"07/06","ch":{"야놀자":992,"여기어때":662,"트립닷컴":691,"트립비토즈":220,"아고다":206,"스마트인피니":547,"기타":1264},"total":4582},{"l":"07/13","ch":{"야놀자":890,"여기어때":403,"트립닷컴":549,"트립비토즈":315,"아고다":46,"스마트인피니":445,"기타":1033},"total":3681},{"l":"07/20","ch":{"야놀자":1767,"여기어때":867,"트립닷컴":1160,"트립비토즈":271,"아고다":291,"스마트인피니":562,"기타":2025},"total":6943},{"l":"07/27","ch":{"야놀자":923,"여기어때":508,"트립닷컴":666,"트립비토즈":554,"아고다":713,"스마트인피니":379,"기타":1586},"total":5329}],"prop":[{"n":"쏠비치 남해","cy":4022,"ly":1592,"pct":152.6},{"n":"소노문 해운대","cy":2655,"ly":1938,"pct":37.0},{"n":"델피노","cy":8655,"ly":7356,"pct":17.7},{"n":"소노벨 천안","cy":4364,"ly":3846,"pct":13.5},{"n":"소노벨 변산","cy":3981,"ly":3617,"pct":10.1},{"n":"소노벨 비발디파크","cy":11048,"ly":10479,"pct":5.4},{"n":"쏠비치 양양","cy":3917,"ly":3763,"pct":4.1},{"n":"쏠비치 삼척","cy":6324,"ly":6290,"pct":0.5},{"n":"오션월드빌리지","cy":30,"ly":30,"pct":0.0},{"n":"소노벨 제주","cy":3323,"ly":3512,"pct":-5.4},{"n":"소노캄 거제","cy":3800,"ly":4039,"pct":-5.9},{"n":"소노펠리체 빌리지 비발디파크","cy":1183,"ly":1271,"pct":-6.9},{"n":"소노캄 제주","cy":1313,"ly":1420,"pct":-7.5},{"n":"소노캄 고양","cy":7063,"ly":7678,"pct":-8.0},{"n":"소노벨 청송","cy":1599,"ly":1780,"pct":-10.2},{"n":"소노캄 여수","cy":1139,"ly":1289,"pct":-11.6},{"n":"소노문 비발디파크","cy":1046,"ly":1186,"pct":-11.8},{"n":"소노펠리체 비발디파크","cy":2743,"ly":3198,"pct":-14.2},{"n":"쏠비치 진도","cy":4656,"ly":6101,"pct":-23.7},{"n":"소노휴 양평","cy":547,"ly":723,"pct":-24.3},{"n":"소노펫 비발디파크","cy":1154,"ly":1535,"pct":-24.8},{"n":"소노캄 비발디파크","cy":2001,"ly":2783,"pct":-28.1},{"n":"소노문 단양","cy":4196,"ly":6137,"pct":-31.6}],"topbot":{"top":[{"n":"쏠비치남해","a":150.9},{"n":"소노문해운대","a":34.9},{"n":"델피노","a":17.0}],"bot":[{"n":"펫비발디","a":-24.9},{"n":"캄비발디","a":-28.1},{"n":"소노벨단양","a":-31.6}]},"revAch":104.3,"otbYoy":4.4};
+
+
+/* ══════════ GS 실적 시각화 ══════════ */
+const _fmt = n => (n === null || n === undefined) ? "-" : Math.round(n).toLocaleString("ko-KR");
+const _pct = n => (n === null || n === undefined) ? "-" : (n > 0 ? "+" : "") + n.toFixed(1) + "%";
+const _esc = t => String(t).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+
+/* 예상 착지(FCST 달성률) 기준 상태 — 색은 반드시 라벨과 함께 쓴다 */
+function _landing(fcstAch) {
+  if (fcstAch === null || fcstAch === undefined) return { k: "none", t: "예상 없음", c: "var(--muted)" };
+  if (fcstAch >= 100) return { k: "good", t: "달성 예상", c: "var(--st-good)" };
+  if (fcstAch >= 97) return { k: "warn", t: "근소 미달", c: "var(--st-warn)" };
+  return { k: "bad", t: "미달 예상", c: "var(--st-serious)" };
+}
+
+/* ── 월별 목표 대비 진척 (bullet) ── */
+function _monthBullets() {
+  return GS_PERF.months.map(m => {
+    const span = Math.max(m.budget, m.fcst || 0, m.actual) * 1.02;
+    const wA = m.actual / span * 100, wF = (m.fcst || 0) / span * 100, wB = m.budget / span * 100;
+    const L = _landing(m.fcstAch);
+    return `
+      <div class="mb-row">
+        <div class="mb-top">
+          <span class="mb-name">${m.label}</span>
+          <span class="mb-ach">${m.ach.toFixed(1)}<span class="u">%</span></span>
+          <span class="mb-badge" style="color:${L.c};border-color:${L.c}">${L.t} ${m.fcstAch ? m.fcstAch.toFixed(1) + "%" : ""}</span>
+        </div>
+        <div class="mb-track">
+          <div class="mb-fill" style="width:${wA.toFixed(2)}%"></div>
+          <div class="mb-tick mb-fcst" style="left:${wF.toFixed(2)}%" title="예상 ${_fmt(m.fcst)}실"></div>
+          <div class="mb-tick mb-bud" style="left:${wB.toFixed(2)}%" title="목표 ${_fmt(m.budget)}실"></div>
+        </div>
+        <div class="mb-nums">
+          <span>OTB <b>${_fmt(m.actual)}</b>실</span>
+          <span>목표 ${_fmt(m.budget)}</span>
+          <span>예상 ${_fmt(m.fcst)}</span>
+          <span class="${(m.yoyRn || 0) >= 0 ? "up" : "down"}">작년비 ${_pct(m.yoyRn)}</span>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+/* ── SVG 라인 차트 (크로스헤어 + 툴팁) ── */
+function _lineChart(host, labels, series, opt) {
+  opt = opt || {};
+  const W = Math.max(host.clientWidth || 320, 260), H = opt.h || 170;
+  const PL = 38, PR = 12, PT = 12, PB = 22;
+  const flat = series.reduce((a, s) => a.concat(s.data), []);
+  let mn = Math.min.apply(null, flat), mx = Math.max.apply(null, flat);
+  if (opt.zero) mn = Math.min(0, mn);
+  const pd = (mx - mn) * 0.14 || 1; mx += pd; mn -= pd;
+  const n = labels.length;
+  const X = i => PL + (W - PL - PR) * (n === 1 ? 0.5 : i / (n - 1));
+  const Y = v => PT + (H - PT - PB) * (1 - (v - mn) / (mx - mn));
+
+  const ticks = [mn + (mx - mn) * 0.1, (mn + mx) / 2, mx - (mx - mn) * 0.1];
+  let g = ticks.map(t => `<line x1="${PL}" x2="${W - PR}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}" class="vz-grid"/>
+      <text x="${PL - 6}" y="${(Y(t) + 3).toFixed(1)}" class="vz-tick" text-anchor="end">${_fmt(t)}</text>`).join("");
+  if (mn < 0 && mx > 0) g += `<line x1="${PL}" x2="${W - PR}" y1="${Y(0).toFixed(1)}" y2="${Y(0).toFixed(1)}" class="vz-base"/>`;
+
+  const paths = series.map(sr => {
+    const p = sr.data.map((v, i) => `${i ? "L" : "M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join("");
+    const last = sr.data.length - 1;
+    return `<path d="${p}" fill="none" stroke="${sr.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${X(last).toFixed(1)}" cy="${Y(sr.data[last]).toFixed(1)}" r="4" fill="${sr.color}" stroke="var(--surface-1)" stroke-width="2"/>`;
+  }).join("");
+
+  const minGap = 46;
+  const keep = [];
+  const step = Math.ceil(n / 5);
+  for (let i = 0; i < n; i++) if (i % step === 0) keep.push(i);
+  if (keep[keep.length - 1] !== n - 1) {
+    while (keep.length && X(n - 1) - X(keep[keep.length - 1]) < minGap) keep.pop();
+    keep.push(n - 1);
+  }
+  const xlab = keep.map(i => {
+    const anc = i === 0 ? "start" : i === n - 1 ? "end" : "middle";
+    const x = i === 0 ? X(0) - 4 : i === n - 1 ? X(n - 1) + 4 : X(i);
+    return `<text x="${x.toFixed(1)}" y="${H - 6}" class="vz-tick" text-anchor="${anc}">${labels[i]}</text>`;
+  }).join("");
+
+  host.innerHTML =
+    `<div class="vz-legend">${series.map(sr =>
+      `<span class="vz-lg"><i style="background:${sr.color}"></i>${_esc(sr.name)}</span>`).join("")}</div>
+     <div class="vz-wrap">
+       <svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" role="img" aria-label="${_esc(opt.alt || "추이 차트")}">
+         ${g}${paths}${xlab}
+         <line class="vz-cross" x1="0" x2="0" y1="${PT}" y2="${H - PB}" style="display:none"/>
+         <rect x="${PL}" y="0" width="${W - PL - PR}" height="${H}" fill="transparent" class="vz-hit"/>
+       </svg>
+       <div class="vz-tip" style="display:none"></div>
+     </div>`;
+
+  const svg = host.querySelector("svg"), tip = host.querySelector(".vz-tip"), cross = host.querySelector(".vz-cross");
+  const move = ev => {
+    const r = svg.getBoundingClientRect();
+    const px = ((ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left) / r.width * W;
+    let i = Math.round((px - PL) / ((W - PL - PR) / Math.max(n - 1, 1)));
+    i = Math.max(0, Math.min(n - 1, i));
+    cross.style.display = ""; cross.setAttribute("x1", X(i)); cross.setAttribute("x2", X(i));
+    tip.style.display = "";
+    tip.innerHTML = `<b>${_esc(labels[i])}</b>` + series.map(sr =>
+      `<span><i style="background:${sr.color}"></i>${_esc(sr.name)} <b>${_fmt(sr.data[i])}</b></span>`).join("");
+    const lft = X(i) / W * r.width;
+    tip.style.left = Math.min(Math.max(lft, 8), r.width - 8) + "px";
+    tip.style.transform = "translateX(" + (lft > r.width * 0.6 ? "-100%" : "-50%") + ")";
+  };
+  svg.addEventListener("pointermove", move);
+  svg.addEventListener("pointerdown", move);
+  svg.addEventListener("pointerleave", () => { tip.style.display = "none"; cross.style.display = "none"; });
+}
+
+/* ── 발산형 가로 막대 ── */
+function _divBars(rows, opt) {
+  opt = opt || {};
+  const mx = Math.max.apply(null, rows.map(r => Math.abs(r.v))) || 1;
+  return `<div class="dv">${rows.map(r => {
+    const w = Math.abs(r.v) / mx * 50;
+    const pos = r.v >= 0;
+    return `<div class="dv-row">
+      <div class="dv-name" title="${_esc(r.n)}">${_esc(r.n)}</div>
+      <div class="dv-track">
+        <div class="dv-mid"></div>
+        <div class="dv-bar ${pos ? "pos" : "neg"}" style="${pos ? "left:50%" : "right:50%"};width:${w.toFixed(2)}%"></div>
+      </div>
+      <div class="dv-val ${pos ? "pos" : "neg"}">${opt.pct ? _pct(r.v) : (r.v > 0 ? "+" : "") + _fmt(r.v)}</div>
+    </div>`;
+  }).join("")}</div>`;
+}
+
+/* ── 채널 × 주 히트 테이블 ── */
+function _chanTable() {
+  const wk = GS_PERF.chan;
+  if (!wk.length) return "";
+  const names = Object.keys(wk[wk.length - 1].ch);
+  const all = wk.reduce((a, w) => a.concat(names.map(n => w.ch[n] || 0)), []);
+  const mx = Math.max.apply(null, all.map(Math.abs)) || 1;
+  const cell = v => {
+    const o = Math.min(Math.abs(v) / mx, 1) * 0.85 + 0.05;
+    const c = v >= 0 ? "var(--dv-pos)" : "var(--dv-neg)";
+    return `<td style="background:color-mix(in srgb, ${c} ${(o * 100).toFixed(0)}%, transparent)">${v > 0 ? "+" : ""}${_fmt(v)}</td>`;
+  };
+  return `<div class="ct-scroll"><table class="ct">
+    <thead><tr><th>채널</th>${wk.map(w => `<th>${_esc(w.l)}</th>`).join("")}</tr></thead>
+    <tbody>${names.map(n => `<tr><th>${_esc(n)}</th>${wk.map(w => cell(w.ch[n] || 0)).join("")}</tr>`).join("")}
+      <tr class="ct-tot"><th>합계</th>${wk.map(w => `<td>${w.total > 0 ? "+" : ""}${_fmt(w.total)}</td>`).join("")}</tr>
+    </tbody></table></div>`;
+}
+
+function renderGsPerf() {
+  const el = document.getElementById("gs-perf");
+  if (!el || typeof GS_PERF === "undefined") return;
+  const P = GS_PERF;
+  const cy = P.daily.cy.map(r => r.n), ly = P.daily.ly.map(r => r.n);
+  const avg = a => a.reduce((x, y) => x + y, 0) / (a.length || 1);
+  const c7 = avg(cy.slice(-7)), l7 = avg(ly.slice(-7));
+  const paceP = l7 ? (c7 - l7) / Math.abs(l7) * 100 : 0;
+  const risk = P.months.filter(m => _landing(m.fcstAch).k === "bad" || _landing(m.fcstAch).k === "warn");
+  const worst = P.prop[P.prop.length - 1], best = P.prop[0];
+
+  el.innerHTML = `
+    <div class="perf-head">
+      <h3>실적 한눈에</h3>
+      <span class="perf-when">${P.asOfLabel} 기준 · 원본 자동 수집</span>
+    </div>
+
+    <div class="perf-lede">
+      ${risk.length ? `<b>${risk.map(m => m.label).join("·")}</b>은 예상 착지가 목표에 못 미칩니다 (${risk.map(m => m.fcstAch.toFixed(1) + "%").join(" · ")}).`
+      : `세 달 모두 예상 착지가 목표를 넘습니다.`}
+      최근 7일 하루 평균 순증은 <b>${_fmt(c7)}실</b>로 작년 같은 기간(${_fmt(l7)}실) 대비 <b class="${paceP >= 0 ? "up" : "down"}">${_pct(paceP)}</b>.
+      사업장은 <b>${_esc(best.n)} ${_pct(best.pct)}</b>부터 <b>${_esc(worst.n)} ${_pct(worst.pct)}</b>까지 벌어져 있습니다.
+    </div>
+
+    <section class="perf-sec">
+      <h4>1 · 월별 목표 대비 <span>어디까지 찼나</span></h4>
+      ${_monthBullets()}
+      <div class="perf-note">막대는 목표 대비 현재 OTB. <i class="lg-fcst"></i> 예상 착지 · <i class="lg-bud"></i> 목표.
+        달성률만 보면 9월이 낮아 보이지만 예약 리드타임 탓이라 <b>예상 착지(FCST)</b>가 진짜 신호입니다.</div>
+    </section>
+
+    <section class="perf-sec">
+      <h4>2 · 일별 픽업 페이스 <span>작년 동기간 대비</span></h4>
+      <div id="gs-pace"></div>
+      <div class="perf-note">순증 = 픽업 − 취소. 작년은 같은 요일 기준으로 맞춰 비교합니다.</div>
+    </section>
+
+    <section class="perf-sec">
+      <h4>3 · 세그먼트 주간 추이 <span>OTA · G-OTA · Inbound</span></h4>
+      <div id="gs-seg"></div>
+      <details class="perf-more"><summary>당일 전체 세그먼트 순증 (${P.seg.allToday.length}개)</summary>
+        ${_divBars(P.seg.allToday.map(r => ({ n: r.n, v: r.net })))}
+      </details>
+    </section>
+
+    <section class="perf-sec">
+      <h4>4 · 채널별 주간 순증 <span>최근 ${P.chan.length}주</span></h4>
+      ${_chanTable()}
+      <div class="perf-note">파랑은 순증, 빨강은 순감. 색이 진할수록 폭이 큽니다. 가로로 넘겨서 보세요.</div>
+    </section>
+
+    <section class="perf-sec">
+      <h4>5 · 사업장별 작년 대비 <span>${_esc(P.curMonth)} OTB · ${P.prop.length}곳</span></h4>
+      ${_divBars(P.prop.slice(0, 5).map(r => ({ n: r.n, v: r.pct })), { pct: true })}
+      <details class="perf-more"><summary>가운데 ${Math.max(P.prop.length - 10, 0)}곳 펼치기</summary>
+        ${_divBars(P.prop.slice(5, -5).map(r => ({ n: r.n, v: r.pct })), { pct: true })}
+      </details>
+      ${_divBars(P.prop.slice(-5).map(r => ({ n: r.n, v: r.pct })), { pct: true })}
+      <div class="perf-note">${_esc(P.curMonth)} 매출 달성률 ${P.revAch}% · 전체 OTB 작년비 ${_pct(P.otbYoy)}.
+        <a class="link" href="${P.src}" target="_blank">원본 대시보드 →</a></div>
+    </section>`;
+
+  const L = P.seg.labels;
+  _lineChart(document.getElementById("gs-pace"), L, [
+    { name: "2026", color: "var(--series-1)", data: cy },
+    { name: "2025", color: "var(--series-2)", data: ly }
+  ], { zero: true, alt: "일별 순증 올해 대 작년" });
+
+  _lineChart(document.getElementById("gs-seg"), L, [
+    { name: "OTA", color: "var(--series-1)", data: P.seg.weekly["OTA"] || [] },
+    { name: "G-OTA", color: "var(--series-2)", data: P.seg.weekly["G-OTA"] || [] },
+    { name: "Inbound", color: "var(--series-3)", data: P.seg.weekly["Inbound"] || [] }
+  ], { zero: true, alt: "세그먼트별 주간 순증 추이" });
+}
+
+let _gsRz;
+window.addEventListener("resize", () => {
+  clearTimeout(_gsRz);
+  _gsRz = setTimeout(() => { if (document.getElementById("view-gs").style.display !== "none") renderGsPerf(); }, 220);
+});
+
 function renderGsBrief() {
   const latest = GS_DAILY[0];
   document.getElementById("gs-brief").innerHTML = `
@@ -2354,10 +2685,12 @@ document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () =>
   document.getElementById("view-notes").style.display = t.dataset.tab === "notes" ? "" : "none";
   document.getElementById("view-news").style.display = t.dataset.tab === "news" ? "" : "none";
   document.getElementById("view-gs").style.display = t.dataset.tab === "gs" ? "" : "none";
+    if (t.dataset.tab === "gs") renderGsPerf();
   document.getElementById("view-insight").style.display = t.dataset.tab === "insight" ? "" : "none";
 }));
 
 renderGsBrief();
+renderGsPerf();
 renderGs();
 
 renderInsightBrief();
