@@ -400,6 +400,69 @@
            color: var(--text-primary); white-space: nowrap; }
   .ct-tot td { background: none !important; font-weight: 700; border-top: 1px solid var(--border); }
 
+
+  /* 최신 항목 핀 */
+  .pin { margin: 0 0 18px; }
+  .pin-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin: 0 0 7px; }
+  .pin-kicker { font-size: 0.63rem; font-weight: 700; letter-spacing: 0.06em; }
+  .pin-when { font-size: 0.66rem; color: var(--text-secondary); }
+
+  /* 실적 한눈에 · GS 데일리 요약 병합 */
+  .perf-daily { border: 1px solid var(--border); border-radius: 10px; background: var(--surface-1);
+                padding: 12px 14px; margin: 0 0 16px; }
+  .pd-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 7px; }
+  .pd-head b { font-size: 0.76rem; }
+  .pd-head span { font-size: 0.64rem; color: var(--text-secondary); }
+  .pd-kpi { font-size: 0.73rem; font-weight: 700; line-height: 1.65; margin-bottom: 7px; }
+  .perf-daily ul { margin: 0 0 6px; padding-left: 17px; }
+  .perf-daily li { font-size: 0.72rem; line-height: 1.75; color: var(--text-secondary); }
+  .perf-daily li strong { color: var(--text-primary); }
+  .pd-insight { font-size: 0.73rem; line-height: 1.78; color: var(--text-secondary);
+                border-top: 1px solid var(--border); padding-top: 8px; margin-top: 4px; }
+  .pd-insight strong { color: var(--text-primary); }
+
+  /* 세그먼트 토글 chips */
+  .sg-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
+  .sg-chip { display: inline-flex; align-items: center; gap: 5px; min-height: 26px;
+             font-size: 0.68rem; font-weight: 600; padding: 4px 10px; border-radius: 999px;
+             border: 1px solid var(--border); background: var(--surface-1);
+             color: var(--text-primary); cursor: pointer; font-family: inherit; }
+  .sg-chip.off { color: var(--muted); text-decoration: line-through; opacity: 0.7; }
+  .sg-chip.off .sg-dot { background: var(--muted) !important; }
+  .sg-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex: none; }
+  .sg-chips.mode .sg-chip.on { background: var(--chip-bg); border-color: var(--text-primary); }
+
+  /* 월 × 세그먼트 목표 대비 */
+  .sm-month { margin-bottom: 16px; }
+  .sm-mhead { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+              font-size: 0.79rem; font-weight: 700; margin-bottom: 8px; }
+  .sm-mhead span { font-weight: 400; font-size: 0.66rem; color: var(--text-secondary);
+                   font-variant-numeric: tabular-nums; }
+  .sm-row { display: grid; grid-template-columns: 74px 1fr 52px; align-items: center; gap: 8px; }
+  .sm-name { font-size: 0.7rem; display: flex; align-items: center; gap: 5px;
+             overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sm-track { position: relative; height: 11px; background: var(--chip-bg); border-radius: 4px; }
+  .sm-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px; }
+  .sm-goal { position: absolute; top: -4px; height: 19px; width: 2px;
+             background: repeating-linear-gradient(var(--muted) 0 3px, transparent 3px 5px); }
+  .sm-tick { position: absolute; top: -3px; height: 17px; width: 2px; background: var(--text-primary); }
+  .sm-pct { font-size: 0.79rem; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+  .sm-pct span { font-size: 0.6rem; opacity: 0.55; margin-left: 1px; }
+  .sm-nums { display: flex; flex-wrap: wrap; gap: 2px 10px; font-size: 0.66rem;
+             margin: 5px 0 10px 82px; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+  .sm-net.up { color: var(--dv-pos); }
+  .sm-net.down { color: var(--dv-neg); }
+
+  /* 예상실적 주간 변화 */
+  .vz-ref { stroke: var(--baseline); stroke-width: 1; }
+  .vz-reflab { fill: var(--muted); font-size: 9px; paint-order: stroke;
+               stroke: var(--surface-1); stroke-width: 3px; stroke-linejoin: round; }
+  .fc-delta { font-size: 0.71rem; color: var(--text-secondary); line-height: 1.75;
+              margin-top: 9px; font-variant-numeric: tabular-nums; }
+  .fc-delta b { color: var(--text-primary); }
+  .fc-delta .up { color: var(--dv-pos); }
+  .fc-delta .down { color: var(--dv-neg); }
+
   .gs-news-head { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em;
                   color: var(--text-secondary); margin: 22px 0 8px; }
 </style>
@@ -431,6 +494,7 @@
   <div id="agg-bars"></div>
 </div>
 
+<div id="latest-note"></div>
 <div class="brief" id="weekly-brief"></div>
 
 <div class="filters" id="perspective-filters">
@@ -446,6 +510,7 @@
 </div><!-- /view-notes -->
 
 <div id="view-news" style="display:none;">
+  <div id="latest-news"></div>
   <div class="brief" id="news-brief" style="border-left-color: var(--series-6, #eb6834);"></div>
   <div id="news-cards"></div>
 </div><!-- /view-news -->
@@ -458,6 +523,7 @@
 </div><!-- /view-gs -->
 
 <div id="view-insight" style="display:none;">
+  <div id="latest-insight"></div>
   <div class="brief" id="insight-brief" style="border-left-color: var(--series-7, #4a3aa7);"></div>
   <div id="insight-trend"></div>
   <div id="insight-cards"></div>
@@ -1500,11 +1566,13 @@ function copyComment(id, btn) {
   } else { btn.textContent = "길게 눌러 복사하세요"; }
 }
 
-function noteCard(n, filter) {
+function noteCard(n, filter, opt) {
+  opt = opt || {};
+  const _p = opt.pre || "";
   const miniScores = Object.keys(PERSPECTIVES).map(k => `
     <span class="nc-s"><span class="dot" style="background:${PERSPECTIVES[k].color};width:7px;height:7px;border-radius:50%;display:inline-block;"></span>${n.scores[k].toFixed(1)}</span>`).join("");
   return `
-    <details class="ncard">
+    <details class="ncard" ${opt.open ? "open" : ""}>
       <summary>
         <div class="nc-meta"><span>${n.date}</span><span>#${n.id}</span><span class="nc-scores">${miniScores}</span></div>
         <div class="nc-title">${n.title}</div>
@@ -1543,14 +1611,47 @@ function noteCard(n, filter) {
         <details class="cchat">
           <summary>커피챗 댓글 초안</summary>
           <div class="body">
-            <div class="cc-text" id="cc-${n.id}">${n.comment}</div>
-            <button class="cc-copy" onclick="copyComment(${n.id}, this)">댓글 복사</button>
+            <div class="cc-text" id="cc-${_p}${n.id}">${n.comment}</div>
+            <button class="cc-copy" onclick="copyComment('${_p}${n.id}', this)">댓글 복사</button>
           </div>
         </details>` : ""}
         <div class="tags">${n.tags.map(t => `<span class="tag">#${t}</span>`).join("")}</div>
         <div style="margin-top:10px;"><a class="link" href="${n.url}" target="_blank">원문 보기 →</a></div>
       </div>
     </details>`;
+}
+
+/* ── 최신 항목 핀: 주간 브리핑 위에 가장 최근 것 하나 ────────── */
+function _pinWrap(id, color, kicker, when, inner) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = `<div class="pin">
+    <div class="pin-head"><span class="pin-kicker" style="color:${color}">${kicker}</span>
+      <span class="pin-when">${when}</span></div>
+    ${inner}</div>`;
+}
+
+function renderLatestNote() {
+  if (!NOTES.length) return;
+  const n = NOTES.slice().sort((a, b) => b.date.localeCompare(a.date))[0];
+  _pinWrap("latest-note", "var(--series-1)", "가장 최근 노트",
+    `${n.date} · #${n.id}${n.comment ? " · 커피챗 댓글 초안 포함" : ""}`,
+    noteCard(n, "all", { open: true, pre: "top-" }));
+}
+
+function renderLatestNews() {
+  if (!NEWS.length) return;
+  const n = NEWS.slice().sort((a, b) => b.date.localeCompare(a.date))[0];
+  _pinWrap("latest-news", "var(--series-6)", "가장 최근 뉴스", `${n.date} · 간추린 아침뉴스`,
+    newsDayCard(n, true));
+}
+
+function renderLatestInsight() {
+  if (typeof INSIGHT_DAILY === "undefined" || !INSIGHT_DAILY.length) return;
+  const d = INSIGHT_DAILY.slice().sort((a, b) => b.date.localeCompare(a.date))[0];
+  _pinWrap("latest-insight", "var(--series-7)", "가장 최근 인사이트",
+    `${d.date} · 소노 ${d.sono.length}건 · 레저 ${d.leisure.length}건`,
+    insightDayCard(d, true));
 }
 
 function render(filter = "all") {
@@ -1679,9 +1780,9 @@ function renderNewsBrief() {
     <ul>${b.relevant.map(r => `<li>${r}</li>`).join("")}</ul>`;
 }
 
-function newsDayCard(n) {
+function newsDayCard(n, open) {
   return `
-    <details class="ncard">
+    <details class="ncard" ${open ? "open" : ""}>
       <summary>
         <div class="nc-meta"><span>${n.date}</span><span>간추린 아침뉴스</span></div>
         <div class="issue-chips">${newsIssues(n.text).map(t => `<div class="issue-chip"><span>${t}</span></div>`).join("")}</div>
@@ -1742,7 +1843,7 @@ function renderNews() {
   });
 }
 
-fetch("news.json").then(r => r.json()).then(data => { NEWS = data; renderNews(); }).catch(() => {});
+fetch("news.json").then(r => r.json()).then(data => { NEWS = data; renderNews(); renderLatestNews(); }).catch(() => {});
 
 /* ── GS 데일리: SONO & TRINITY GS팀 리포트 요약본 (매일 추가, 최신이 앞) ── */
 const GS_DAILY = [
@@ -1809,7 +1910,7 @@ const GS_DAILY = [
 ];
 
 /* GS 실적 — 원본 대시보드에서 매일 자동 추출 (gs_scrape.py) */
-const GS_PERF = {"src":"https://cksals00-ai.github.io/gs_daily_trend_news_public_temp/index.html","asOf":"20260729","asOfLabel":"07/29","curMonth":"7월","months":[{"label":"7월","actual":85160,"budget":89360,"ach":95.3,"fcst":84837,"fcstAch":94.9,"todayNet":196.0,"yoyRn":5.1,"yoyRev":22.4,"yoyAdr":16.6,"cyRn":85690,"lyRn":81563},{"label":"8월","actual":71264,"budget":96433,"ach":73.9,"fcst":99918,"fcstAch":103.7,"todayNet":1551.0,"yoyRn":14.2,"yoyRev":0.0,"yoyAdr":null,"cyRn":79585,"lyRn":69685},{"label":"9월","actual":14465,"budget":68231,"ach":21.2,"fcst":70116,"fcstAch":102.9,"todayNet":520.0,"yoyRn":-1.7,"yoyRev":null,"yoyAdr":null,"cyRn":16242,"lyRn":16530}],"daily":{"cy":[{"l":"07/17","p":5020,"c":3018,"n":2002},{"l":"07/18","p":4468,"c":2752,"n":1716},{"l":"07/19","p":5838,"c":3272,"n":2566},{"l":"07/20","p":10178,"c":6112,"n":4066},{"l":"07/21","p":8118,"c":4688,"n":3430},{"l":"07/22","p":8343,"c":4376,"n":3967},{"l":"07/23","p":7929,"c":5135,"n":2794},{"l":"07/24","p":8473,"c":5452,"n":3021},{"l":"07/25","p":5607,"c":3335,"n":2272},{"l":"07/26","p":6253,"c":3597,"n":2656},{"l":"07/27","p":9211,"c":6339,"n":2872},{"l":"07/28","p":9227,"c":5365,"n":3862},{"l":"07/29","p":6620,"c":4535,"n":2085},{"l":"07/30","p":451,"c":316,"n":135}],"ly":[{"l":"07/18","p":6745,"c":4322,"n":2423},{"l":"07/19","p":4481,"c":2825,"n":1656},{"l":"07/20","p":5432,"c":3182,"n":2250},{"l":"07/21","p":7624,"c":5179,"n":2445},{"l":"07/22","p":7533,"c":4383,"n":3150},{"l":"07/23","p":6858,"c":4294,"n":2564},{"l":"07/24","p":6937,"c":4190,"n":2747},{"l":"07/25","p":8723,"c":9102,"n":-379},{"l":"07/26","p":4633,"c":2575,"n":2058},{"l":"07/27","p":5252,"c":2828,"n":2424},{"l":"07/28","p":7594,"c":4302,"n":3292},{"l":"07/29","p":6368,"c":3487,"n":2881},{"l":"07/30","p":5745,"c":3442,"n":2303},{"l":"07/31","p":5548,"c":3303,"n":2245}]},"seg":{"weekly":{"OTA":[1553,1140,817,722,1213,1549,878,1444,1469,1404,1388,1729,1784,1524],"G-OTA":[602,699,664,625,927,1105,720,745,852,929,1040,1027,1085,906],"Inbound":[413,97,101,177,126,137,122,87,115,123,109,85,91,88]},"today":{"OTA":{"booking":2460,"cancel":1197,"net":1263,"net_rev":3.5},"G-OTA":{"booking":2318,"cancel":1103,"net":1215,"net_rev":3.0},"Inbound":{"booking":38,"cancel":46,"net":-8,"net_rev":-0.0}},"labels":["07/17","07/18","07/19","07/20","07/21","07/22","07/23","07/24","07/25","07/26","07/27","07/28","07/29","07/30"],"allToday":[{"n":"OTA","net":1263,"pickup":2460,"cancel":1197},{"n":"G-OTA","net":1215,"pickup":2318,"cancel":1103},{"n":"회원PKG","net":242,"pickup":818,"cancel":576},{"n":"자사 패키지","net":164,"pickup":934,"cancel":770},{"n":"일반단체","net":21,"pickup":23,"cancel":2},{"n":"D멤버스","net":9,"pickup":29,"cancel":20},{"n":"Inbound","net":-8,"pickup":38,"cancel":46},{"n":"FIT","net":-99,"pickup":0,"cancel":99},{"n":"H/U","net":-722,"pickup":0,"cancel":722}]},"chan":[{"l":"06/22","ch":{"야놀자":1584,"여기어때":1263,"트립닷컴":359,"트립비토즈":508,"아고다":-458,"스마트인피니":319,"기타":688},"total":4263},{"l":"06/29","ch":{"야놀자":1266,"여기어때":731,"트립닷컴":600,"트립비토즈":927,"아고다":-532,"스마트인피니":21,"기타":959},"total":3972},{"l":"07/06","ch":{"야놀자":992,"여기어때":662,"트립닷컴":691,"트립비토즈":220,"아고다":206,"스마트인피니":547,"기타":1264},"total":4582},{"l":"07/13","ch":{"야놀자":890,"여기어때":403,"트립닷컴":549,"트립비토즈":315,"아고다":46,"스마트인피니":445,"기타":1033},"total":3681},{"l":"07/20","ch":{"야놀자":1767,"여기어때":867,"트립닷컴":1160,"트립비토즈":271,"아고다":291,"스마트인피니":562,"기타":2025},"total":6943},{"l":"07/27","ch":{"야놀자":923,"여기어때":508,"트립닷컴":666,"트립비토즈":554,"아고다":713,"스마트인피니":379,"기타":1586},"total":5329}],"prop":[{"n":"쏠비치 남해","cy":4022,"ly":1592,"pct":152.6},{"n":"소노문 해운대","cy":2655,"ly":1938,"pct":37.0},{"n":"델피노","cy":8655,"ly":7356,"pct":17.7},{"n":"소노벨 천안","cy":4364,"ly":3846,"pct":13.5},{"n":"소노벨 변산","cy":3981,"ly":3617,"pct":10.1},{"n":"소노벨 비발디파크","cy":11048,"ly":10479,"pct":5.4},{"n":"쏠비치 양양","cy":3917,"ly":3763,"pct":4.1},{"n":"쏠비치 삼척","cy":6324,"ly":6290,"pct":0.5},{"n":"오션월드빌리지","cy":30,"ly":30,"pct":0.0},{"n":"소노벨 제주","cy":3323,"ly":3512,"pct":-5.4},{"n":"소노캄 거제","cy":3800,"ly":4039,"pct":-5.9},{"n":"소노펠리체 빌리지 비발디파크","cy":1183,"ly":1271,"pct":-6.9},{"n":"소노캄 제주","cy":1313,"ly":1420,"pct":-7.5},{"n":"소노캄 고양","cy":7063,"ly":7678,"pct":-8.0},{"n":"소노벨 청송","cy":1599,"ly":1780,"pct":-10.2},{"n":"소노캄 여수","cy":1139,"ly":1289,"pct":-11.6},{"n":"소노문 비발디파크","cy":1046,"ly":1186,"pct":-11.8},{"n":"소노펠리체 비발디파크","cy":2743,"ly":3198,"pct":-14.2},{"n":"쏠비치 진도","cy":4656,"ly":6101,"pct":-23.7},{"n":"소노휴 양평","cy":547,"ly":723,"pct":-24.3},{"n":"소노펫 비발디파크","cy":1154,"ly":1535,"pct":-24.8},{"n":"소노캄 비발디파크","cy":2001,"ly":2783,"pct":-28.1},{"n":"소노문 단양","cy":4196,"ly":6137,"pct":-31.6}],"topbot":{"top":[{"n":"쏠비치남해","a":150.9},{"n":"소노문해운대","a":34.9},{"n":"델피노","a":17.0}],"bot":[{"n":"펫비발디","a":-24.9},{"n":"캄비발디","a":-28.1},{"n":"소노벨단양","a":-31.6}]},"revAch":104.3,"otbYoy":4.4};
+const GS_PERF = {"src":"https://cksals00-ai.github.io/gs_daily_trend_news_public_temp/index.html","asOf":"20260729","asOfLabel":"07/29","curMonth":"7월","months":[{"label":"7월","actual":85160,"budget":89360,"ach":95.3,"fcst":84837,"fcstAch":94.9,"todayNet":196.0,"yoyRn":5.1,"yoyRev":22.4,"yoyAdr":16.6,"cyRn":85690,"lyRn":81563},{"label":"8월","actual":71264,"budget":96433,"ach":73.9,"fcst":99918,"fcstAch":103.7,"todayNet":1551.0,"yoyRn":11.7,"yoyRev":0.0,"yoyAdr":null,"cyRn":79585,"lyRn":71229},{"label":"9월","actual":14465,"budget":68231,"ach":21.2,"fcst":70116,"fcstAch":102.9,"todayNet":520.0,"yoyRn":-3.6,"yoyRev":null,"yoyAdr":null,"cyRn":16242,"lyRn":16844}],"daily":{"cy":[{"l":"07/17","p":5020,"c":3018,"n":2002},{"l":"07/18","p":4468,"c":2752,"n":1716},{"l":"07/19","p":5838,"c":3272,"n":2566},{"l":"07/20","p":10178,"c":6112,"n":4066},{"l":"07/21","p":8118,"c":4688,"n":3430},{"l":"07/22","p":8343,"c":4376,"n":3967},{"l":"07/23","p":7929,"c":5135,"n":2794},{"l":"07/24","p":8473,"c":5452,"n":3021},{"l":"07/25","p":5607,"c":3335,"n":2272},{"l":"07/26","p":6253,"c":3597,"n":2656},{"l":"07/27","p":9211,"c":6339,"n":2872},{"l":"07/28","p":9227,"c":5365,"n":3862},{"l":"07/29","p":6620,"c":4535,"n":2085},{"l":"07/30","p":451,"c":316,"n":135}],"ly":[{"l":"07/18","p":6745,"c":4322,"n":2423},{"l":"07/19","p":4481,"c":2825,"n":1656},{"l":"07/20","p":5432,"c":3182,"n":2250},{"l":"07/21","p":7624,"c":5179,"n":2445},{"l":"07/22","p":7533,"c":4383,"n":3150},{"l":"07/23","p":6858,"c":4294,"n":2564},{"l":"07/24","p":6937,"c":4190,"n":2747},{"l":"07/25","p":8723,"c":9102,"n":-379},{"l":"07/26","p":4633,"c":2575,"n":2058},{"l":"07/27","p":5252,"c":2828,"n":2424},{"l":"07/28","p":7594,"c":4302,"n":3292},{"l":"07/29","p":6368,"c":3487,"n":2881},{"l":"07/30","p":5745,"c":3442,"n":2303},{"l":"07/31","p":5548,"c":3303,"n":2245}]},"seg":{"weekly":{"OTA":[1553,1140,817,722,1213,1549,878,1444,1469,1404,1388,1729,1784,1524],"G-OTA":[602,699,664,625,927,1105,720,745,852,929,1040,1027,1085,906],"Inbound":[413,97,101,177,126,137,122,87,115,123,109,85,91,88]},"today":{"OTA":{"booking":2460,"cancel":1197,"net":1263,"net_rev":3.5},"G-OTA":{"booking":2318,"cancel":1103,"net":1215,"net_rev":3.0},"Inbound":{"booking":38,"cancel":46,"net":-8,"net_rev":-0.0}},"labels":["07/17","07/18","07/19","07/20","07/21","07/22","07/23","07/24","07/25","07/26","07/27","07/28","07/29","07/30"],"allToday":[{"n":"OTA","net":1263,"pickup":2460,"cancel":1197},{"n":"G-OTA","net":1215,"pickup":2318,"cancel":1103},{"n":"회원PKG","net":242,"pickup":818,"cancel":576},{"n":"자사 패키지","net":164,"pickup":934,"cancel":770},{"n":"일반단체","net":21,"pickup":23,"cancel":2},{"n":"D멤버스","net":9,"pickup":29,"cancel":20},{"n":"Inbound","net":-8,"pickup":38,"cancel":46},{"n":"FIT","net":-99,"pickup":0,"cancel":99},{"n":"H/U","net":-722,"pickup":0,"cancel":722}]},"chan":[{"l":"06/22","ch":{"야놀자":1584,"여기어때":1263,"트립닷컴":359,"트립비토즈":508,"아고다":-458,"스마트인피니":319,"기타":688},"total":4263},{"l":"06/29","ch":{"야놀자":1266,"여기어때":731,"트립닷컴":600,"트립비토즈":927,"아고다":-532,"스마트인피니":21,"기타":959},"total":3972},{"l":"07/06","ch":{"야놀자":992,"여기어때":662,"트립닷컴":691,"트립비토즈":220,"아고다":206,"스마트인피니":547,"기타":1264},"total":4582},{"l":"07/13","ch":{"야놀자":890,"여기어때":403,"트립닷컴":549,"트립비토즈":315,"아고다":46,"스마트인피니":445,"기타":1033},"total":3681},{"l":"07/20","ch":{"야놀자":1767,"여기어때":867,"트립닷컴":1160,"트립비토즈":271,"아고다":291,"스마트인피니":562,"기타":2025},"total":6943},{"l":"07/27","ch":{"야놀자":923,"여기어때":508,"트립닷컴":666,"트립비토즈":554,"아고다":713,"스마트인피니":379,"기타":1586},"total":5329}],"prop":[{"n":"쏠비치 남해","cy":4022,"ly":1592,"pct":152.6},{"n":"소노문 해운대","cy":2655,"ly":1938,"pct":37.0},{"n":"델피노","cy":8655,"ly":7356,"pct":17.7},{"n":"소노벨 천안","cy":4364,"ly":3846,"pct":13.5},{"n":"소노벨 변산","cy":3981,"ly":3617,"pct":10.1},{"n":"소노벨 비발디파크","cy":11048,"ly":10479,"pct":5.4},{"n":"쏠비치 양양","cy":3917,"ly":3763,"pct":4.1},{"n":"쏠비치 삼척","cy":6324,"ly":6290,"pct":0.5},{"n":"오션월드빌리지","cy":30,"ly":30,"pct":0.0},{"n":"소노벨 제주","cy":3323,"ly":3512,"pct":-5.4},{"n":"소노캄 거제","cy":3800,"ly":4039,"pct":-5.9},{"n":"소노펠리체 빌리지 비발디파크","cy":1183,"ly":1271,"pct":-6.9},{"n":"소노캄 제주","cy":1313,"ly":1420,"pct":-7.5},{"n":"소노캄 고양","cy":7063,"ly":7678,"pct":-8.0},{"n":"소노벨 청송","cy":1599,"ly":1780,"pct":-10.2},{"n":"소노캄 여수","cy":1139,"ly":1289,"pct":-11.6},{"n":"소노문 비발디파크","cy":1046,"ly":1186,"pct":-11.8},{"n":"소노펠리체 비발디파크","cy":2743,"ly":3198,"pct":-14.2},{"n":"쏠비치 진도","cy":4656,"ly":6101,"pct":-23.7},{"n":"소노휴 양평","cy":547,"ly":723,"pct":-24.3},{"n":"소노펫 비발디파크","cy":1154,"ly":1535,"pct":-24.8},{"n":"소노캄 비발디파크","cy":2001,"ly":2783,"pct":-28.1},{"n":"소노문 단양","cy":4196,"ly":6137,"pct":-31.6}],"topbot":{"top":[{"n":"쏠비치남해","a":150.9},{"n":"소노문해운대","a":34.9},{"n":"델피노","a":17.0}],"bot":[{"n":"펫비발디","a":-24.9},{"n":"캄비발디","a":-28.1},{"n":"소노벨단양","a":-31.6}]},"revAch":104.3,"otbYoy":4.4,"segMonth":{"segs":["전체","OTA","G-OTA","Inbound"],"labels":["7월","8월","9월"],"data":{"7월":{"전체":{"budget":89370,"actual":85160,"ach":95.3,"fcst":84837,"fcstAch":94.9,"todayNet":196},"OTA":{"budget":49645,"actual":49972,"ach":100.7,"fcst":50005,"fcstAch":100.7,"todayNet":75},"G-OTA":{"budget":35055,"actual":29972,"ach":85.5,"fcst":30026,"fcstAch":85.7,"todayNet":121},"Inbound":{"budget":4670,"actual":5246,"ach":112.3,"fcst":5265,"fcstAch":112.7,"todayNet":0}},"8월":{"전체":{"budget":96390,"actual":71264,"ach":73.9,"fcst":99918,"fcstAch":103.7,"todayNet":1551},"OTA":{"budget":56850,"actual":40460,"ach":71.2,"fcst":58899,"fcstAch":103.6,"todayNet":845},"G-OTA":{"budget":35380,"actual":27400,"ach":77.4,"fcst":36750,"fcstAch":103.9,"todayNet":706},"Inbound":{"budget":4160,"actual":3423,"ach":82.3,"fcst":4269,"fcstAch":102.6,"todayNet":0}},"9월":{"전체":{"budget":68140,"actual":14465,"ach":21.2,"fcst":70116,"fcstAch":102.9,"todayNet":520},"OTA":{"budget":36445,"actual":6580,"ach":18.1,"fcst":37280,"fcstAch":102.3,"todayNet":245},"G-OTA":{"budget":27155,"actual":6379,"ach":23.5,"fcst":27915,"fcstAch":102.8,"todayNet":268},"Inbound":{"budget":4540,"actual":1506,"ach":33.2,"fcst":4921,"fcstAch":108.4,"todayNet":7}}}},"fcstTrend":{"segs":["전체","OTA","G-OTA","Inbound"],"months":[{"label":"7월","key":"2026-07","dates":["6/1","6/8","6/16","6/23","6/30","7/7","7/14","7/21","7/28"],"series":{"전체":[87834,87409,87409,88055,89411,89728,89300,86924,84837],"OTA":[48390,47815,47815,48290,49590,51660,52185,50890,49965],"G-OTA":[35455,35520,35520,35270,34700,32770,31860,30823,29628],"Inbound":[3989,4074,4074,4495,5121,5298,5255,5211,5244]},"budget":{"전체":89370,"OTA":49645,"G-OTA":35055,"Inbound":4670}},{"label":"8월","key":"2026-08","dates":["6/8","6/16","6/23","6/30","7/7","7/14","7/21","7/28"],"series":{"전체":[97150,97150,98496,99140,98299,99379,99567,99918],"OTA":[57345,57345,57525,58110,57945,58682,58740,58899],"G-OTA":[35935,35935,37040,37040,36355,36672,36640,36750],"Inbound":[3870,3870,3931,3990,3999,4025,4187,4269]},"budget":{"전체":96390,"OTA":56850,"G-OTA":35380,"Inbound":4160}},{"label":"9월","key":"2026-09","dates":["7/7","7/14","7/21","7/28"],"series":{"전체":[68853,70882,71251,70116],"OTA":[36650,37965,38160,37280],"G-OTA":[27490,28080,28240,27915],"Inbound":[4713,4837,4851,4921]},"budget":{"전체":68140,"OTA":36445,"G-OTA":27155,"Inbound":4540}}]},"refresh":"2026-07-31 05:01 KST","fcstAsOf":"2026-07-28"};
 
 
 /* ══════════ GS 실적 시각화 ══════════ */
@@ -1859,8 +1960,10 @@ function _lineChart(host, labels, series, opt) {
   const W = Math.max(host.clientWidth || 320, 260), H = opt.h || 170;
   const PL = 38, PR = 12, PT = 12, PB = 22;
   const flat = series.reduce((a, s) => a.concat(s.data), []);
+  if (opt.ref) flat.push(opt.ref.v);
   let mn = Math.min.apply(null, flat), mx = Math.max.apply(null, flat);
   if (opt.zero) mn = Math.min(0, mn);
+  const vfmt = v => (opt.dec != null ? v.toFixed(opt.dec) : _fmt(v)) + (opt.unit || "");
   const pd = (mx - mn) * 0.14 || 1; mx += pd; mn -= pd;
   const n = labels.length;
   const X = i => PL + (W - PL - PR) * (n === 1 ? 0.5 : i / (n - 1));
@@ -1868,8 +1971,10 @@ function _lineChart(host, labels, series, opt) {
 
   const ticks = [mn + (mx - mn) * 0.1, (mn + mx) / 2, mx - (mx - mn) * 0.1];
   let g = ticks.map(t => `<line x1="${PL}" x2="${W - PR}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}" class="vz-grid"/>
-      <text x="${PL - 6}" y="${(Y(t) + 3).toFixed(1)}" class="vz-tick" text-anchor="end">${_fmt(t)}</text>`).join("");
+      <text x="${PL - 6}" y="${(Y(t) + 3).toFixed(1)}" class="vz-tick" text-anchor="end">${vfmt(t)}</text>`).join("");
   if (mn < 0 && mx > 0) g += `<line x1="${PL}" x2="${W - PR}" y1="${Y(0).toFixed(1)}" y2="${Y(0).toFixed(1)}" class="vz-base"/>`;
+  if (opt.ref) g += `<line x1="${PL}" x2="${W - PR}" y1="${Y(opt.ref.v).toFixed(1)}" y2="${Y(opt.ref.v).toFixed(1)}" class="vz-ref"/>
+      <text x="${W - PR}" y="${(Y(opt.ref.v) - 4).toFixed(1)}" class="vz-reflab" text-anchor="end">${_esc(opt.ref.t)}</text>`;
 
   const paths = series.map(sr => {
     const p = sr.data.map((v, i) => `${i ? "L" : "M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join("");
@@ -1913,7 +2018,7 @@ function _lineChart(host, labels, series, opt) {
     cross.style.display = ""; cross.setAttribute("x1", X(i)); cross.setAttribute("x2", X(i));
     tip.style.display = "";
     tip.innerHTML = `<b>${_esc(labels[i])}</b>` + series.map(sr =>
-      `<span><i style="background:${sr.color}"></i>${_esc(sr.name)} <b>${_fmt(sr.data[i])}</b></span>`).join("");
+      `<span><i style="background:${sr.color}"></i>${_esc(sr.name)} <b>${opt.tip ? opt.tip(sr, i) : _fmt(sr.data[i])}</b></span>`).join("");
     const lft = X(i) / W * r.width;
     tip.style.left = Math.min(Math.max(lft, 8), r.width - 8) + "px";
     tip.style.transform = "translateX(" + (lft > r.width * 0.6 ? "-100%" : "-50%") + ")";
@@ -1960,6 +2065,124 @@ function _chanTable() {
     </tbody></table></div>`;
 }
 
+/* ── 세그먼트 토글 (색은 이름에 고정 — 숨겨도 남은 색은 그대로) ── */
+const SEG_COLOR = {
+  "전체": "var(--series-5)", "OTA": "var(--series-1)",
+  "G-OTA": "var(--series-2)", "Inbound": "var(--series-3)",
+};
+const _segOff1 = new Set();   // 월별 목표 대비에서 숨긴 세그
+const _segOff2 = new Set();   // 예상실적 주간 변화에서 숨긴 세그
+let _fcMonth = null;
+
+function _segChips(id, segs, off) {
+  return `<div class="sg-chips" data-chips="${id}" role="group" aria-label="세그먼트 표시 선택">` +
+    segs.map(sg => `<button type="button" class="sg-chip${off.has(sg) ? " off" : ""}" data-seg="${_esc(sg)}" aria-pressed="${!off.has(sg)}">
+      <span class="sg-dot" style="background:${SEG_COLOR[sg] || "var(--muted)"}"></span>${_esc(sg)}</button>`).join("") +
+    `</div>`;
+}
+
+/* ── 1 · 월별 × 세그먼트 목표 대비 (진행률 · 예상 달성률) ── */
+function _segMonthBody() {
+  const SM = GS_PERF.segMonth;
+  if (!SM || !SM.labels.length) return "";
+  const vis = SM.segs.filter(sg => !_segOff1.has(sg));
+  let mx = 118;
+  SM.labels.forEach(lb => vis.forEach(sg => {
+    const r = (SM.data[lb] || {})[sg];
+    if (r) mx = Math.max(mx, r.ach || 0, r.fcstAch || 0);
+  }));
+  mx = Math.ceil((mx + 8) / 10) * 10;
+  const W = v => Math.max(Math.min((v || 0) / mx * 100, 100), 0);
+
+  return SM.labels.map(lb => {
+    const m = GS_PERF.months.filter(x => x.label === lb)[0] || {};
+    const rows = vis.map(sg => {
+      const r = (SM.data[lb] || {})[sg];
+      if (!r) return "";
+      const L = _landing(r.fcstAch), C = SEG_COLOR[sg] || "var(--muted)", net = r.todayNet || 0;
+      return `
+        <div class="sm-row">
+          <div class="sm-name" title="${_esc(sg)}"><span class="sg-dot" style="background:${C}"></span>${_esc(sg)}</div>
+          <div class="sm-track">
+            <div class="sm-fill" style="width:${W(r.ach).toFixed(2)}%;background:${C}"></div>
+            <div class="sm-goal" style="left:${W(100).toFixed(2)}%" title="목표 100%"></div>
+            ${r.fcstAch ? `<div class="sm-tick" style="left:${W(r.fcstAch).toFixed(2)}%" title="예상 달성률 ${r.fcstAch.toFixed(1)}%"></div>` : ""}
+          </div>
+          <div class="sm-pct">${(r.ach || 0).toFixed(1)}<span>%</span></div>
+        </div>
+        <div class="sm-nums">
+          <span class="sm-net ${net >= 0 ? "up" : "down"}">데일리 순증 <b>${net > 0 ? "+" : ""}${_fmt(net)}</b>실</span>
+          <span style="color:${L.c}">예상실적 <b>${_fmt(r.fcst)}</b>실 · ${L.t}${r.fcstAch ? " " + r.fcstAch.toFixed(1) + "%" : ""}</span>
+          <span>목표 ${_fmt(r.budget)}실</span>
+        </div>`;
+    }).join("");
+    return `<div class="sm-month">
+      <div class="sm-mhead">${_esc(lb)}<span>목표 ${_fmt(m.budget)}실 · 작년비 ${_pct(m.yoyRn)}</span></div>
+      ${rows}</div>`;
+  }).join("");
+}
+
+/* ── 1-b · 예상실적(RM FCST) 주간 변화 ── */
+function _monChips() {
+  return `<div class="sg-chips mode" data-chips="mon" role="group" aria-label="달 선택">` +
+    GS_PERF.fcstTrend.months.map(m =>
+      `<button type="button" class="sg-chip${m.label === _fcMonth ? " on" : ""}" data-mon="${_esc(m.label)}" aria-pressed="${m.label === _fcMonth}">${_esc(m.label)}</button>`).join("") +
+    `</div>`;
+}
+
+function _fcTable(mo, vis) {
+  return `<div class="ct-scroll"><table class="ct">
+    <thead><tr><th>세그</th>${mo.dates.map(d => `<th>${_esc(d)}</th>`).join("")}</tr></thead>
+    <tbody>${vis.map(sg => `<tr><th>${_esc(sg)}</th>${(mo.series[sg] || []).map(v => `<td>${_fmt(v)}</td>`).join("")}</tr>`).join("")}
+      <tr class="ct-tot"><th>목표</th><td colspan="${mo.dates.length}">${vis.map(sg => `${_esc(sg)} ${_fmt(mo.budget[sg])}실`).join(" · ")}</td></tr>
+    </tbody></table></div>`;
+}
+
+function _renderFc() {
+  const host = document.getElementById("gs-fc");
+  const FT = GS_PERF.fcstTrend;
+  if (!host || !FT || !FT.months.length) return;
+  if (!_fcMonth || !FT.months.some(m => m.label === _fcMonth)) _fcMonth = FT.months[0].label;
+  const mo = FT.months.filter(m => m.label === _fcMonth)[0];
+  const vis = FT.segs.filter(sg => !_segOff2.has(sg) && (mo.series[sg] || []).length);
+  const base = FT.segs.indexOf("전체") >= 0 ? "전체" : FT.segs[0];
+  const arr = mo.series[base] || [];
+  const a0 = arr[0], a1 = arr[arr.length - 1], d = a1 - a0;
+  const ach = mo.budget[base] ? a1 / mo.budget[base] * 100 : 0;
+  const L = _landing(ach);
+
+  host.innerHTML = `
+    ${_monChips()}
+    ${_segChips("m2", FT.segs, _segOff2)}
+    <div id="gs-fc-chart"></div>
+    <div class="fc-delta">${_esc(mo.label)} <b>${_esc(base)}</b> 예상실적은
+      ${_esc(mo.dates[0])} <b>${_fmt(a0)}실</b> → ${_esc(mo.dates[mo.dates.length - 1])} <b>${_fmt(a1)}실</b>
+      (<b class="${d >= 0 ? "up" : "down"}">${d > 0 ? "+" : ""}${_fmt(d)}실</b>),
+      목표 ${_fmt(mo.budget[base])}실 대비 <b style="color:${L.c}">${ach.toFixed(1)}% · ${L.t}</b>.</div>
+    <details class="perf-more"><summary>주차별 숫자 표로 보기 (실)</summary>${_fcTable(mo, vis)}</details>`;
+
+  _lineChart(document.getElementById("gs-fc-chart"), mo.dates,
+    vis.map(sg => ({
+      name: sg, color: SEG_COLOR[sg] || "var(--muted)",
+      data: (mo.series[sg] || []).map(v => mo.budget[sg] ? v / mo.budget[sg] * 100 : 0),
+      raw: mo.series[sg] || [],
+    })),
+    {
+      alt: mo.label + " 세그먼트별 예상 달성률 주간 변화", unit: "%", dec: 0,
+      ref: { v: 100, t: "목표 100%" },
+      tip: (sr, i) => `${_fmt(sr.raw[i])}실 · ${sr.data[i].toFixed(1)}%`,
+    });
+}
+
+/* ── 실적 한눈에에 붙일 그날의 GS 데일리 요약 찾기 ── */
+function _gsDailyFor(asOf) {
+  if (typeof GS_DAILY === "undefined" || !GS_DAILY.length) return null;
+  const t = String(asOf || "");
+  const d = t.length === 8 ? t.slice(0, 4) + "-" + t.slice(4, 6) + "-" + t.slice(6, 8) : t;
+  const asc = GS_DAILY.slice().sort((a, b) => a.date.localeCompare(b.date));
+  return asc.filter(g => g.date >= d)[0] || asc[asc.length - 1];
+}
+
 function renderGsPerf() {
   const el = document.getElementById("gs-perf");
   if (!el || typeof GS_PERF === "undefined") return;
@@ -1970,6 +2193,7 @@ function renderGsPerf() {
   const paceP = l7 ? (c7 - l7) / Math.abs(l7) * 100 : 0;
   const risk = P.months.filter(m => _landing(m.fcstAch).k === "bad" || _landing(m.fcstAch).k === "warn");
   const worst = P.prop[P.prop.length - 1], best = P.prop[0];
+  const gd = _gsDailyFor(P.asOf);
 
   el.innerHTML = `
     <div class="perf-head">
@@ -1984,11 +2208,34 @@ function renderGsPerf() {
       사업장은 <b>${_esc(best.n)} ${_pct(best.pct)}</b>부터 <b>${_esc(worst.n)} ${_pct(worst.pct)}</b>까지 벌어져 있습니다.
     </div>
 
+    ${gd ? `
+    <div class="perf-daily">
+      <div class="pd-head"><b>${gd.date} GS 데일리 요약</b><span>${P.asOfLabel} 실적 기준 · 아래 뉴스·이슈 아카이브에서 가져왔습니다</span></div>
+      <div class="pd-kpi">${gd.kpiLine}</div>
+      <ul>${gd.kpi.map(k => `<li>${k}</li>`).join("")}</ul>
+      ${gd.insight ? `<div class="pd-insight">${gd.insight}</div>` : ""}
+      <details class="perf-more"><summary>그날 소노 · 호텔/리조트 · OTA 이슈 ${gd.sono.length + gd.hotel.length + gd.ota.length}건 펼치기</summary>
+        <ul>${[].concat(gd.sono, gd.hotel, gd.ota).map(t => `<li>${t}</li>`).join("")}</ul>
+      </details>
+    </div>` : ""}
+
     <section class="perf-sec">
-      <h4>1 · 월별 목표 대비 <span>어디까지 찼나</span></h4>
-      ${_monthBullets()}
-      <div class="perf-note">막대는 목표 대비 현재 OTB. <i class="lg-fcst"></i> 예상 착지 · <i class="lg-bud"></i> 목표.
-        달성률만 보면 9월이 낮아 보이지만 예약 리드타임 탓이라 <b>예상 착지(FCST)</b>가 진짜 신호입니다.</div>
+      <h4>1 · 월별 목표 대비 <span>진행률 · 예상 달성률 · 세그먼트별</span></h4>
+      ${_segChips("m1", (P.segMonth || { segs: [] }).segs, _segOff1)}
+      <div id="gs-m1">${_segMonthBody()}</div>
+      <div class="perf-note">막대는 <b>진행률</b>(목표 대비 현재 OTB, %). <i class="lg-bud"></i> 목표 100% ·
+        <i class="lg-fcst"></i> <b>예상 달성률</b>. 아래 줄의 <b>데일리 순증</b>과 <b>예상실적</b>은 색을 달리 표시했습니다
+        (순증은 증감 색, 예상실적은 착지 상태 색).
+        칩을 눌러 세그먼트를 숨길 수 있고, 숨겨도 남은 세그먼트의 색은 그대로입니다.
+        진행률만 보면 9월이 낮아 보이지만 예약 리드타임 탓이라 <b>예상 달성률</b>이 진짜 신호입니다.</div>
+    </section>
+
+    <section class="perf-sec">
+      <h4>1-b · 예상실적 주간 변화 <span>RM FCST 주간 스냅샷${P.fcstAsOf ? " · " + _esc(P.fcstAsOf) + " 최신" : ""}</span></h4>
+      <div id="gs-fc"></div>
+      <div class="perf-note">세로축은 <b>목표 대비 예상 달성률</b>이라 규모가 다른 세그먼트도 한 축에서 비교됩니다.
+        선을 짚으면 실제 예상실적(실)이 같이 뜨고, 아래 표에서 주차별 원수치를 볼 수 있습니다.
+        달 칩으로 월을 바꾸고, 세그 칩으로 숨깁니다.</div>
     </section>
 
     <section class="perf-sec">
@@ -2033,6 +2280,30 @@ function renderGsPerf() {
     { name: "G-OTA", color: "var(--series-2)", data: P.seg.weekly["G-OTA"] || [] },
     { name: "Inbound", color: "var(--series-3)", data: P.seg.weekly["Inbound"] || [] }
   ], { zero: true, alt: "세그먼트별 주간 순증 추이" });
+
+  _renderFc();
+
+  if (!el._wired) {
+    el._wired = true;
+    el.addEventListener("click", ev => {
+      const c = ev.target.closest && ev.target.closest(".sg-chip");
+      if (!c) return;
+      const box = c.closest("[data-chips]");
+      if (!box) return;
+      const id = box.dataset.chips;
+      if (id === "mon") { _fcMonth = c.dataset.mon; _renderFc(); return; }
+      const set = id === "m1" ? _segOff1 : _segOff2;
+      const all = id === "m1" ? GS_PERF.segMonth.segs : GS_PERF.fcstTrend.segs;
+      const sg = c.dataset.seg;
+      if (set.has(sg)) set.delete(sg);
+      else { if (all.length - set.size <= 1) return; set.add(sg); }
+      if (id === "m1") {
+        c.classList.toggle("off", set.has(sg));
+        c.setAttribute("aria-pressed", String(!set.has(sg)));
+        document.getElementById("gs-m1").innerHTML = _segMonthBody();
+      } else _renderFc();
+    });
+  }
 }
 
 let _gsRz;
@@ -2628,7 +2899,7 @@ function renderTrend() {
     </div>`;
 }
 
-function insightDayCard(d) {
+function insightDayCard(d, open) {
   const list = (title, arr, color) => `
     <details open>
       <summary><span class="dot" style="background:${color};width:8px;height:8px;border-radius:50%;display:inline-block;"></span>${title} <span class="wk-count">${arr.length}건</span></summary>
@@ -2639,7 +2910,7 @@ function insightDayCard(d) {
       </div>
     </details>`;
   return `
-    <details class="ncard">
+    <details class="ncard" ${open ? "open" : ""}>
       <summary>
         <div class="nc-meta"><span>${d.date}</span><span>뉴스 인사이트</span></div>
         <div class="issue-chips">
@@ -2696,12 +2967,15 @@ renderGs();
 renderInsightBrief();
 renderTrend();
 renderInsight();
+renderLatestInsight();
 
 renderBrief();
 renderStats();
 render();
+renderLatestNote();
 renderNewsBrief();
 renderNews();
+renderLatestNews();
 </script>
 </body>
 </html>
