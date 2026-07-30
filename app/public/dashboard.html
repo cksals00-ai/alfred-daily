@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>롱블랙 데일리 대시보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;900&display=swap" rel="stylesheet">
 <style>
   :root {
     color-scheme: light;
@@ -104,11 +107,17 @@
   .bar-val { font-size: 0.8rem; font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
 
   /* tabs */
-  .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
   .tab {
-    flex: 1; border: 1px solid var(--border); background: var(--surface-1);
-    color: var(--text-secondary); border-radius: 10px; padding: 10px 12px;
-    font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    flex: 1 1 calc(50% - 3px); min-width: 0; border: 1px solid var(--border); background: var(--surface-1);
+    color: var(--text-secondary); border-radius: 10px; padding: 10px 8px;
+    font-size: 0.82rem; font-weight: 600; cursor: pointer; min-height: 40px;
+  }
+  .tab[data-tab="today"] { flex-basis: 100%; }
+  @media (min-width: 660px) {
+    .tabs { flex-wrap: nowrap; gap: 8px; }
+    .tab { flex: 1 1 auto; padding: 10px 12px; font-size: 0.85rem; }
+    .tab[data-tab="today"] { flex-basis: auto; }
   }
   .tab.active { background: var(--text-primary); color: var(--page); border-color: var(--text-primary); }
 
@@ -465,6 +474,90 @@
 
   .gs-news-head { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em;
                   color: var(--text-secondary); margin: 22px 0 8px; }
+
+  /* ── 오늘(1면) : 신문 1면 레이아웃 ───────────────────────── */
+  :root { --fp-serif: "Noto Serif KR", ui-serif, Georgia, "Batang", serif; }
+  #view-today { margin-bottom: 8px; }
+  .fp-mast { margin: 2px 0 18px; }
+  .fp-rule-thick { height: 6px; background: var(--text-primary); border-radius: 1px; }
+  .fp-rule-thin { height: 1px; background: var(--border); margin-top: 10px; }
+  .fp-word { font-family: var(--fp-serif); font-weight: 900; font-size: 2.15rem;
+             line-height: 1.1; letter-spacing: -0.02em; margin: 12px 0 6px; color: var(--text-primary); }
+  @media (min-width: 660px) { .fp-word { font-size: 3.1rem; text-align: center; } }
+  .fp-tagline { font-family: var(--fp-serif); font-size: 0.78rem; color: var(--text-secondary);
+                letter-spacing: 0.02em; }
+  @media (min-width: 660px) { .fp-tagline { text-align: center; } }
+  .fp-flag { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+             margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border);
+             font-size: 0.7rem; letter-spacing: 0.06em; color: var(--text-secondary); font-weight: 600; }
+  .fp-flag .sep { color: var(--border); }
+  .fp-flag .fp-theme { margin-left: auto; font: inherit; font-size: 0.7rem; cursor: pointer;
+             background: var(--surface-1); color: var(--text-secondary);
+             border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px; min-height: 28px; }
+
+  .fp-verse { border: 2px solid var(--text-primary); border-radius: 4px;
+              padding: 16px 16px 12px; margin-bottom: 20px; background: var(--surface-1); }
+  .fp-verse-lab { font-size: 0.66rem; font-weight: 800; letter-spacing: 0.14em;
+                  color: var(--text-secondary); margin-bottom: 9px; }
+  .fp-verse blockquote { margin: 0; font-family: var(--fp-serif); font-weight: 600;
+                  font-size: 1.18rem; line-height: 1.62; color: var(--text-primary); }
+  @media (min-width: 660px) { .fp-verse blockquote { font-size: 1.45rem; text-align: center; }
+                              .fp-verse-lab { text-align: center; } .fp-verse cite { text-align: center; } }
+  .fp-verse cite { display: block; margin-top: 8px; font-style: normal; font-size: 0.75rem;
+                  font-weight: 700; color: var(--text-secondary); }
+  .fp-verse details { margin-top: 10px; border-top: 1px dashed var(--border); padding-top: 8px; }
+  .fp-verse summary { cursor: pointer; font-size: 0.72rem; font-weight: 700;
+                  color: var(--text-secondary); min-height: 24px; }
+  .fp-verse details p { margin: 8px 0 0; font-size: 0.79rem; line-height: 1.75; color: var(--text-secondary); }
+
+  .fp-lead { border-top: 3px solid var(--text-primary); padding-top: 14px; margin-bottom: 22px; }
+  .fp-kicker { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .fp-head { font-family: var(--fp-serif); font-weight: 900; font-size: 1.5rem; line-height: 1.32;
+             letter-spacing: -0.015em; margin: 0 0 8px; color: var(--text-primary); }
+  @media (min-width: 660px) { .fp-head { font-size: 2.05rem; } }
+  .fp-deck { font-size: 0.79rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
+  .fp-body { font-family: var(--fp-serif); font-size: 0.92rem; line-height: 1.85; color: var(--text-primary); }
+  @media (min-width: 660px) { .fp-body { column-count: 2; column-gap: 26px; } }
+  .fp-body::first-letter { float: left; font-family: var(--fp-serif); font-weight: 900;
+             font-size: 3.1rem; line-height: 0.86; padding: 4px 8px 0 0; color: var(--text-primary); }
+  .fp-scores { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .fp-score { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem;
+             font-weight: 600; color: var(--text-secondary); border: 1px solid var(--border);
+             border-radius: 999px; padding: 5px 10px; }
+  .fp-score i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .fp-more { margin-top: 14px; font: inherit; font-size: 0.74rem; font-weight: 700; cursor: pointer;
+             background: transparent; color: var(--text-primary); border: 1px solid var(--text-primary);
+             border-radius: 999px; padding: 8px 14px; min-height: 34px; }
+  .fp-more:active { background: var(--chip-bg); }
+
+  .fp-grid { display: grid; grid-template-columns: 1fr; gap: 18px; align-items: start; }
+  @media (min-width: 660px) { .fp-grid { grid-template-columns: 1fr 1fr; gap: 22px 26px; } }
+  .fp-box { border-top: 1px solid var(--text-primary); padding-top: 12px; }
+  .fp-box-head { font-family: var(--fp-serif); font-weight: 900; font-size: 1.02rem;
+             margin-bottom: 2px; }
+  .fp-when { font-size: 0.66rem; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 10px; }
+  .fp-lede { font-family: var(--fp-serif); font-size: 0.88rem; line-height: 1.7;
+             color: var(--text-primary); margin-bottom: 10px; }
+  .fp-list { list-style: none; margin: 0; padding: 0; }
+  .fp-list li { font-size: 0.79rem; line-height: 1.62; color: var(--text-secondary);
+             padding: 7px 0 7px 13px; border-bottom: 1px dotted var(--border); position: relative; }
+  .fp-list li:last-child { border-bottom: 0; }
+  .fp-list li::before { content: ""; position: absolute; left: 0; top: 13px;
+             width: 5px; height: 5px; border-radius: 50%; background: var(--border); }
+  .fp-list a { color: var(--text-secondary); text-decoration: none; border-bottom: 1px solid var(--border); }
+  .fp-mrow { display: flex; align-items: center; gap: 8px; padding: 8px 0;
+             border-bottom: 1px dotted var(--border); font-size: 0.78rem; }
+  .fp-mrow:last-of-type { border-bottom: 0; }
+  .fp-mrow .m { font-weight: 800; color: var(--text-primary); width: 34px; flex: none; }
+  .fp-mrow .a { color: var(--text-secondary); }
+  .fp-mrow .b { margin-left: auto; font-size: 0.7rem; font-weight: 700;
+             border: 1px solid; border-radius: 999px; padding: 3px 8px; white-space: nowrap; }
+  .fp-kpi { font-size: 0.75rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 10px; }
+  .fp-cc { margin-top: 14px; border: 1px dashed var(--border); border-radius: 8px; padding: 10px 12px; }
+  .fp-cc > summary { cursor: pointer; font-size: 0.74rem; font-weight: 700;
+             color: var(--text-secondary); min-height: 24px; }
+  .fp-foot { margin-top: 24px; padding-top: 12px; border-top: 3px double var(--text-primary);
+             font-size: 0.7rem; color: var(--muted); line-height: 1.7; }
 </style>
 </head>
 <body>
@@ -475,13 +568,16 @@
 </header>
 
 <div class="tabs">
-  <button class="tab active" data-tab="notes">📚 롱블랙 노트</button>
+  <button class="tab active" data-tab="today">🗞 오늘</button>
+  <button class="tab" data-tab="notes">📚 롱블랙 노트</button>
   <button class="tab" data-tab="news">📮 데일리 뉴스</button>
   <button class="tab" data-tab="gs">🏨 GS 데일리</button>
   <button class="tab" data-tab="insight">🔍 뉴스 인사이트</button>
 </div>
 
-<div id="view-notes">
+<div id="view-today"></div><!-- /view-today -->
+
+<div id="view-notes" style="display:none;">
 <div class="tiles">
   <div class="tile"><div class="label">누적 노트</div><div class="value" id="t-count">–</div><div class="sub" id="t-range"></div></div>
   <div class="tile"><div class="label">평균 적합도</div><div class="value" id="t-avg">–</div><div class="sub">5점 만점</div></div>
@@ -1843,7 +1939,7 @@ function renderNews() {
   });
 }
 
-fetch("news.json").then(r => r.json()).then(data => { NEWS = data; renderNews(); renderLatestNews(); }).catch(() => {});
+fetch("news.json").then(r => r.json()).then(data => { NEWS = data; renderNews(); renderLatestNews(); renderToday(); }).catch(() => {});
 
 /* ── GS 데일리: SONO & TRINITY GS팀 리포트 요약본 (매일 추가, 최신이 앞) ── */
 const GS_DAILY = [
@@ -2950,15 +3046,160 @@ function renderInsight() {
   }).join("");
 }
 
-document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
-  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
-  t.classList.add("active");
-  document.getElementById("view-notes").style.display = t.dataset.tab === "notes" ? "" : "none";
-  document.getElementById("view-news").style.display = t.dataset.tab === "news" ? "" : "none";
-  document.getElementById("view-gs").style.display = t.dataset.tab === "gs" ? "" : "none";
-    if (t.dataset.tab === "gs") renderGsPerf();
-  document.getElementById("view-insight").style.display = t.dataset.tab === "insight" ? "" : "none";
-}));
+
+/* ── 오늘(1면) ─────────────────────────────────────────────── */
+const FP_DOW = ["일", "월", "화", "수", "목", "금", "토"];
+function _fpDate(iso) {
+  const d = new Date(iso + "T00:00:00");
+  if (isNaN(d)) return iso;
+  return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 ${FP_DOW[d.getDay()]}요일`;
+}
+function _fpLatest(arr) {
+  return arr && arr.length ? arr.slice().sort((a, b) => b.date.localeCompare(a.date))[0] : null;
+}
+
+function renderToday() {
+  const el = document.getElementById("view-today");
+  if (!el) return;
+  const note = _fpLatest(NOTES);
+  const news = _fpLatest(typeof NEWS !== "undefined" ? NEWS : []);
+  const gs   = _fpLatest(typeof GS_DAILY !== "undefined" ? GS_DAILY : []);
+  const ins  = _fpLatest(typeof INSIGHT_DAILY !== "undefined" ? INSIGHT_DAILY : []);
+  const dates = [note, news, gs, ins].filter(Boolean).map(x => x.date).sort();
+  const issueDate = dates.length ? dates[dates.length - 1] : new Date().toISOString().slice(0, 10);
+  const V = WEEKLY_BRIEF.verse || null;
+
+  /* 제호 */
+  const mast = `
+    <div class="fp-mast">
+      <div class="fp-rule-thick"></div>
+      <h1 class="fp-word">롱블랙 데일리</h1>
+      <div class="fp-tagline">노트 · 아침뉴스 · GS 실적 · 소노 인사이트를 한 장에</div>
+      <div class="fp-flag">
+        <span>${_fpDate(issueDate)}</span><span class="sep">|</span>
+        <span>통권 제${NOTES.length}호</span>
+        <button class="fp-theme" onclick="toggleTheme()">☀ / ☾</button>
+      </div>
+      <div class="fp-rule-thin"></div>
+    </div>`;
+
+  /* 성경 구절 — 맨 위 */
+  const verse = V ? `
+    <section class="fp-verse">
+      <div class="fp-verse-lab">이번 주 암송 구절</div>
+      <blockquote>“${V.text}”</blockquote>
+      <cite>— ${V.ref}</cite>
+      ${V.why ? `<details><summary>왜 이 구절인가</summary><p>${V.why}</p></details>` : ""}
+    </section>` : "";
+
+  /* 머릿기사 = 가장 최근 노트 */
+  let lead = "";
+  if (note) {
+    const sc = Object.keys(PERSPECTIVES).map(k =>
+      `<span class="fp-score"><i style="background:${PERSPECTIVES[k].color}"></i>${PERSPECTIVES[k].name} ${note.scores[k].toFixed(1)}</span>`).join("");
+    const cc = note.comment ? `
+      <details class="fp-cc">
+        <summary>☕ 커피챗 댓글 초안 — 열어서 복사</summary>
+        <div class="cc-text" id="cc-fp-${note.id}">${note.comment}</div>
+        <button class="cc-copy" onclick="copyComment('fp-${note.id}', this)">댓글 복사</button>
+      </details>` : "";
+    lead = `
+      <article class="fp-lead">
+        <div class="fp-kicker" style="color:var(--series-1)">롱블랙 노트 · #${note.id} · ${note.date}</div>
+        <h2 class="fp-head">${note.title}</h2>
+        <div class="fp-deck">${note.subject || ""}</div>
+        <div class="fp-body">${note.summary}</div>
+        <div class="fp-scores">${sc}</div>
+        ${cc}
+        <button class="fp-more" onclick="goTab('notes')">노트 전체 보기 →</button>
+      </article>`;
+  }
+
+  /* GS 데일리 */
+  let gsBox = "";
+  if (gs || typeof GS_PERF !== "undefined") {
+    let rows = "";
+    if (typeof GS_PERF !== "undefined" && GS_PERF.segMonth) {
+      rows = GS_PERF.segMonth.labels.map(L => {
+        const d = GS_PERF.segMonth.data[L]["전체"];
+        if (!d) return "";
+        const st = _landing(d.fcstAch);
+        return `<div class="fp-mrow"><span class="m">${L}</span>
+          <span class="a">진행 <b>${d.ach.toFixed(1)}%</b></span>
+          <span class="b" style="color:${st.c};border-color:${st.c}">${st.t} ${d.fcstAch ? d.fcstAch.toFixed(1) + "%" : ""}</span></div>`;
+      }).join("");
+    }
+    gsBox = `
+      <section class="fp-box">
+        <div class="fp-box-head" style="color:var(--series-5)">GS 데일리</div>
+        <div class="fp-when">${gs ? gs.date : (GS_PERF.asOfLabel || "")} · 예상 착지 기준</div>
+        ${gs && gs.kpiLine ? `<div class="fp-kpi">${gs.kpiLine}</div>` : ""}
+        ${rows}
+        <button class="fp-more" onclick="goTab('gs')">실적 전체 →</button>
+      </section>`;
+  }
+
+  /* 뉴스 인사이트 */
+  let insBox = "";
+  if (ins) {
+    const li = [].concat(
+      (ins.sono || []).slice(0, 3).map(x => ({ x, tag: "소노" })),
+      (ins.leisure || []).slice(0, 2).map(x => ({ x, tag: "레저" }))
+    ).map(o => `<li><b style="color:var(--text-primary);font-size:0.68rem;">${o.tag}</b> · <a href="${o.x.u}" target="_blank" rel="noopener">${o.x.t}</a></li>`).join("");
+    insBox = `
+      <section class="fp-box">
+        <div class="fp-box-head" style="color:var(--series-7)">뉴스 인사이트</div>
+        <div class="fp-when">${ins.date} · 소노 ${(ins.sono || []).length}건 · 레저 ${(ins.leisure || []).length}건</div>
+        <div class="fp-lede">${ins.headline || ""}</div>
+        <ul class="fp-list">${li}</ul>
+        <button class="fp-more" onclick="goTab('insight')">인사이트 전체 →</button>
+      </section>`;
+  }
+
+  /* 데일리 뉴스 */
+  let newsBox = "";
+  if (news) {
+    const items = newsIssues(news.text, 5).map(t => `<li>${t}</li>`).join("");
+    newsBox = `
+      <section class="fp-box">
+        <div class="fp-box-head" style="color:var(--series-6)">데일리 뉴스</div>
+        <div class="fp-when">${news.date} · 간추린 아침뉴스</div>
+        <ul class="fp-list">${items}</ul>
+        <button class="fp-more" onclick="goTab('news')">뉴스 전체 →</button>
+      </section>`;
+  }
+
+  /* 주간 브리핑 */
+  const briefBox = `
+    <section class="fp-box">
+      <div class="fp-box-head" style="color:var(--series-2)">주간 브리핑</div>
+      <div class="fp-when">${WEEKLY_BRIEF.period}</div>
+      <div class="fp-lede">${WEEKLY_BRIEF.summary}</div>
+      <ul class="fp-list">${(WEEKLY_BRIEF.actions || []).slice(0, 4).map(a => `<li>${a}</li>`).join("")}</ul>
+      <button class="fp-more" onclick="goTab('notes')">브리핑 전체 →</button>
+    </section>`;
+
+  el.innerHTML = mast + verse + lead +
+    `<div class="fp-grid">${gsBox}${insBox}${newsBox}${briefBox}</div>` +
+    `<div class="fp-foot">이 1면은 각 탭의 가장 최근 항목만 모아 자동으로 다시 그려집니다 ·
+      노트 ${NOTES.length}개 · 아침뉴스 ${(typeof NEWS !== "undefined" ? NEWS.length : 0)}일치 ·
+      GS ${(typeof GS_DAILY !== "undefined" ? GS_DAILY.length : 0)}일치 ·
+      인사이트 ${(typeof INSIGHT_DAILY !== "undefined" ? INSIGHT_DAILY.length : 0)}일치</div>`;
+}
+
+function goTab(name) {
+  document.querySelectorAll(".tab").forEach(x => x.classList.toggle("active", x.dataset.tab === name));
+  ["today", "notes", "news", "gs", "insight"].forEach(v => {
+    const n = document.getElementById("view-" + v);
+    if (n) n.style.display = v === name ? "" : "none";
+  });
+  const hd = document.querySelector("header");
+  if (hd) hd.style.display = name === "today" ? "none" : "";
+  if (name === "gs") renderGsPerf();
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => goTab(t.dataset.tab)));
 
 renderGsBrief();
 renderGsPerf();
@@ -2976,6 +3217,9 @@ renderLatestNote();
 renderNewsBrief();
 renderNews();
 renderLatestNews();
+
+renderToday();
+goTab("today");
 </script>
 </body>
 </html>
