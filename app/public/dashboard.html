@@ -278,6 +278,23 @@
   .src-list a { color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border); }
   .src-list a:hover { border-bottom-color: var(--series-7); color: var(--series-7); }
   .src-list .press { display: inline-block; font-size: 0.66rem; color: var(--text-secondary); margin-left: 6px; }
+
+  /* ── 키워드 레이더 ─────────────────────────────── */
+  .tg-name { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; color: var(--text-secondary); margin: 14px 0 2px; }
+  .kw-det > summary { list-style: none; cursor: pointer; }
+  .kw-det > summary::-webkit-details-marker { display: none; }
+  .kw-det > summary::marker { content: ""; }
+  .kw-det[open] > summary .tr-name { color: var(--series-7); }
+  .kw-body { padding: 0 0 8px 4px; }
+  .kw-empty { font-size: 0.7rem; color: var(--text-secondary); padding: 2px 0 4px; }
+  .mover { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.74rem; margin-bottom: 6px; }
+  .mover strong { font-weight: 600; }
+  .mover em { font-style: normal; font-weight: 700; margin-left: 3px; }
+  .mover em.up { color: var(--series-5); }
+  .mover em.down { color: var(--series-6); }
+  .mv-tag { font-size: 0.62rem; font-weight: 700; color: var(--text-secondary); border: 1px solid var(--border); border-radius: 999px; padding: 1px 7px; margin-right: 7px; }
+  .trend-note { font-size: 0.68rem; color: var(--text-secondary); margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 9px; line-height: 1.65; }
+  .trend-note em { font-style: normal; font-weight: 700; color: var(--text-primary); }
 </style>
 </head>
 <body>
@@ -1698,25 +1715,423 @@ const INSIGHT_DAILY = [
   }
 ];
 
-/* 주간 검색어 트렌드 · 쇼핑인사이트 (네이버 API HUB 연결 시 자동 주간 갱신) */
+/* 주간 키워드 레이더 — 네이버 뉴스 검색 API 실측 (검색어 트렌드 API는 구독 대기) */
 const TREND_PLAN = {
-  status: "pending",
-  updated: null,
-  groups: [
-    { name: "리조트·호캉스", keywords: ["호캉스", "리조트", "워터파크", "풀빌라"] },
-    { name: "소노 브랜드",   keywords: ["소노벨", "쏠비치", "소노캄", "소노펠리체"] },
-    { name: "경쟁 브랜드",   keywords: ["한화리조트", "하이원리조트", "휘닉스파크", "롯데호텔"] },
-    { name: "예약 채널",     keywords: ["여기어때", "야놀자", "트립닷컴", "아고다"] },
-    { name: "내 관심 주제",  keywords: ["사이드프로젝트", "퍼스널브랜딩", "1인창업", "브랜드마케팅"] }
-  ],
-  rows: []
+ "status": "live-news",
+ "updated": "2026-07-30",
+ "weekFrom": "2026-07-24",
+ "weekTo": "2026-07-30",
+ "calls": 69,
+ "groups": [
+  {
+   "name": "리조트·호캉스",
+   "kw": [
+    {
+     "n": "호캉스",
+     "cur": 84,
+     "prev": 142,
+     "top": [
+      {
+       "t": "“아직 여름휴가 못 정했다면”… 롯데온, 최대 23% 깎아주는 ‘여행박...",
+       "u": "https://www.geconomy.co.kr/news/article.html?no=322378"
+      },
+      {
+       "t": "포도호텔·디아넥스, “필드 전율 이어갈 ‘미식·온천’으로 골퍼 맞춤...",
+       "u": "https://www.geconomy.co.kr/news/article.html?no=322371"
+      },
+      {
+       "t": "\"호캉스하며 안마의자 등 체험\"... 코웨이, 제주신화월드서 제품 체험 객...",
+       "u": "https://www.insight.co.kr/news/565633"
+      }
+     ]
+    },
+    {
+     "n": "워터파크",
+     "cur": 583,
+     "prev": 211,
+     "top": [
+      {
+       "t": "“아직 여름휴가 못 정했다면”… 롯데온, 최대 23% 깎아주는 ‘여행박...",
+       "u": "https://www.geconomy.co.kr/news/article.html?no=322378"
+      },
+      {
+       "t": "'청양 다-돌봄' 여름 물놀이장, 8월 초 지역별 릴레이 운영",
+       "u": "https://www.gukjenews.com/news/articleView.html?idxno=3651596"
+      },
+      {
+       "t": "[독자기고] 제주의 여름, 풋귤이 미래를 열다",
+       "u": "https://www.jemin.com/news/articleView.html?idxno=841135"
+      }
+     ]
+    },
+    {
+     "n": "풀빌라",
+     "cur": 25,
+     "prev": 39,
+     "top": [
+      {
+       "t": "[팜투어] 왕실 휴양지 '태국 후아힌'의 재발견… 역사적 유산과 럭셔리...",
+       "u": "https://www.discoverynews.kr/news/articleView.html?idxno=1097448"
+      },
+      {
+       "t": "[전력전쟁시대, AI 패권 중심지된 강원] 4. 전력 최대 생산지 경북, 이면...",
+       "u": "https://www.kado.net/news/articleView.html?idxno=2063830"
+      },
+      {
+       "t": "포시즌스 리조트 남하이 호이안, 3베드룸 풀빌라 리뉴얼 공개",
+       "u": "https://www.gukjenews.com/news/articleView.html?idxno=3650001"
+      }
+     ]
+    },
+    {
+     "n": "한옥스테이",
+     "cur": 33,
+     "prev": 8,
+     "top": [
+      {
+       "t": "“엄마 때문에 속 썩더니” 장윤정, 母 구속 아픔 딛고 홀로 떠난 ‘한...",
+       "u": "https://www.mk.co.kr/article/12112504"
+      },
+      {
+       "t": "'母 구속' 장윤정, 결국 홀로 서울 떠났다..한옥서 힐링여행 \"재충전\"",
+       "u": "https://www.sportschosun.com/entertainment/2026-07-30/202607300100196050012656"
+      },
+      {
+       "t": "장윤정, 절연한 친모 파장 그후…홀로 한옥서 '소주' 마셔 ('장공장장윤...",
+       "u": "http://www.osen.co.kr/article/G1112849265"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "소노 브랜드",
+   "kw": [
+    {
+     "n": "소노벨",
+     "cur": 70,
+     "prev": 59,
+     "top": [
+      {
+       "t": "“아직 여름휴가 못 정했다면”… 롯데온, 최대 23% 깎아주는 ‘여행박...",
+       "u": "https://www.geconomy.co.kr/news/article.html?no=322378"
+      },
+      {
+       "t": "충북교육청 단양서 `찾아가는 진로·진학 꿈틀캠프' 운영",
+       "u": "http://www.cctimes.kr/news/articleView.html?idxno=919491"
+      },
+      {
+       "t": "충북교육청, 전국기능경기대회 출전 충북반도체고 격려 및 단양 지역 중...",
+       "u": "http://www.enewstoday.co.kr/news/articleView.html?idxno=2454377"
+      }
+     ]
+    },
+    {
+     "n": "쏠비치",
+     "cur": 49,
+     "prev": 27,
+     "top": [
+      {
+       "t": "6000만원 뜯어낸 ‘가짜 검사’ 지긋지긋하다…여름 휴가지까지 쫓아와",
+       "u": "https://biz.heraldcorp.com/article/10825842?ref=naver"
+      },
+      {
+       "t": "BC카드, 6개 인기 워터파크 할인 이벤트…최대 55% 혜택",
+       "u": "https://www.newsis.com/view/NISX20260730_0003730401"
+      },
+      {
+       "t": "BC카드, 전국 6개 워터파크 최대 55% 할인 이벤트 선보여",
+       "u": "https://www.polinews.co.kr/news/articleView.html?idxno=738552"
+      }
+     ]
+    },
+    {
+     "n": "소노캄",
+     "cur": 109,
+     "prev": 72,
+     "top": [
+      {
+       "t": "거제 미혼남녀 만남행사 '설렘페스타' 개최",
+       "u": "https://www.gnnews.co.kr/news/articleView.html?idxno=642200"
+      },
+      {
+       "t": "6000만원 뜯어낸 ‘가짜 검사’ 지긋지긋하다…여름 휴가지까지 쫓아와",
+       "u": "https://biz.heraldcorp.com/article/10825842?ref=naver"
+      },
+      {
+       "t": "넷마블문화재단, '2026 전국 장애학생 e페스티벌' 홍보대사에 딘딘 위촉",
+       "u": "https://www.gokorea.kr/news/articleView.html?idxno=873569"
+      }
+     ]
+    },
+    {
+     "n": "소노펠리체",
+     "cur": 8,
+     "prev": 24,
+     "top": [
+      {
+       "t": "\"해외여행 안 가도 되겠네\"…성수기인데 '화들짝' 놀란 까닭 [영상]",
+       "u": "https://www.hankyung.com/article/202607305490g"
+      },
+      {
+       "t": "인간개발연구원, 정재훈 약사 초청 '건강 구독 사회' 경영자연구회 개최",
+       "u": "http://www.smedaily.co.kr/news/articleView.html?idxno=361032"
+      },
+      {
+       "t": "소노인터내셔널, 국내 첫 운영제휴 호텔 '소노벨 경주 감포' 오픈",
+       "u": "https://www.sisaweek.com/news/articleView.html?idxno=236882"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "경쟁 브랜드",
+   "kw": [
+    {
+     "n": "한화리조트",
+     "cur": 36,
+     "prev": 26,
+     "top": [
+      {
+       "t": "'브브걸 탈퇴' 남유정 '워터밤' 출연에 엇갈린 반응[셀럽이슈]",
+       "u": "http://www.celuvmedia.com/article.php?aid=1785397978524866006"
+      },
+      {
+       "t": "'브브걸 탈퇴' 남유정, 워터밤 출연에 시끌…\"'롤린' 부르려고?\"",
+       "u": "https://www.mt.co.kr/entertainment/2026/07/30/2026073015144889441"
+      },
+      {
+       "t": "남유정, 워터밤 출연 갑론을박-브브걸 떠났는데",
+       "u": "https://www.mediafine.co.kr/news/articleView.html?idxno=85078"
+      }
+     ]
+    },
+    {
+     "n": "하이원리조트",
+     "cur": 647,
+     "prev": 70,
+     "top": [
+      {
+       "t": "하이원리조트, 해발 800m 국내 최고도 인피니티풀 개장",
+       "u": "https://www.kwnews.co.kr/article/20260730501264"
+      },
+      {
+       "t": "[언중언]기록을 만드는 땅",
+       "u": "https://www.kwnews.co.kr/article/20260730502149"
+      },
+      {
+       "t": "김민주·김새로미, 오로라월드 챔피언십 첫날 공동 선두…나란히 무결점...",
+       "u": "https://www.mediafine.co.kr/news/articleView.html?idxno=85096"
+      }
+     ]
+    },
+    {
+     "n": "휘닉스파크",
+     "cur": 24,
+     "prev": 31,
+     "top": [
+      {
+       "t": "BC카드, 6개 인기 워터파크 할인 이벤트…최대 55% 혜택",
+       "u": "https://www.newsis.com/view/NISX20260730_0003730401"
+      },
+      {
+       "t": "[카드사 풍향계] 현대카드, ‘던전앤파이터’ 모티브 플레이트 공개 外",
+       "u": "https://www.ekn.kr/web/view.php?key=20260730022397931"
+      },
+      {
+       "t": "BC카드, 전국 6개 워터파크 최대 55% 할인 이벤트 선보여",
+       "u": "https://www.polinews.co.kr/news/articleView.html?idxno=738552"
+      }
+     ]
+    },
+    {
+     "n": "롯데호텔",
+     "cur": 543,
+     "prev": 393,
+     "top": [
+      {
+       "t": "투자부터 나눔까지…롯데의 울산사랑",
+       "u": "https://www.ksilbo.co.kr/news/articleView.html?idxno=1063476"
+      },
+      {
+       "t": "롯데, 지역상생 넘어 미래산업 동반자로",
+       "u": "http://www.ujeil.com/news/articleView.html?idxno=389661"
+      },
+      {
+       "t": "투자·사회공헌·신사업 육성 아우르며 지속가능 발전 기여",
+       "u": "https://www.ulsanpress.net/news/articleView.html?idxno=580140"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "예약 채널",
+   "kw": [
+    {
+     "n": "여기어때",
+     "cur": 94,
+     "prev": 62,
+     "top": [
+      {
+       "t": "[이주의 여행산업 브리핑] 트러플·와이너리까지…알베르토와 떠나는 이...",
+       "u": "https://www.traveltimes.co.kr/news/articleView.html?idxno=500166"
+      },
+      {
+       "t": "\"아직 늦지 않았다\"…늦여름 휴가 '할인' 프로모션",
+       "u": "https://www.edaily.co.kr/news/newspath.asp?newsid=05799046645519768"
+      },
+      {
+       "t": "여기어때, 日 숙박 플랫폼 ‘리럭스’ 인수…글로벌 사업 확대",
+       "u": "https://news.dealsitetv.com/articles/174052"
+      }
+     ]
+    },
+    {
+     "n": "야놀자",
+     "cur": 69,
+     "prev": 38,
+     "top": [
+      {
+       "t": "강원 '워케이션' 성지 자리매김…3년 새 방문객 6.6배 늘었다",
+       "u": "https://www.kado.net/news/articleView.html?idxno=2064139"
+      },
+      {
+       "t": "충북청주FC, '충북인삼농협 브랜드 데이·찐한 푸른 밤 페스타' 개최",
+       "u": "https://www.sportschosun.com/football/2026-07-30/202607300100194420012514"
+      },
+      {
+       "t": "경기도 보고 '찐~한 푸른 밤 페스타' 즐기자! 충북청주 FC, 수원 삼성전...",
+       "u": "https://www.besteleven.com/news/articleView.html?idxno=310584"
+      }
+     ]
+    },
+    {
+     "n": "트립닷컴",
+     "cur": 41,
+     "prev": 107,
+     "top": [
+      {
+       "t": "[뉴스줌인] 규제 피한 글로벌 OTA, 자금력 내세워 국내 시장 흔든다",
+       "u": "https://www.etnews.com/20260730000328"
+      },
+      {
+       "t": "中 OTA의 습격…트립닷컴, 야놀자·여기어때 제치고 韓 사용자 수 1위",
+       "u": "https://www.etnews.com/20260730000247"
+      },
+      {
+       "t": "외국인 상반기 카드지출 10조 돌파 … 롯데렌탈, 단기렌터 수요 잡는다",
+       "u": "https://biz.newdaily.co.kr/site/data/html/2026/07/30/2026073000116.html"
+      }
+     ]
+    },
+    {
+     "n": "아고다",
+     "cur": 66,
+     "prev": 24,
+     "top": [
+      {
+       "t": "KT, 여름 휴가철 멤버십·로밍·요금제 혜택 확대",
+       "u": "https://www.dt.co.kr/article/12075814?ref=naver"
+      },
+      {
+       "t": "배경훈 요청에 화답한 통신3사…요금·멤버십 혜택 확대",
+       "u": "https://www.ekn.kr/web/view.php?key=20260730020147990"
+      },
+      {
+       "t": "KT, 여름 휴가 혜택 확대…멤버십·로밍·요금제 강화",
+       "u": "https://www.sentv.co.kr/article/view/sentv202607300129"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "내 관심 주제",
+   "kw": [
+    {
+     "n": "사이드 프로젝트",
+     "cur": 2,
+     "prev": 3,
+     "top": [
+      {
+       "t": "“롱폼 먼저, 숏폼은 잘라서”…유튜브로 140억 매출 올린 남자의 공식...",
+       "u": "https://www.mk.co.kr/article/12109602"
+      },
+      {
+       "t": "[오늘의 띠별 운세] 2026년 7월 27일 월요일",
+       "u": "https://www.public25.com/news/articleView.html?idxno=51441"
+      }
+     ]
+    },
+    {
+     "n": "퍼스널 브랜딩",
+     "cur": 33,
+     "prev": 33,
+     "top": [
+      {
+       "t": "\"대체 가능성 93.3%\"…AI 앞에 선 인간의 가치",
+       "u": "https://www.namdonews.com/news/articleView.html?idxno=918610"
+      },
+      {
+       "t": "한국강사신문, \"정예 100人\" 강사 추천 도서 『한국강사편람 2027』 등재...",
+       "u": "https://www.lecturernews.com/news/articleView.html?idxno=207433"
+      },
+      {
+       "t": "소셜앤비즈·AI융합비즈연구소, 'AI리터러시 및 생성형AI 활용 마스터' ...",
+       "u": "https://www.fntoday.co.kr/news/articleView.html?idxno=389263"
+      }
+     ]
+    },
+    {
+     "n": "1인 창업",
+     "cur": 25,
+     "prev": 19,
+     "top": [
+      {
+       "t": "\"혼자서 매출 14억 이상도 거뜬\"…AI 시대 본격화, '1인 기업' 속출",
+       "u": "https://www.edaily.co.kr/news/newspath.asp?newsid=05874486645519768"
+      },
+      {
+       "t": "AI 활용 100만 달러 이상 매출 1인 기업 급증",
+       "u": "https://www.newsis.com/view/NISX20260730_0003729557"
+      },
+      {
+       "t": "[장욱희의 중장년 취업에세이] 기업, 실패 경험을 채용하라…창업가 가...",
+       "u": "https://www.newspim.com/news/view/20260729000406"
+      }
+     ]
+    },
+    {
+     "n": "브랜드 마케팅",
+     "cur": 201,
+     "prev": 104,
+     "top": [
+      {
+       "t": "네이블, 프리미엄 MVNO '알비레오' 출시… 통신·플랫폼 결합으로 '시장...",
+       "u": "https://www.etnews.com/20260730000462"
+      },
+      {
+       "t": "피로회복제를 넘어 '활력을 경험하다'…박카스의 브랜드 소통법",
+       "u": "https://www.mstoday.co.kr/news/articleView.html?idxno=102178"
+      },
+      {
+       "t": "카사베르디·나랑드사이다, 리센느 모델로 협업 프로젝트 진행",
+       "u": "https://www.hankookilbo.com/news/article/A2026073013400002103?did=NA"
+      }
+     ]
+    }
+   ]
+  }
+ ]
 };
 
 /* 무료 한도 대비 호출량 설계치 (공식 문서 기준) */
 const API_QUOTA = [
-  { name: "검색 API (뉴스+블로그)", used: 480, cap: 775000, unit: "월", note: "일 16콜 · 일 한도 25,000" },
-  { name: "검색어 트렌드",          used: 4,   cap: 30000,  unit: "월", note: "주 1콜 · 그룹 5개 동시" },
-  { name: "쇼핑 인사이트",          used: 4,   cap: 30000,  unit: "월", note: "주 1콜 · 분야별 트렌드" }
+  { name: "검색 API (뉴스)",  used: 300, cap: 775000, unit: "월", note: "주 1회 레이더 ~70콜 · 일 한도 25,000", live: true },
+  { name: "검색어 트렌드",     used: 0,   cap: 30000,  unit: "월", note: "구독 대기 · 승인 시 주 1콜", live: false },
+  { name: "쇼핑 인사이트",     used: 0,   cap: 30000,  unit: "월", note: "구독 대기 · 승인 시 주 1콜", live: false }
 ];
 
 function renderInsightBrief() {
@@ -1732,9 +2147,9 @@ function renderInsightBrief() {
   }).join("");
   document.getElementById("insight-brief").innerHTML = `
     <div class="b-kicker" style="color: var(--series-7);">뉴스 인사이트 · 매일 갱신</div>
-    <h2>소노 · 레저 데일리 + 주간 검색어</h2>
+    <h2>소노 · 레저 데일리 + 주간 키워드 레이더</h2>
     <div class="b-period">최신: ${latest ? latest.date : "-"} · 소노 ${latest ? latest.sono.length : 0}건 · 레저 ${latest ? latest.leisure.length : 0}건</div>
-    <p>매일 소노·호텔·레저 기사를 원문 링크째로 쌓고, 주 1회 네이버 검색어 트렌드로 &ldquo;사람들이 실제로 무엇을 찾는가&rdquo;를 겹쳐 봅니다.
+    <p>매일 소노·호텔·레저 기사를 원문 링크째로 쌓고, 주 1회 네이버 검색 API로 20개 키워드의 기사 발생량을 지난주와 맞대어 봅니다.
     <a class="link" href="https://cksals00-ai.github.io/gs_daily_trend_news_public_temp/index.html" target="_blank">뉴스 원본 →</a></p>
     <div class="quota">
       <div class="quota-title">무료 한도 대비 호출량 설계치</div>
@@ -1745,33 +2160,56 @@ function renderInsightBrief() {
 
 function renderTrend() {
   const el = document.getElementById("insight-trend");
-  const live = TREND_PLAN.status === "live" && TREND_PLAN.rows.length;
-  const body = live
-    ? TREND_PLAN.rows.map(r => {
-        const up = r.delta >= 0;
-        return `<div class="trend-row">
-          <div class="tr-name">${r.group}</div>
-          <div class="tr-bar"><span style="width:${Math.min(r.cur, 100)}%"></span></div>
-          <div class="tr-num">${r.cur.toFixed(1)}<em class="${up ? "up" : "down"}">${up ? "▲" : "▼"}${Math.abs(r.delta).toFixed(1)}</em></div>
-        </div>`;
-      }).join("")
-    : `<div class="trend-pending">
-         <span class="pending-badge">연결 대기</span>
-         네이버 API HUB에서 <strong>Client ID / Client Secret</strong>을 발급받아 넣으면, 아래 5개 그룹이 매주 자동으로 채워집니다.
-         (호출 1회 · 그룹 5개 동시 조회)
-       </div>
-       ${TREND_PLAN.groups.map(g => `
-         <div class="trend-plan">
-           <div class="tp-name">${g.name}</div>
-           <div class="tp-kw">${g.keywords.map(k => `<span class="kw">${k}</span>`).join("")}</div>
-         </div>`).join("")}`;
+  const arrow = p => p > 0 ? "▲" : (p < 0 ? "▼" : "―");
+  const cls   = p => p > 0 ? "up" : (p < 0 ? "down" : "");
+
+  const all = TREND_PLAN.groups.flatMap(g => g.kw.map(k => Object.assign({ g: g.name }, k)));
+  const rate = k => k.prev === 0 ? null : (k.cur - k.prev) / k.prev * 100;
+  const movers = all.filter(k => k.prev >= 10 && k.cur + k.prev >= 40)
+                    .map(k => Object.assign({ p: rate(k) }, k))
+                    .sort((a, b) => b.p - a.p);
+  const up = movers.slice(0, 2), dn = movers.slice(-2).reverse();
+  const chip = m => `<strong>${m.n}</strong> <em class="${cls(m.p)}">${arrow(m.p)}${Math.abs(Math.round(m.p))}%</em>`;
+
+  const body = TREND_PLAN.groups.map(g => {
+    const max = Math.max.apply(null, g.kw.map(k => k.cur).concat([1]));
+    const rows = g.kw.map(k => {
+      const p = rate(k);
+      const num = p === null
+        ? `${k.cur}건<em>신규</em>`
+        : `${k.cur}건<em class="${cls(p)}">${arrow(p)}${Math.round(p)===0?"":Math.abs(Math.round(p))+"%"}</em>`;
+      const links = k.top.length
+        ? `<ul class="src-list">${k.top.map(t => `<li><a href="${t.u}" target="_blank" rel="noopener">${t.t}</a></li>`).join("")}</ul>`
+        : `<div class="kw-empty">이번 주 기사 없음</div>`;
+      return `<details class="kw-det"><summary><div class="trend-row">
+          <div class="tr-name">${k.n}</div>
+          <div class="tr-bar"><span style="width:${Math.max(k.cur / max * 100, 3)}%"></span></div>
+          <div class="tr-num">${num}</div>
+        </div></summary><div class="kw-body">${links}</div></details>`;
+    }).join("");
+    return `<div class="tg-name">${g.name}</div>${rows}`;
+  }).join("");
+
   el.innerHTML = `
     <div class="trend-box">
       <div class="trend-head">
-        <h3>주간 검색어 트렌드</h3>
-        <span class="trend-when">${live ? TREND_PLAN.updated + " 기준" : "매주 일요일 갱신 예정"}</span>
+        <h3>주간 키워드 레이더</h3>
+        <span class="trend-when">${TREND_PLAN.weekFrom.slice(5).replace("-", ".")} ~ ${TREND_PLAN.weekTo.slice(5).replace("-", ".")} · 지난주 대비</span>
+      </div>
+      <div class="mover">
+        <div><span class="mv-tag">급등</span>${up.map(chip).join(" · ")}</div>
+        <div><span class="mv-tag">급락</span>${dn.map(chip).join(" · ")}</div>
       </div>
       ${body}
+      <div class="trend-note">
+        집계 방식: 네이버 뉴스 검색 API로 키워드당 최대 1,000건을 최신순 스캔한 뒤,
+        제목·본문에 키워드가 <em>문자 그대로</em> 들어있는 기사만 세었습니다.
+        (네이버 검색은 단어를 쪼개서 매칭하기 때문에 날것 그대로는 노이즈가 큽니다.)
+        이번 갱신 ${TREND_PLAN.calls}콜 · 일 한도 25,000.
+        <br><span class="pending-badge">구독 대기</span>
+        검색어 트렌드·쇼핑 인사이트는 Application에서 해당 API를 추가 구독하면
+        “기사가 몇 건 나왔나” 위에 “사람들이 실제로 몇 번 검색했나”가 겹쳐집니다.
+      </div>
     </div>`;
 }
 
