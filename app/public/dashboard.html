@@ -2166,7 +2166,7 @@ const SEG_COLOR = {
   "전체": "var(--series-5)", "OTA": "var(--series-1)",
   "G-OTA": "var(--series-2)", "Inbound": "var(--series-3)",
 };
-const _segOff1 = new Set();   // 월별 목표 대비에서 숨긴 세그
+const _segOff1 = new Set((((typeof GS_PERF !== "undefined" && GS_PERF.segMonth) || {}).segs || []).filter(sg => sg !== "전체"));   // 월별 목표 대비: 기본은 '전체'만 (칩으로 켠다)
 const _segOff2 = new Set();   // 예상실적 주간 변화에서 숨긴 세그
 let _fcMonth = null;
 
@@ -2322,7 +2322,7 @@ function renderGsPerf() {
       <div class="perf-note">막대는 <b>진행률</b>(목표 대비 현재 OTB, %). <i class="lg-bud"></i> 목표 100% ·
         <i class="lg-fcst"></i> <b>예상 달성률</b>. 아래 줄의 <b>데일리 순증</b>과 <b>예상실적</b>은 색을 달리 표시했습니다
         (순증은 증감 색, 예상실적은 착지 상태 색).
-        칩을 눌러 세그먼트를 숨길 수 있고, 숨겨도 남은 세그먼트의 색은 그대로입니다.
+        기본은 <b>전체</b>만 봅니다 — 칩을 눌러 OTA·G-OTA·Inbound를 필요할 때 켜고 끌 수 있고, 켜거나 꺼도 남은 세그먼트의 색은 그대로입니다.
         진행률만 보면 9월이 낮아 보이지만 예약 리드타임 탓이라 <b>예상 달성률</b>이 진짜 신호입니다.</div>
     </section>
 
