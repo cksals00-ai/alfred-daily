@@ -20,6 +20,7 @@
     --series-3: #e87ba4; /* 브랜딩 */
     --series-6: #eb6834; /* 뉴스 액센트 */
     --series-5: #1baf7a; /* GS 액센트 */
+    --series-7: #4a3aa7; /* 뉴스 인사이트 액센트 */
     --chip-bg: #f0efec;
   }
   @media (prefers-color-scheme: dark) {
@@ -38,6 +39,7 @@
       --series-3: #d55181;
       --series-6: #d95926;
       --series-5: #199e70;
+      --series-7: #9085e9;
       --chip-bg: #262624;
     }
   }
@@ -56,6 +58,7 @@
     --series-3: #d55181;
     --series-6: #d95926;
     --series-5: #199e70;
+      --series-7: #9085e9;
     --chip-bg: #262624;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -238,6 +241,43 @@
     .scores { grid-template-columns: 1fr; }
     .bar-row { grid-template-columns: 90px 1fr 38px; }
   }
+
+  /* ── 뉴스 인사이트 ─────────────────────────────── */
+  .quota { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 10px; }
+  .quota-title { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; color: var(--text-secondary); margin-bottom: 8px; }
+  .quota-row { display: grid; grid-template-columns: 1fr 70px auto; gap: 8px; align-items: center; margin-bottom: 6px; }
+  .q-name { font-size: 0.75rem; color: var(--text-primary); }
+  .q-note { display: block; font-size: 0.66rem; color: var(--text-secondary); }
+  .q-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .q-bar span { display: block; height: 100%; background: var(--series-7); border-radius: 3px; }
+  .q-num { font-size: 0.7rem; color: var(--text-secondary); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .q-num em { font-style: normal; font-weight: 700; color: var(--series-5); margin-left: 4px; }
+  .quota-foot { font-size: 0.68rem; color: var(--text-secondary); margin-top: 6px; }
+
+  .trend-box { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; }
+  .trend-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+  .trend-head h3 { font-size: 0.95rem; margin: 0; }
+  .trend-when { font-size: 0.68rem; color: var(--text-secondary); }
+  .trend-pending { font-size: 0.76rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
+  .pending-badge { display: inline-block; font-size: 0.62rem; font-weight: 700; color: var(--page); background: var(--series-7); border-radius: 999px; padding: 2px 8px; margin-right: 6px; vertical-align: 1px; }
+  .trend-plan { display: grid; grid-template-columns: 96px 1fr; gap: 8px; align-items: start; padding: 6px 0; border-top: 1px dashed var(--border); }
+  .tp-name { font-size: 0.74rem; font-weight: 600; color: var(--text-primary); }
+  .tp-kw { display: flex; flex-wrap: wrap; gap: 4px; }
+  .kw { font-size: 0.68rem; color: var(--text-secondary); background: var(--page); border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; }
+  .trend-row { display: grid; grid-template-columns: 96px 1fr auto; gap: 8px; align-items: center; padding: 5px 0; }
+  .tr-name { font-size: 0.74rem; font-weight: 600; }
+  .tr-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .tr-bar span { display: block; height: 100%; background: var(--series-7); border-radius: 4px; }
+  .tr-num { font-size: 0.72rem; font-variant-numeric: tabular-nums; color: var(--text-secondary); white-space: nowrap; }
+  .tr-num em { font-style: normal; font-weight: 700; margin-left: 5px; }
+  .tr-num em.up { color: var(--series-5); }
+  .tr-num em.down { color: var(--series-6); }
+
+  .src-list { margin: 0; padding-left: 18px; }
+  .src-list li { margin-bottom: 7px; }
+  .src-list a { color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border); }
+  .src-list a:hover { border-bottom-color: var(--series-7); color: var(--series-7); }
+  .src-list .press { display: inline-block; font-size: 0.66rem; color: var(--text-secondary); margin-left: 6px; }
 </style>
 </head>
 <body>
@@ -251,6 +291,7 @@
   <button class="tab active" data-tab="notes">📚 롱블랙 노트</button>
   <button class="tab" data-tab="news">📮 데일리 뉴스</button>
   <button class="tab" data-tab="gs">🏨 GS 데일리</button>
+  <button class="tab" data-tab="insight">🔍 뉴스 인사이트</button>
 </div>
 
 <div id="view-notes">
@@ -289,6 +330,12 @@
   <div class="brief" id="gs-brief" style="border-left-color: var(--series-5, #1baf7a);"></div>
   <div id="gs-cards"></div>
 </div><!-- /view-gs -->
+
+<div id="view-insight" style="display:none;">
+  <div class="brief" id="insight-brief" style="border-left-color: var(--series-7, #4a3aa7);"></div>
+  <div id="insight-trend"></div>
+  <div id="insight-cards"></div>
+</div><!-- /view-insight -->
 
 <footer>새 노트가 추가될 때마다 이 대시보드가 업데이트됩니다 · 적합도는 세 관점 기준 0~5점</footer>
 
@@ -1621,16 +1668,179 @@ function renderGs() {
   }).join("");
 }
 
+
+/* ── 뉴스 인사이트: 소노·레저 데일리 + 주간 검색어 트렌드 ────────── */
+const INSIGHT_DAILY = [
+  {
+    date: "2026-07-30",
+    headline: "소노가 경주 감포로 44곳 체제를 완성한 날, 롯데호텔은 객실을 줄이고 의료시설을 넣었습니다",
+    sono: [
+      { t: "소노인터내셔널, '소노벨 경주 감포' 운영…호텔 44곳 체제", p: "뉴스핌", u: "https://news.google.com/rss/articles/CBMiXEFVX3lxTFA1RGx0cHNKM0sxSmNMX2tQWlZRdkoyeEo3VUpwZ3pKMTgzeVE0WU9ubmhRaG1sWG1JOUtra2hLMk5CcXpTUEJuUVZoY21tdkxpbFRFVjRsbzRHTDZF" },
+      { t: "베스트웨스턴이 소노벨로… 경주 감포 오션뷰 호텔 리브랜딩", p: "디지털조선", u: "https://news.google.com/rss/articles/CBMihwFBVV95cUxPX01ZUDNBTU13REFOQk9iQ2paMmt2Y3ZnNkE1UkVSbHQtWWRxY3hwYWZ6blFMNHFhdVRSTlRJSFROdFFkUGk4YmxJOVlPd1Bvc3Y4c1llRmNSbzNUdWVTTHdrVkhHdGtpZk9hRlZFQWEzOHFGRzEtbEtodC1KdWVkWjV6ZmJ2c0k" },
+      { t: "낮에는 마술·밤에는 라이브…소노리조트 8곳서 여름 축제", p: "뉴스탭", u: "https://news.google.com/rss/articles/CBMibEFVX3lxTE9jT1llSE43elhBc2tiQVRnWmlTdXdOQTZ1WmxjTlkyMndidFJBWFBINDRZd0tieXJSclNhSDJKRDkwZVQ4NjdJUVIwNmhnR19NQjJUbGk3b2dRckZoZmNFYXRXVHdhOWF4cFMwSw" },
+      { t: "소노인터내셔널, 여름 성수기 콘텐츠 강화…전국 리조트서 '매직 아트 페스타'", p: "더퍼스트미디어", u: "https://news.google.com/rss/articles/CBMidEFVX3lxTE4zRzBWcG5YblRIZVB4bFdwNlZ1Qlo3eFRRUEFKX0ZhVElwb2xWZmF1Q29uUE52V1dRUVZJMnNkTnNlMWlZMEpfQlRQRXhCdEZoNUdQOU5RaUdyVldqUWROdm0xaXdhVnJPemhxbDQ2MG1oZzEx" },
+      { t: "롯데온, 8월 여행박람회 개최…최대 18% 할인 (소노벨 천안 참여)", p: "전자신문", u: "https://news.google.com/rss/articles/CBMiTkFVX3lxTE5sX0ktYUw1TTEtckdVZV9ZclBzSWVGN2VEbG5WelBzNkdZLUgyc1IyN1FadmJmMGZrSXZ5OGVpLWNLcldUSmhzMWQ2Z2ZDQQ" },
+      { t: "소노인터내셔널, 반려견과 무더위 날릴 '소노펫 서머브리즈 라운지' 운영", p: "서울경제TV", u: "https://news.google.com/rss/articles/CBMiZEFVX3lxTFB5Z0FLdVpJOXFEcm1RTmVBOVc4bjZtaXppR2hXN2REN2ZsWi16eEhCMmwzR1FTakNhZkl4ZWRDNHY2ZmRveTZ2d2llUkM0dUkxRzRkdXlwQjhma3FhY1VKdFRzRGM" },
+      { t: "[산업 콕!] 내수 살리는 여름 호캉스…호텔·리조트업계 뛴다", p: "공공뉴스", u: "https://news.google.com/rss/articles/CBMibkFVX3lxTE1HaUVHZzk1NE5fb2pzQUZpcWVBVktMWmZFZFFRZU9CTm9kWnhSbFNVSXBfOHYyV2d1YXE2YjN3WE9tZXROcEtUYXE5TmlSbVJsNWNrYUtQY1E1OFBNbHJRTjNnLWpqbF9heENzanFB" },
+      { t: "미래에셋, 코스피 대어 상장 '3연타'…소노 이어 SFC·에스텍 출격", p: "조선비즈", u: "https://news.google.com/rss/articles/CBMihwFBVV95cUxPVWsta2l2SE55enV0Z3RnNjNHRk45aG5SQy1qM3ZLQXNDVXBHVURBVGhYZFI1TmJVc0c2TWtXcVZmLUpqWFRJN1NFTVhBY21YcHRtelo0R1oyQmx4X1NQT3VOV24tWDEwV0VmYWNpcHJDSHJFc3BzalhJZmxNU0pGMXM1ZkVNU3c" }
+    ],
+    leisure: [
+      { t: "롯데호텔 서울, 객실 줄이고 의료시설 넣는다", p: "땅집고", u: "https://news.google.com/rss/articles/CBMif0FVX3lxTE9tRndqbXR6NDUyTjRaR3UyV2pmc3VaQkNvbk1GX0hIS3FKQVAxUmhPOXVpV3pjamlyUk5rQ19EWXYtMDVHVXd5N3BOZXE3UEdueDVpQTduZUU5WmdwdmtuN2hBX055bUF0LWphYWt2RFh0OXNYbUVIbWxEcGRpREE" },
+      { t: "호텔업계, 단순 투숙 벗어나 '선택적 프리미엄' 겨냥 F&B·웰니스 강화", p: "메트로신문", u: "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBuOXNkMWttdTRwNzhhQlJNT0M3VXNVZ2pGbTdYMFBoY0VSUXFJM3g1SUQzcmo2WjVROGc0MkJnUXZmbjdzdmVSM0hPWnQ3b25YY1V1eGNDZHY1Tk1USW9tRQ" },
+      { t: "호텔신라, 글로벌 호텔 브랜드 가치 '21위'…두 계단 상승", p: "더구루", u: "https://news.google.com/rss/articles/CBMiY0FVX3lxTE4xNjNkOUJ2ZUs1SlYwaWE0YnZkaC14Q1ZXZC1iWXdIM0RrNWRJczRDN0wzS0NKXzItRk9mUVlsbE5ycTFpTVgyb2VqNVNWYUtVUVcxNm5xdWs1c1lOUWlWVmlmVQ" },
+      { t: "하이원리조트, '아시아모델페스티벌-페이스 오브 코리아' 성료", p: "아시아경제", u: "https://news.google.com/rss/articles/CBMiYEFVX3lxTE5NMVk0a1BzdE9pdXNMWTRjaFlRaWxCbWxHN1l1RDd5ams2d3pwNzBfN3k0UjJTYUtBaW9VWjdmMTRGbTFxSm9SVnZZSFVUSEg4UVBDbmVwUDRhX0pfQ2ZFLQ" },
+      { t: "강원랜드, 8개 안전공공기관과 하이원리조트 합동 점검", p: "연합뉴스", u: "https://news.google.com/rss/articles/CBMiYEFVX3lxTE5GSDZkdGVkQ2JQMHZtSUNzdWNMWk9RUUoyNXk5WXdlTTZrMlpuQ3cwV20tbG95UVlsUmxYbnRmQkZYNGxmQ2ZoRk9MLXlKM0ZmcVZZY2ROUHp5RHhkNFZsTQ" },
+      { t: "인스파이어, 日 VIP 겨냥 'K뷰티 패키지' 출시…관광객·객실 수익 기대", p: "더구루", u: "https://news.google.com/rss/articles/CBMiY0FVX3lxTE9POW1lX0lWQVdvcV9ESkx5eXZidWk3NTEyeXhQcUd1NEQ3azNLOWZ3NDJLaGNfeXlqNi1MSUFCb2NReVRsYS1kZk1fMUhKa2kzeWFzUnlCNkp6ejNTT3h6WFBzSQ" },
+      { t: "롯데호텔 부산, 온라인몰 '이숍' 첫 오프라인 매장 오픈", p: "호텔앤레스토랑", u: "https://news.google.com/rss/articles/CBMidkFVX3lxTE1NZTE3ZkhJLUJzZTFnRC1jSGZaS2Z0N19rUmFCdEVsaEl2Tl9BeU9OZjZfNWwycmZRaDNXT2F0RDFrRjhwTmhjTGFaSWZvRjhSakVrVHRZMUhLUkdJeHloSWU0d1lYUm50OERTMmc2WGFiOFRnakE" },
+      { t: "괌 호텔 5곳, '괌 썸머 페이백' 프로모션…최대 79% 할인", p: "열린뉴스통신", u: "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1ES1JreUVsRHVwMVBrcHcxWDM0Y2I1MlhzMl9GNGlwWjBndzh1UmxreV9CV240b2NCWHIzaEJiVV8wNWZiMUJwWDZpd2ZvTmo1SnJfTDhUTGRyS09Nd3JIeFU5aUgyQQ" }
+    ],
+    insight: "오늘 두 기사를 나란히 놓으면 업계가 어디로 가는지 보입니다. 소노는 <strong>베스트웨스턴을 소노벨로 리브랜딩</strong>해 44곳 체제를 만들었습니다 — 짓지 않고 운영제휴로 브랜드를 늘리는 자산경량(asset-light) 확장입니다. 같은 날 롯데호텔은 <strong>객실을 줄이고 의료시설을 넣었습니다</strong> — 방을 파는 사업에서 체류 목적을 파는 사업으로 카테고리를 옮기는 시도입니다. 하나는 '더 많은 간판', 하나는 '다른 목적'. 여기에 매직 아트 페스타(8곳 동시 콘텐츠), 소노펫 라운지(반려견), 인스파이어 K뷰티 패키지(인바운드 VIP)를 더하면 공통점이 하나 나옵니다 — <strong>객실 단가가 아니라 '왜 오는가'로 경쟁이 옮겨가는 중</strong>입니다. 롱블랙 노트와 겹치는 지점도 분명합니다. 솔트앤스톤(2065)이 '데오드란트'라는 기존 카테고리를 향수 대체재로 재정의해 이겼듯, 롯데호텔의 의료시설은 같은 문법입니다. 제품을 바꾸지 않고 <strong>맥락을 바꿔 경쟁 상대를 갈아치우는 것</strong> — 이번 주 브랜딩 렌즈의 실물 사례로 볼 만합니다."
+  }
+];
+
+/* 주간 검색어 트렌드 · 쇼핑인사이트 (네이버 API HUB 연결 시 자동 주간 갱신) */
+const TREND_PLAN = {
+  status: "pending",
+  updated: null,
+  groups: [
+    { name: "리조트·호캉스", keywords: ["호캉스", "리조트", "워터파크", "풀빌라"] },
+    { name: "소노 브랜드",   keywords: ["소노벨", "쏠비치", "소노캄", "소노펠리체"] },
+    { name: "경쟁 브랜드",   keywords: ["한화리조트", "하이원리조트", "휘닉스파크", "롯데호텔"] },
+    { name: "예약 채널",     keywords: ["여기어때", "야놀자", "트립닷컴", "아고다"] },
+    { name: "내 관심 주제",  keywords: ["사이드프로젝트", "퍼스널브랜딩", "1인창업", "브랜드마케팅"] }
+  ],
+  rows: []
+};
+
+/* 무료 한도 대비 호출량 설계치 (공식 문서 기준) */
+const API_QUOTA = [
+  { name: "검색 API (뉴스+블로그)", used: 480, cap: 775000, unit: "월", note: "일 16콜 · 일 한도 25,000" },
+  { name: "검색어 트렌드",          used: 4,   cap: 30000,  unit: "월", note: "주 1콜 · 그룹 5개 동시" },
+  { name: "쇼핑 인사이트",          used: 4,   cap: 30000,  unit: "월", note: "주 1콜 · 분야별 트렌드" }
+];
+
+function renderInsightBrief() {
+  const latest = INSIGHT_DAILY[0];
+  const q = API_QUOTA.map(a => {
+    const pct = (a.used / a.cap * 100);
+    const p = pct < 0.01 ? "<0.01" : pct.toFixed(2);
+    return `<div class="quota-row">
+      <div class="q-name">${a.name}<span class="q-note">${a.note}</span></div>
+      <div class="q-bar"><span style="width:${Math.max(pct, 0.6)}%"></span></div>
+      <div class="q-num">${a.used.toLocaleString()} / ${a.cap.toLocaleString()} <em>${p}%</em></div>
+    </div>`;
+  }).join("");
+  document.getElementById("insight-brief").innerHTML = `
+    <div class="b-kicker" style="color: var(--series-7);">뉴스 인사이트 · 매일 갱신</div>
+    <h2>소노 · 레저 데일리 + 주간 검색어</h2>
+    <div class="b-period">최신: ${latest ? latest.date : "-"} · 소노 ${latest ? latest.sono.length : 0}건 · 레저 ${latest ? latest.leisure.length : 0}건</div>
+    <p>매일 소노·호텔·레저 기사를 원문 링크째로 쌓고, 주 1회 네이버 검색어 트렌드로 &ldquo;사람들이 실제로 무엇을 찾는가&rdquo;를 겹쳐 봅니다.
+    <a class="link" href="https://cksals00-ai.github.io/gs_daily_trend_news_public_temp/index.html" target="_blank">뉴스 원본 →</a></p>
+    <div class="quota">
+      <div class="quota-title">무료 한도 대비 호출량 설계치</div>
+      ${q}
+      <div class="quota-foot">세 API 모두 무료 구간 안에서만 돕니다. 10배로 늘려도 유료 구간에 닿지 않습니다.</div>
+    </div>`;
+}
+
+function renderTrend() {
+  const el = document.getElementById("insight-trend");
+  const live = TREND_PLAN.status === "live" && TREND_PLAN.rows.length;
+  const body = live
+    ? TREND_PLAN.rows.map(r => {
+        const up = r.delta >= 0;
+        return `<div class="trend-row">
+          <div class="tr-name">${r.group}</div>
+          <div class="tr-bar"><span style="width:${Math.min(r.cur, 100)}%"></span></div>
+          <div class="tr-num">${r.cur.toFixed(1)}<em class="${up ? "up" : "down"}">${up ? "▲" : "▼"}${Math.abs(r.delta).toFixed(1)}</em></div>
+        </div>`;
+      }).join("")
+    : `<div class="trend-pending">
+         <span class="pending-badge">연결 대기</span>
+         네이버 API HUB에서 <strong>Client ID / Client Secret</strong>을 발급받아 넣으면, 아래 5개 그룹이 매주 자동으로 채워집니다.
+         (호출 1회 · 그룹 5개 동시 조회)
+       </div>
+       ${TREND_PLAN.groups.map(g => `
+         <div class="trend-plan">
+           <div class="tp-name">${g.name}</div>
+           <div class="tp-kw">${g.keywords.map(k => `<span class="kw">${k}</span>`).join("")}</div>
+         </div>`).join("")}`;
+  el.innerHTML = `
+    <div class="trend-box">
+      <div class="trend-head">
+        <h3>주간 검색어 트렌드</h3>
+        <span class="trend-when">${live ? TREND_PLAN.updated + " 기준" : "매주 일요일 갱신 예정"}</span>
+      </div>
+      ${body}
+    </div>`;
+}
+
+function insightDayCard(d) {
+  const list = (title, arr, color) => `
+    <details open>
+      <summary><span class="dot" style="background:${color};width:8px;height:8px;border-radius:50%;display:inline-block;"></span>${title} <span class="wk-count">${arr.length}건</span></summary>
+      <div class="body">
+        <ul class="src-list">
+          ${arr.map(i => `<li><a href="${i.u}" target="_blank" rel="noopener">${i.t}</a><span class="press">${i.p}</span></li>`).join("")}
+        </ul>
+      </div>
+    </details>`;
+  return `
+    <details class="ncard">
+      <summary>
+        <div class="nc-meta"><span>${d.date}</span><span>뉴스 인사이트</span></div>
+        <div class="issue-chips">
+          <div class="issue-chip" style="font-weight:600;"><span>${d.headline}</span></div>
+          ${[d.sono[0], d.sono[1]].filter(Boolean).map(i => `<div class="issue-chip"><span>${i.t}</span></div>`).join("")}
+        </div>
+        <div class="nc-open-hint">탭해서 전체 기사 보기 ▾</div>
+      </summary>
+      <div class="ncard-body">
+        ${list("소노", d.sono, "var(--series-5)")}
+        ${list("호텔·레저 업계", d.leisure, "var(--series-3)")}
+        ${d.insight ? `<details open><summary>오늘의 인사이트</summary><div class="body"><p style="font-size:0.85rem;color:var(--text-secondary);">${d.insight}</p></div></details>` : ""}
+      </div>
+    </details>`;
+}
+
+function renderInsight() {
+  const el = document.getElementById("insight-cards");
+  const sorted = INSIGHT_DAILY.slice().sort((a, b) => b.date.localeCompare(a.date));
+  const groups = new Map();
+  sorted.forEach(d => {
+    const ws = weekStartOf(d.date);
+    const key = ws.toISOString().slice(0, 10);
+    if (!groups.has(key)) groups.set(key, { start: ws, days: [] });
+    groups.get(key).days.push(d);
+  });
+  const todayKey = weekStartOf(new Date().toISOString().slice(0, 10)).toISOString().slice(0, 10);
+  const weeks = [...groups.entries()].sort((a, b) => b[0].localeCompare(a[0]));
+  el.innerHTML = weeks.map(([key, g], i) => {
+    const end = new Date(g.start); end.setDate(end.getDate() + 6);
+    const isNow = key === todayKey;
+    return `
+      <details class="week" ${i === 0 ? "open" : ""}>
+        <summary>${fmtWeek(g.start, end)} <span class="wk-count">${g.days.length}일치</span>${isNow ? '<span class="wk-now" style="background: var(--series-7);">이번 주</span>' : ""}</summary>
+        ${g.days.map(insightDayCard).join("")}
+      </details>`;
+  }).join("");
+}
+
 document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
   document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
   t.classList.add("active");
   document.getElementById("view-notes").style.display = t.dataset.tab === "notes" ? "" : "none";
   document.getElementById("view-news").style.display = t.dataset.tab === "news" ? "" : "none";
   document.getElementById("view-gs").style.display = t.dataset.tab === "gs" ? "" : "none";
+  document.getElementById("view-insight").style.display = t.dataset.tab === "insight" ? "" : "none";
 }));
 
 renderGsBrief();
 renderGs();
+
+renderInsightBrief();
+renderTrend();
+renderInsight();
 
 renderBrief();
 renderStats();
