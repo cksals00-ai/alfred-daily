@@ -6,7 +6,7 @@
 <title>롱블랙 데일리 대시보드</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
     color-scheme: light;
@@ -476,15 +476,15 @@
                   color: var(--text-secondary); margin: 22px 0 8px; }
 
   /* ── 오늘(1면) : 신문 1면 레이아웃 ───────────────────────── */
-  :root { --fp-serif: "Noto Serif KR", ui-serif, Georgia, "Batang", serif; }
+  :root { --fp-display: "Noto Sans KR", system-ui, -apple-system, "Malgun Gothic", sans-serif; }
   #view-today { margin-bottom: 8px; }
   .fp-mast { margin: 2px 0 18px; }
   .fp-rule-thick { height: 6px; background: var(--text-primary); border-radius: 1px; }
   .fp-rule-thin { height: 1px; background: var(--border); margin-top: 10px; }
-  .fp-word { font-family: var(--fp-serif); font-weight: 900; font-size: 2.15rem;
+  .fp-word { font-family: var(--fp-display); font-weight: 900; font-size: 2.15rem;
              line-height: 1.1; letter-spacing: -0.02em; margin: 12px 0 6px; color: var(--text-primary); }
   @media (min-width: 660px) { .fp-word { font-size: 3.1rem; text-align: center; } }
-  .fp-tagline { font-family: var(--fp-serif); font-size: 0.78rem; color: var(--text-secondary);
+  .fp-tagline { font-family: var(--fp-display); font-size: 0.78rem; color: var(--text-secondary);
                 letter-spacing: 0.02em; }
   @media (min-width: 660px) { .fp-tagline { text-align: center; } }
   .fp-flag { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
@@ -499,7 +499,7 @@
               padding: 16px 16px 12px; margin-bottom: 20px; background: var(--surface-1); }
   .fp-verse-lab { font-size: 0.66rem; font-weight: 800; letter-spacing: 0.14em;
                   color: var(--text-secondary); margin-bottom: 9px; }
-  .fp-verse blockquote { margin: 0; font-family: var(--fp-serif); font-weight: 600;
+  .fp-verse blockquote { margin: 0; font-family: var(--fp-display); font-weight: 600;
                   font-size: 1.18rem; line-height: 1.62; color: var(--text-primary); }
   @media (min-width: 660px) { .fp-verse blockquote { font-size: 1.45rem; text-align: center; }
                               .fp-verse-lab { text-align: center; } .fp-verse cite { text-align: center; } }
@@ -512,13 +512,13 @@
 
   .fp-lead { border-top: 3px solid var(--text-primary); padding-top: 14px; margin-bottom: 22px; }
   .fp-kicker { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em; margin-bottom: 8px; }
-  .fp-head { font-family: var(--fp-serif); font-weight: 900; font-size: 1.5rem; line-height: 1.32;
+  .fp-head { font-family: var(--fp-display); font-weight: 900; font-size: 1.5rem; line-height: 1.32;
              letter-spacing: -0.015em; margin: 0 0 8px; color: var(--text-primary); }
   @media (min-width: 660px) { .fp-head { font-size: 2.05rem; } }
   .fp-deck { font-size: 0.79rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
-  .fp-body { font-family: var(--fp-serif); font-size: 0.92rem; line-height: 1.85; color: var(--text-primary); }
+  .fp-body { font-family: var(--fp-display); font-size: 0.92rem; line-height: 1.85; color: var(--text-primary); }
   @media (min-width: 660px) { .fp-body { column-count: 2; column-gap: 26px; } }
-  .fp-body::first-letter { float: left; font-family: var(--fp-serif); font-weight: 900;
+  .fp-body::first-letter { float: left; font-family: var(--fp-display); font-weight: 900;
              font-size: 3.1rem; line-height: 0.86; padding: 4px 8px 0 0; color: var(--text-primary); }
   .fp-scores { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
   .fp-score { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem;
@@ -533,10 +533,10 @@
   .fp-grid { display: grid; grid-template-columns: 1fr; gap: 18px; align-items: start; }
   @media (min-width: 660px) { .fp-grid { grid-template-columns: 1fr 1fr; gap: 22px 26px; } }
   .fp-box { border-top: 1px solid var(--text-primary); padding-top: 12px; }
-  .fp-box-head { font-family: var(--fp-serif); font-weight: 900; font-size: 1.02rem;
+  .fp-box-head { font-family: var(--fp-display); font-weight: 900; font-size: 1.02rem;
              margin-bottom: 2px; }
   .fp-when { font-size: 0.66rem; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 10px; }
-  .fp-lede { font-family: var(--fp-serif); font-size: 0.88rem; line-height: 1.7;
+  .fp-lede { font-family: var(--fp-display); font-size: 0.88rem; line-height: 1.7;
              color: var(--text-primary); margin-bottom: 10px; }
   .fp-list { list-style: none; margin: 0; padding: 0; }
   .fp-list li { font-size: 0.79rem; line-height: 1.62; color: var(--text-secondary);
