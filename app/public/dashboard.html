@@ -361,6 +361,98 @@
                margin-top: 10px; border-top: 1px solid var(--border); padding-top: 8px; }
   .perf-note b { color: var(--text-primary); }
   .perf-note i { display: inline-block; width: 9px; height: 9px; vertical-align: -1px; }
+
+  /* ── 리아 인스타그램 ────────────────────────────── */
+  :root { --ria: #c0348c; --ria-2: #2a78d6; }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) { --ria: #d94aa0; --ria-2: #3987e5; }
+  }
+  :root[data-theme="dark"] { --ria: #d94aa0; --ria-2: #3987e5; }
+
+  .ria-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 2px 0 6px; }
+  .ria-head h2 { font-size: 1.12rem; margin: 0; }
+  .ria-when { font-size: 0.68rem; color: var(--text-secondary); }
+  .ria-goal { font-size: 0.79rem; line-height: 1.75; color: var(--text-secondary);
+              border-left: 3px solid var(--ria); background: var(--surface-1);
+              border-radius: 0 8px 8px 0; padding: 11px 14px; margin-bottom: 14px; }
+  .ria-goal b { color: var(--text-primary); }
+
+  .ria-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 16px; }
+  .ria-step { font: inherit; text-align: left; cursor: pointer; background: var(--surface-1);
+              border: 1px solid var(--border); border-radius: 10px; padding: 9px 10px;
+              color: var(--text-secondary); line-height: 1.35; }
+  .ria-step em { font-style: normal; font-weight: 700; font-size: 0.62rem; display: block;
+                 color: var(--muted); letter-spacing: 0.08em; margin-bottom: 3px; }
+  .ria-step span { display: block; font-size: 0.62rem; color: var(--muted); margin-top: 2px; }
+  .ria-step.active { border-color: var(--ria); color: var(--text-primary);
+                     box-shadow: inset 0 -2px 0 var(--ria); font-weight: 700; }
+  .ria-step.active em { color: var(--ria); }
+
+  .ria-hero { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px;
+              padding: 16px 16px 14px; margin-bottom: 12px; }
+  .ria-hero .rh-label { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.05em; }
+  .ria-hero .rh-num { font-size: 2.5rem; font-weight: 900; line-height: 1.05;
+                      font-variant-numeric: tabular-nums; margin: 2px 0 1px; }
+  .ria-hero .rh-sub { font-size: 0.74rem; color: var(--text-secondary); }
+  .ria-hero .rh-sub b.up { color: var(--dv-pos); }
+  .ria-hero .rh-sub b.down { color: var(--dv-neg); }
+
+  .ria-tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+  @media (min-width: 660px) { .ria-tiles { grid-template-columns: repeat(4, 1fr); } }
+  .ria-tile { background: var(--surface-1); border: 1px solid var(--border);
+              border-radius: 10px; padding: 10px 12px; }
+  .ria-tile .rt-l { font-size: 0.65rem; color: var(--muted); }
+  .ria-tile .rt-v { font-size: 1.18rem; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .ria-tile .rt-s { font-size: 0.63rem; color: var(--text-secondary); }
+
+  .ria-bars { display: grid; gap: 7px; }
+  .ria-bar { display: grid; grid-template-columns: 74px 1fr auto; gap: 9px; align-items: center; }
+  .ria-bar .rb-n { font-size: 0.72rem; font-weight: 600; }
+  .ria-bar .rb-t { height: 9px; background: var(--chip-bg); border-radius: 0 4px 4px 0; overflow: hidden; }
+  .ria-bar .rb-f { display: block; height: 100%; background: var(--ria); border-radius: 0 4px 4px 0; }
+  .ria-bar .rb-v { font-size: 0.71rem; font-variant-numeric: tabular-nums; color: var(--text-secondary); white-space: nowrap; }
+
+  .ria-heat { display: grid; grid-template-columns: 26px repeat(8, 1fr); gap: 2px; }
+  .ria-heat .hh { font-size: 0.56rem; color: var(--muted); text-align: center; align-self: center; }
+  .ria-heat .hc { aspect-ratio: 1; border-radius: 3px; background: var(--chip-bg); }
+  .ria-heat .hc[data-v] { background: var(--ria); }
+
+  .ria-post { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: baseline;
+              padding: 8px 0; border-top: 1px dashed var(--border); }
+  .ria-post:first-child { border-top: 0; }
+  .ria-post a { font-size: 0.76rem; color: var(--text-primary); text-decoration: none;
+                border-bottom: 1px solid var(--border); }
+  .ria-post a:hover { color: var(--ria); border-bottom-color: var(--ria); }
+  .ria-post .rp-m { font-size: 0.66rem; color: var(--text-secondary); white-space: nowrap;
+                    font-variant-numeric: tabular-nums; }
+  .ria-post .rp-k { display: block; font-size: 0.6rem; color: var(--muted); margin-top: 2px; }
+
+  .ria-hyp { border-top: 1px dashed var(--border); padding: 10px 0 2px; }
+  .ria-hyp:first-of-type { border-top: 0; }
+  .ria-hyp h5 { font-size: 0.8rem; margin: 0 0 4px; }
+  .ria-hyp p { font-size: 0.73rem; color: var(--text-secondary); line-height: 1.7; margin: 0 0 4px; }
+  .ria-hyp .rh-k { font-size: 0.63rem; color: var(--muted); }
+  .ria-hyp .rh-k b { color: var(--ria); font-weight: 700; }
+
+  .ria-flow { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+  .ria-flow span { font-size: 0.66rem; background: var(--chip-bg); color: var(--text-secondary);
+                   border-radius: 999px; padding: 3px 9px; }
+  .ria-flow span::after { content: " →"; color: var(--muted); }
+  .ria-flow span:last-child::after { content: ""; }
+
+  .ria-do { display: grid; grid-template-columns: 20px 1fr; gap: 8px; align-items: start;
+            padding: 8px 0; border-top: 1px dashed var(--border); }
+  .ria-do:first-of-type { border-top: 0; }
+  .ria-do .rd-i { font-size: 0.62rem; font-weight: 700; color: var(--ria); }
+  .ria-do .rd-t { font-size: 0.76rem; font-weight: 600; }
+  .ria-do .rd-w { display: block; font-size: 0.67rem; color: var(--text-secondary);
+                  line-height: 1.65; margin-top: 2px; font-weight: 400; }
+
+  .ria-wait { text-align: center; color: var(--text-secondary); font-size: 0.78rem;
+              line-height: 1.8; background: var(--surface-1); border: 1px dashed var(--border);
+              border-radius: 12px; padding: 26px 20px; }
+  .ria-wait b { color: var(--text-primary); }
+  .ria-wait code { font-size: 0.72rem; background: var(--chip-bg); border-radius: 4px; padding: 1px 5px; }
   .lg-fcst { border-left: 2px solid var(--text-primary); height: 10px !important; width: 2px !important; }
   .lg-bud { border-left: 2px dashed var(--muted); height: 10px !important; width: 2px !important; }
   .perf-more > summary { font-size: 0.7rem; color: var(--text-secondary); cursor: pointer;
@@ -592,6 +684,7 @@
   <button class="tab" data-tab="news">📮 데일리 뉴스</button>
   <button class="tab" data-tab="gs">🏨 GS 데일리</button>
   <button class="tab" data-tab="insight">🔍 뉴스 인사이트</button>
+  <button class="tab" data-tab="ria">📸 리아 인스타</button>
 </div>
 
 <div id="view-today"></div><!-- /view-today -->
@@ -643,6 +736,24 @@
   <div id="insight-trend"></div>
   <div id="insight-cards"></div>
 </div><!-- /view-insight -->
+
+<div id="view-ria" style="display:none;">
+  <div class="ria-head">
+    <h2>리아 인스타그램</h2>
+    <span class="ria-when" id="ria-when"></span>
+  </div>
+  <p class="ria-goal">이번 분기 1순위 <b>팔로워 · 도달 성장</b> — 아래 세 단계는 그 목표 하나를 기준으로 읽는다.</p>
+
+  <div class="ria-steps">
+    <button class="ria-step active" data-step="perf"><em>1</em>성과관리<span>무슨 일이 일어났나</span></button>
+    <button class="ria-step" data-step="strat"><em>2</em>전략<span>무엇이 계정을 키우나</span></button>
+    <button class="ria-step" data-step="exec"><em>3</em>실행단계<span>이번 주에 뭘 하나</span></button>
+  </div>
+
+  <div id="ria-perf" class="ria-panel"></div>
+  <div id="ria-strat" class="ria-panel" style="display:none;"></div>
+  <div id="ria-exec" class="ria-panel" style="display:none;"></div>
+</div><!-- /view-ria -->
 
 <footer>새 노트가 추가될 때마다 이 대시보드가 업데이트됩니다 · 적합도는 세 관점 기준 0~5점</footer>
 
@@ -3369,15 +3480,230 @@ function renderToday() {
       인사이트 ${(typeof INSIGHT_DAILY !== "undefined" ? INSIGHT_DAILY.length : 0)}일치</div>`;
 }
 
+/* ══ 리아 인스타그램 ═════════════════════════════════════
+   데이터는 crawler/insta.py 가 Meta Graph API 로 받아 insta.json 에 넣는다.
+   토큰은 서버쪽 파일에만 있고 이 HTML 에는 들어오지 않는다.
+   숫자가 없으면 없다고 적는다 — 추정으로 채우지 않는다.            */
+let RIA = null;
+let RIA_STEP = "perf";
+
+const RIA_FMT = { REELS: "릴스", FEED: "피드", CAROUSEL_ALBUM: "캐러셀", IMAGE: "단일 이미지",
+                  VIDEO: "동영상", STORY: "스토리", AD: "광고" };
+const _rf = t => RIA_FMT[t] || t || "기타";
+
+function _riaWait(what) {
+  return `<div class="ria-wait">아직 <b>${_esc(what)}</b>를 계산할 데이터가 없어요.<br>
+    Meta Graph API 토큰과 IG 비즈니스 계정 ID를 <code>.insta.json</code>에 넣으면
+    매일 아침 7시 수집분부터 이 자리가 실제 숫자로 채워집니다.</div>`;
+}
+
+function _riaHeat(heat) {
+  if (!heat || !heat.length) return "";
+  const mx = Math.max.apply(null, heat.map(h => h.reach || 0)) || 1;
+  const at = (wd, blk) => heat.find(h => h.wd === wd && h.blk === blk);
+  let out = `<div class="ria-heat"><div class="hh"></div>`;
+  for (let b = 0; b < 8; b++) out += `<div class="hh">${b * 3}</div>`;
+  for (let d = 0; d < 7; d++) {
+    out += `<div class="hh">${"월화수목금토일"[d]}</div>`;
+    for (let b = 0; b < 8; b++) {
+      const c = at(d, b);
+      out += c
+        ? `<div class="hc" data-v="1" style="opacity:${(0.22 + 0.78 * (c.reach / mx)).toFixed(2)}"
+             title="${"월화수목금토일"[d]} ${b * 3}~${b * 3 + 3}시 · ${c.n}건 · 중앙 도달 ${_fmt(c.reach)}"></div>`
+        : `<div class="hc"></div>`;
+    }
+  }
+  return out + `</div>`;
+}
+
+function renderRiaPerf() {
+  const host = document.getElementById("ria-perf");
+  if (!host) return;
+  if (!RIA) { host.innerHTML = _riaWait("성과"); return; }
+  const s = RIA.sum || {}, a = RIA.account || {}, days = RIA.daily || [];
+  const net = s.net30, up = net > 0;
+
+  const tile = (l, v, sub) =>
+    `<div class="ria-tile"><div class="rt-l">${l}</div><div class="rt-v">${v}</div>
+     <div class="rt-s">${sub}</div></div>`;
+
+  host.innerHTML =
+    `<div class="ria-hero">
+       <div class="rh-label">팔로워 · @${_esc(a.username || "-")}</div>
+       <div class="rh-num">${_fmt(s.followers)}</div>
+       <div class="rh-sub">최근 30일 ${net == null ? "순증 자료 없음"
+         : `<b class="${up ? "up" : "down"}">${up ? "+" : ""}${_fmt(net)}명</b>`}</div>
+     </div>
+     <div class="ria-tiles">
+       ${tile("30일 도달", _fmt(s.reach30), "중복 제외 계정 수")}
+       ${tile("도달률", s.reachRate == null ? "-" : s.reachRate + "%", "일평균 도달 ÷ 팔로워")}
+       ${tile("30일 게시물", _fmt(s.posts30), "발행 빈도")}
+       ${tile("프로필 조회", _fmt((s.totals || {}).profile_views ?? null), "30일 합계")}
+     </div>
+
+     <div class="perf-sec"><h4>일별 도달 <span>최근 30일</span></h4><div id="ria-c-reach"></div>
+       <div class="perf-note">도달은 목표 지표 그 자체다. 팔로워 증가는 대개 도달이 먼저 늘고
+         며칠 뒤에 따라온다 — 아래 팔로워 곡선과 시차를 두고 비교할 것.</div></div>
+
+     <div class="perf-sec"><h4>일별 팔로워 순증 <span>최근 30일</span></h4><div id="ria-c-fol"></div>
+       <div class="perf-note">도달 차트와 축을 합치지 않았다. 단위가 다른 두 수치를 한 축에 겹치면
+         실제로는 없는 상관관계가 눈에 보이기 때문이다.</div></div>
+
+     <div class="perf-sec"><h4>포맷별 중앙 도달 <span>게시물 ${_fmt((RIA.media || []).length)}건</span></h4>
+       ${(s.formats && s.formats.length) ? `<div class="ria-bars">${
+         s.formats.map(f => {
+           const mx = Math.max.apply(null, s.formats.map(x => x.reach || 0)) || 1;
+           return `<div class="ria-bar"><div class="rb-n">${_esc(_rf(f.type))}</div>
+             <div class="rb-t"><span class="rb-f" style="width:${((f.reach || 0) / mx * 100).toFixed(1)}%"></span></div>
+             <div class="rb-v">${_fmt(f.reach)} <span style="color:var(--muted)">·${f.n}건</span></div></div>`;
+         }).join("")}</div>` : `<div class="kw-empty">포맷별 자료 없음</div>`}
+       <div class="perf-note">평균이 아니라 <b>중앙값</b>이다. 인스타는 한 편이 터지면 평균이 통째로
+         끌려가서, 평균으로 보면 "릴스가 좋다"는 결론이 한 편 때문에 만들어진다.</div></div>
+
+     <div class="perf-sec"><h4>발행 시간대 × 요일 <span>칸 색이 진할수록 중앙 도달이 높다</span></h4>
+       ${_riaHeat(s.heat) || `<div class="kw-empty">발행 시간 자료 없음</div>`}
+       <div class="perf-note">빈 칸은 성과가 나쁜 게 아니라 <b>한 번도 안 올려본 시간</b>이다.
+         진한 칸을 늘리기 전에 빈 칸을 한 번씩 시험해볼 것.</div></div>
+
+     <div class="perf-sec"><h4>도달 상위 게시물</h4>
+       ${(s.top && s.top.length) ? s.top.map(p =>
+         `<div class="ria-post"><div>
+            <a href="${_esc(p.permalink || "#")}" target="_blank" rel="noopener">${_esc(p.caption || "(캡션 없음)")}</a>
+            <span class="rp-k">${_esc(p.date)} · ${_esc(_rf(p.type))}</span></div>
+          <div class="rp-m">도달 ${_fmt(p.reach)}<span class="rp-k">저장 ${_fmt(p.saved ?? null)} · 공유 ${_fmt(p.shares ?? null)}</span></div>
+        </div>`).join("") : `<div class="kw-empty">게시물 자료 없음</div>`}
+       <div class="perf-note">좋아요가 아니라 <b>저장·공유</b>를 같이 본다. 알고리즘이 비팔로워에게
+         퍼뜨릴지 결정할 때 보는 신호가 그쪽이라, 도달 성장의 선행지표다.</div></div>`;
+
+  const lbl = days.map(d => d.date.slice(5).replace("-", "/"));
+  const rc = document.getElementById("ria-c-reach"), fc = document.getElementById("ria-c-fol");
+  if (rc && days.some(d => d.reach != null))
+    _lineChart(rc, lbl, [{ name: "도달", color: "var(--ria)", data: days.map(d => d.reach || 0) }],
+      { zero: true, alt: "일별 도달 추이" });
+  else if (rc) rc.innerHTML = `<div class="kw-empty">도달 자료 없음</div>`;
+  if (fc && days.some(d => d.follower_count != null))
+    _lineChart(fc, lbl, [{ name: "팔로워 순증", color: "var(--ria-2)", data: days.map(d => d.follower_count || 0) }],
+      { alt: "일별 팔로워 순증" });
+  else if (fc) fc.innerHTML = `<div class="kw-empty">팔로워 순증 자료 없음</div>`;
+}
+
+function renderRiaStrat() {
+  const host = document.getElementById("ria-strat");
+  if (!host) return;
+  const s = (RIA && RIA.sum) || {};
+  const F = s.formats || [];
+  const best = F[0], worst = F.length > 1 ? F[F.length - 1] : null;
+  const gap = (best && worst && worst.reach) ? Math.round(best.reach / worst.reach * 10) / 10 : null;
+
+  const posts = (RIA && RIA.media) || [];
+  const saveRate = posts.filter(p => p.reach && p.saved)
+    .map(p => ({ p, r: p.saved / p.reach * 100 })).sort((x, y) => y.r - x.r).slice(0, 3);
+
+  const lede = !RIA
+    ? `데이터가 붙으면 이 자리에 <b>"지금 계정을 키우고 있는 것이 무엇인가"</b>가 한 문장으로 계산돼 들어옵니다.`
+    : best
+      ? `최근 ${_fmt(posts.length)}건 기준 <b>${_esc(_rf(best.type))}</b>의 중앙 도달이 가장 높다${
+          gap ? ` — 최하위 <b>${_esc(_rf(worst.type))}</b>의 <b>${gap}배</b>` : ""}.
+          팔로워·도달이 1순위인 분기에는 여기에 발행량을 몰아주는 게 맞다.`
+      : `포맷별로 비교할 만큼 게시물이 쌓이지 않았다. 포맷당 최소 5건은 있어야 중앙값이 의미를 갖는다.`;
+
+  const hyp = [
+    { h: "도달은 비팔로워에서 온다",
+      p: "팔로워가 늘려면 팔로워 아닌 사람에게 먼저 닿아야 한다. 저장·공유가 그 통로를 여는 신호이므로, 좋아요율이 아니라 저장률(저장÷도달)을 주 지표로 삼는다.",
+      k: saveRate.length ? `현재 저장률 상위: ${saveRate.map(x => `<b>${(x.r).toFixed(1)}%</b>`).join(" · ")}`
+                         : "검증 지표: 저장률 — 데이터 연결 후 자동 계산" },
+    { h: "포맷보다 첫 3초가 변수다",
+      p: "같은 포맷 안에서도 도달 편차가 크다면 원인은 포맷이 아니라 도입부다. 같은 주제·같은 포맷으로 훅만 바꾼 두 편을 붙여 찍어 비교한다.",
+      k: best ? `기준선: ${_esc(_rf(best.type))} 중앙 도달 <b>${_fmt(best.reach)}</b>`
+              : "검증 방법: A/B 2편 · 같은 주제, 훅만 교체" },
+    { h: "빈 시간대는 실패가 아니라 미탐색이다",
+      p: "히트맵에서 색이 없는 칸은 성과가 나쁜 시간이 아니라 한 번도 시도하지 않은 시간이다. 잘 되는 시간을 반복하기 전에, 비어 있는 칸 두 개를 이번 달에 시험한다.",
+      k: "검증 방법: 미탐색 슬롯 2개 × 각 2편" },
+  ];
+
+  host.innerHTML =
+    `<p class="ria-goal">${lede}</p>
+     <div class="perf-sec"><h4>작동 가설 <span>각각 근거 지표와 검증 방법을 붙였다</span></h4>
+       ${hyp.map(x => `<div class="ria-hyp"><h5>${x.h}</h5><p>${x.p}</p>
+          <div class="rh-k">${x.k}</div></div>`).join("")}
+       <div class="perf-note">가설은 셋을 넘기지 않는다. 동시에 네 개를 건드리면 무엇이 효과였는지
+         끝내 알 수 없고, 다음 분기에도 같은 자리에서 다시 묻게 된다.</div></div>
+
+     <div class="perf-sec"><h4>안 보고 있는 것 <span>일부러 비워둔 자리</span></h4>
+       <div class="perf-note" style="border-top:0;padding-top:0;margin-top:0">
+         <b>좋아요 수</b>는 지표에서 뺐다 — 도달이 늘면 자동으로 따라 오르는 종속 지표라
+         따로 관리하면 같은 걸 두 번 세는 셈이 된다.<br>
+         <b>경쟁 계정 벤치마크</b>는 API로 남의 계정 인사이트를 못 가져와서 비워뒀다.
+         필요하면 알프레드가 직접 본 숫자를 넣는 칸을 만들어 줄 수 있다.<br>
+         <b>예약·매출 전환</b>은 이번 분기 1순위가 아니라 뺐다. 목표가 바뀌면 이 탭도 바꾼다.</div></div>`;
+}
+
+function renderRiaExec() {
+  const host = document.getElementById("ria-exec");
+  if (!host) return;
+  const s = (RIA && RIA.sum) || {};
+  const best = (s.formats || [])[0];
+  const posts30 = s.posts30;
+  const pace = posts30 == null ? null : (posts30 / 30 * 7).toFixed(1);
+
+  const dos = [
+    { t: `${best ? _rf(best.type) : "주력 포맷"} 주 3편 발행`,
+      w: `1순위가 도달 성장이므로 발행량이 가장 확실한 레버다. ${
+        pace ? `현재 주당 <b>${pace}편</b> 속도 — 여기서 출발해 3편으로 맞춘다.`
+             : "현재 속도는 데이터 연결 후 채워진다."}` },
+    { t: "저장률 상위 주제 재활용",
+      w: "가장 많이 저장된 게시물의 주제를 각도만 바꿔 다시 만든다. 새 주제를 찾는 것보다 이미 검증된 주제를 다시 쓰는 쪽이 실패 확률이 낮다." },
+    { t: "미탐색 시간대 2칸 시험",
+      w: "히트맵에서 비어 있는 요일×시간 두 칸을 골라 각 2편씩 올린다. 결과가 나쁘면 그 칸은 닫고, 좋으면 다음 달 정규 슬롯으로 승격한다." },
+    { t: "발행 후 72시간 리뷰",
+      w: "인스타 도달은 사흘 안에 대부분 결정된다. 사흘 뒤 도달·저장·공유를 적어두고, 그 기록만으로 다음 주 주제를 정한다." },
+    { t: "월말 가설 판정",
+      w: "전략 탭의 가설 세 개를 살렸는지 죽였는지 한 줄씩 적는다. 판정하지 않은 가설은 다음 달에도 그대로 남아 자리만 차지한다." },
+  ];
+
+  host.innerHTML =
+    `<div class="ria-flow"><span>아이디어</span><span>촬영</span><span>편집</span><span>예약</span><span>발행</span><span>72h 리뷰</span></div>
+     <div class="perf-sec"><h4>이번 주 실행 <span>전략 탭의 가설을 그대로 옮긴 것</span></h4>
+       ${dos.map((d, i) => `<div class="ria-do"><div class="rd-i">${i + 1}</div>
+          <div><div class="rd-t">${d.t}<span class="rd-w">${d.w}</span></div></div></div>`).join("")}
+       <div class="perf-note">실행 항목은 성과관리에서 관찰한 것 → 전략에서 세운 가설 → 여기 행동,
+         이 순서로만 들어온다. 어느 단계에도 걸리지 않은 아이디어는 아직 실행 항목이 아니다.</div></div>
+
+     <div class="perf-sec"><h4>루틴 <span>고정</span></h4>
+       <div class="perf-note" style="border-top:0;padding-top:0;margin-top:0">
+         매일 아침 7시 — 이 탭의 숫자가 자동 갱신된다(아침뉴스 재현본과 같은 작업).<br>
+         매주 일요일 — 주간 브리핑에 이번 주 도달·팔로워 순증 한 줄이 함께 들어간다.<br>
+         매월 말 — 가설 셋을 판정하고 다음 달 가설을 새로 세운다.</div></div>`;
+}
+
+function renderRia() {
+  const w = document.getElementById("ria-when");
+  if (w) w.textContent = RIA && RIA.asOf ? RIA.asOf + " 기준" : "데이터 연결 대기";
+  renderRiaPerf(); renderRiaStrat(); renderRiaExec();
+}
+
+function riaStep(name) {
+  RIA_STEP = name;
+  document.querySelectorAll(".ria-step").forEach(b => b.classList.toggle("active", b.dataset.step === name));
+  ["perf", "strat", "exec"].forEach(v => {
+    const n = document.getElementById("ria-" + v);
+    if (n) n.style.display = v === name ? "" : "none";
+  });
+  if (name === "perf") renderRiaPerf();     // 숨어 있는 동안은 폭이 0이라 차트를 다시 그린다
+}
+document.querySelectorAll(".ria-step").forEach(b =>
+  b.addEventListener("click", () => riaStep(b.dataset.step)));
+
 function goTab(name) {
   document.querySelectorAll(".tab").forEach(x => x.classList.toggle("active", x.dataset.tab === name));
-  ["today", "notes", "news", "gs", "insight"].forEach(v => {
+  ["today", "notes", "news", "gs", "insight", "ria"].forEach(v => {
     const n = document.getElementById("view-" + v);
     if (n) n.style.display = v === name ? "" : "none";
   });
   const hd = document.querySelector("header");
   if (hd) hd.style.display = name === "today" ? "none" : "";
   if (name === "gs") renderGsPerf();
+  if (name === "ria" && RIA_STEP === "perf") renderRiaPerf();
   window.scrollTo(0, 0);
 }
 
@@ -3399,6 +3725,11 @@ renderLatestNote();
 renderNewsBrief();
 renderNews();
 renderLatestNews();
+
+renderRia();
+fetch("insta.json").then(r => r.ok ? r.json() : null)
+  .then(d => { if (d && d.account) { RIA = d; renderRia(); } })
+  .catch(() => {});
 
 renderToday();
 goTab("today");
