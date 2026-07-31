@@ -440,8 +440,14 @@
 
   .ria-post { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: baseline;
               padding: 8px 0; border-top: 1px dashed var(--border); }
+  /* 리텐션 값의 출처 — 수급값인지 대시보드 계산값인지 항상 밝힌다 */
+  .ria-src { font-size: 0.66rem; line-height: 1.6; color: var(--muted);
+             margin: -4px 0 12px; padding-left: 2px; }
+  .ria-src b { color: var(--text-secondary); }
   .ria-post.dim { opacity: 0.5; }
   .ria-post .rp-t { font-size: 0.76rem; color: var(--text-primary); }
+  .ria-post .rp-w { display: block; margin-top: 3px; font-size: 0.64rem;
+                    line-height: 1.55; color: var(--muted); max-width: 34ch; }
   .ria-post .rp-x { color: var(--text-secondary); font-weight: 600; }
   .ria-post:first-child { border-top: 0; }
   .ria-post a { font-size: 0.76rem; color: var(--text-primary); text-decoration: none;
@@ -3520,8 +3526,11 @@ const RIA_FMT = { REELS: "릴스", FEED: "피드", CAROUSEL_ALBUM: "캐러셀", 
 const _rf = t => RIA_FMT[t] || t || "기타";
 
 /* 리텐션 = 평균 시청시간 ÷ 영상 길이. 판정 ≥40% 성공 / 20~40% 보통 / <20% 실패.
-   이 값은 대시보드에서만 계산한다 — 수급처와 반올림이 갈리지 않게 하기 위해서다. */
-const RIA_OK = 40, RIA_MID = 20;
+   단일 원천 규칙(기획실장 0731 회신): 리텐션을 계산하는 곳은 수급 파이프라인 한 곳이다.
+   수급 데이터에 retention 값이 있으면 그대로 쓰고, 없을 때만 임시로 계산한 뒤
+   화면에 "계산값"이라고 밝힌다. ret_hold=true 면 수급처가 판정을 보류한 것이라 비운다.
+   RIA_MIN — 유효 표본이 이보다 적으면 그 숫자를 "중앙값"이라 부르지 않는다. */
+const RIA_OK = 40, RIA_MID = 20, RIA_MIN = 3;
 
 function _riaMed(xs) {
   const v = xs.filter(x => x != null && isFinite(x)).sort((a, b) => a - b);
@@ -3548,9 +3557,13 @@ function _riaPosts() {
     comments: m.comments, contaminated: false, permalink: m.permalink
   }));
   return raw.map(p => {
-    const ret = (p.len_s > 0 && p.avg_watch_s != null) ? p.avg_watch_s / p.len_s * 100 : null;
+    const sup = p.retention != null && isFinite(p.retention) ? +p.retention : null;
+    const calc = (p.len_s > 0 && p.avg_watch_s != null) ? p.avg_watch_s / p.len_s * 100 : null;
+    // 수급값 우선 → 보류면 비움 → 그래도 없으면 계산값(출처를 화면에 밝힌다)
+    const ret = sup != null ? sup : (p.ret_hold ? null : calc);
     return Object.assign({}, p, {
-      ret, bad: !!p.contaminated,
+      ret, src: sup != null ? "수급" : (ret != null ? "계산" : null),
+      bad: !!p.contaminated,
       d: (p.ts || "").slice(0, 10), fmt: p.format || "기타"
     });
   }).sort((a, b) => (a.ts || "").localeCompare(b.ts || ""));
@@ -3572,7 +3585,10 @@ function _riaLock(posts) {
   for (let i = posts.length - 1; i >= 0 && posts[i].fmt === cur; i--) since = posts[i].d;
   const day = 86400000;
   const el = Math.max(0, Math.round((Date.now() - new Date(since + "T00:00:00+09:00")) / day));
-  return { fmt: cur, since, elapsed: el, left: Math.max(0, 14 - el) };
+  // 판정으로 고정한 포맷인지, 그냥 최근에 올린 신규 포맷인지 구분한다 —
+  // 오염 표본 하나로 14일을 잠그면 시험도 판정도 못 하게 된다
+  const judged = posts.filter(p => p.fmt === cur && !p.bad && p.ret != null).length;
+  return { fmt: cur, since, elapsed: el, left: Math.max(0, 14 - el), judged };
 }
 
 function _riaWait(what) {
@@ -3600,12 +3616,17 @@ function renderRiaPerf() {
   const dirty = posts.filter(p => p.bad).length;
   const noRet = posts.filter(p => p.ret == null).length;
   const med = _riaMed(clean.map(p => p.ret));
-  const V = _riaVerdict(med);
+  // 표본이 RIA_MIN 미만이면 숫자는 보여주되 판정하지 않는다 — 1건짜리를 "중앙값"이라 부르지 않기 위해서다
+  const thin = clean.length > 0 && clean.length < RIA_MIN;
+  const V = thin ? { k: "none", t: "판정 보류" } : _riaVerdict(med);
+  const calcN = posts.filter(p => p.src === "계산").length;
   const cnt = { ok: 0, mid: 0, bad: 0 };
   clean.forEach(p => cnt[_riaVerdict(p.ret).k]++);
   const F = _riaByFormat(posts), lock = _riaLock(posts);
-  const medReach = _riaMed(posts.filter(p => !p.bad).map(p => p.reach));
-  const medSave = _riaMed(clean.filter(p => p.reach && p.saved != null).map(p => p.saved / p.reach * 100));
+  const reachSet = posts.filter(p => !p.bad && p.reach != null);
+  const medReach = _riaMed(reachSet.map(p => p.reach)), reachN = reachSet.length;
+  const saveSet = clean.filter(p => p.reach && p.saved != null);
+  const medSave = _riaMed(saveSet.map(p => p.saved / p.reach * 100)), saveN = saveSet.length;
 
   const tile = (l, v, sub) =>
     `<div class="ria-tile"><div class="rt-l">${l}</div><div class="rt-v">${v}</div>
@@ -3613,18 +3634,30 @@ function renderRiaPerf() {
 
   host.innerHTML =
     `<div class="ria-hero rv-${V.k}">
-       <div class="rh-label">리텐션 중앙값 · @${_esc(a.username || "-")}</div>
+       <div class="rh-label">${thin ? "리텐션" : "리텐션 중앙값"} · @${_esc(a.username || "-")}</div>
        <div class="rh-num">${med == null ? "측정 불가" : med.toFixed(1) + "%"}</div>
        <div class="rh-sub">${med == null
          ? `시청시간이 아직 수급되지 않았다 — <b>추정치로 채우지 않는다</b>.`
-         : `<b class="rv">${V.t}</b> · 판정선 ${RIA_MID}% / ${RIA_OK}% · 유효 표본 ${clean.length}건`}</div>
+         : thin
+           ? `<b class="rv">${V.t}</b> · 판정 가능한 표본이 <b>${clean.length}건</b>뿐이라 중앙값이라 부르지 않는다.
+              ${RIA_MIN}건이 쌓이기 전에는 이 숫자로 포맷을 살리거나 죽이지 않는다.`
+           : `<b class="rv">${V.t}</b> · 판정선 ${RIA_MID}% / ${RIA_OK}% · 유효 표본 ${clean.length}건`}</div>
      </div>
+     <div class="ria-src">리텐션 출처 — ${calcN
+       ? `수급값 ${posts.filter(p => p.src === "수급").length}건 · <b>대시보드 계산값 ${calcN}건</b>
+          (단일 원천 규칙상 계산은 임시다. 파이프라인이 값을 실으면 그쪽으로 넘긴다.)`
+       : `전부 <b>수급값</b>이다. 대시보드는 다시 계산하지 않는다.`}</div>
      <div class="ria-tiles">
        ${tile("판정 분포", `${cnt.ok}·${cnt.mid}·${cnt.bad}`, "성공 · 보통 · 실패")}
-       ${tile("포맷 고정", lock ? (lock.left > 0 ? `D-${lock.left}` : "만료") : "-",
-              lock ? `${_esc(lock.fmt)} · ${lock.since.slice(5)}부터 ${lock.elapsed}일째` : "자료 없음")}
+       ${tile("포맷 고정", lock ? (!lock.judged ? "미확정" : lock.left > 0 ? `D-${lock.left}` : "만료") : "-",
+              lock ? (!lock.judged
+                ? `${_esc(lock.fmt)} · 판정 표본 0건 — 시험 중이지 고정 아님`
+                : `${_esc(lock.fmt)} · ${lock.since.slice(5)}부터 ${lock.elapsed}일째`) : "자료 없음")}
        ${tile("팔로워", _fmt(a.followers), "결과 지표 · 관리 대상 아님")}
-       ${tile("중앙 도달", _fmt(medReach == null ? null : Math.round(medReach)), "결과 지표 · 참고용")}
+       ${tile(reachN >= RIA_MIN ? "중앙 도달" : "도달",
+              _fmt(medReach == null ? null : Math.round(medReach)),
+              reachN >= RIA_MIN ? "결과 지표 · 참고용"
+                                : `표본 ${reachN}건 — 중앙값이라 부르지 않는다`)}
      </div>
 
      <div class="perf-sec"><h4>게시물별 리텐션 <span>발행순 · 오염 표본 제외</span></h4>
@@ -3648,15 +3681,20 @@ function renderRiaPerf() {
              ${p.permalink ? `<a href="${_esc(p.permalink)}" target="_blank" rel="noopener">${_esc(p.title || "(제목 없음)")}</a>`
                            : `<span class="rp-t">${_esc(p.title || "(제목 없음)")}</span>`}
              <span class="rp-k">${_esc((p.d || "").slice(5))} · ${_esc(p.fmt)}${
-               p.bad ? ` · <b class="rp-x">오염 표본</b>` : ""}</span></div>
-           <div class="rp-m">${p.ret == null ? "리텐션 미수급" : p.ret.toFixed(1) + "%"}
+               p.bad ? ` · <b class="rp-x">오염 표본</b>` : ""}</span>
+             ${p.note ? `<span class="rp-w">${_esc(p.note)}</span>` : ""}</div>
+           <div class="rp-m">${p.ret == null
+               ? (p.ret_hold ? "리텐션 보류" : "리텐션 미수급")
+               : p.ret.toFixed(1) + "%"}
              <span class="rp-k"><b class="rv-${v.k}">${v.t}</b>${
+               p.src === "계산" ? " · 계산값" : ""}${
                p.bad ? " · 판정 제외" : ""}</span></div></div>`;
        }).join("") : `<div class="kw-empty">게시물 자료 없음</div>`}
        <div class="perf-note">오염 표본은 지우지 않고 흐리게 남긴다 — 6시간 안에 겹쳐 올렸거나,
          올린 지 3시간이 안 됐거나, 21~23시 밖에 올린 건이다. 보이되 판정에는 안 넣는다.
          ${noRet ? `<br>시청시간이 안 들어온 <b>${noRet}건</b>은 0으로 채우지 않고 "미수급"으로 남겼다.` : ""}
-         ${medSave != null ? `<br>참고 — 저장률 중앙값 <b>${medSave.toFixed(1)}%</b>.` : ""}</div></div>`;
+         ${medSave != null && saveN >= RIA_MIN
+           ? `<br>참고 — 저장률 중앙값 <b>${medSave.toFixed(1)}%</b>.` : ""}</div></div>`;
 
   const rc = document.getElementById("ria-c-ret");
   if (rc && clean.length >= 2)
@@ -3730,10 +3768,16 @@ function renderRiaExec() {
       : `판정에 필요한 표본(포맷당 3건)이 모자란다. <b>지금은 아무 포맷도 버리지 않는다.</b>`;
 
   const dos = [
-    { t: lock ? `${_rf(lock.fmt)} 고정 유지 (D-${lock.left})` : "주력 포맷 고정",
-      w: lock && lock.left > 0
-        ? `${lock.since.slice(5)}부터 ${lock.elapsed}일째다. 남은 ${lock.left}일 동안 포맷은 건드리지 않는다 — 리텐션이 떨어져도 바꾸는 건 훅이지 포맷이 아니다.`
-        : `고정 기간이 끝났거나 시작 기준일이 없다. 다음 판정을 내리고 그날부터 14일을 다시 센다.` },
+    { t: !lock ? "주력 포맷 고정"
+         : !lock.judged ? `${_rf(lock.fmt)} — 고정하지 않는다`
+         : `${_rf(lock.fmt)} 고정 유지 (D-${lock.left})`,
+      w: !lock
+        ? `발행 자료가 없다. 첫 편을 21~23시에 올리는 것부터가 시작이다.`
+        : !lock.judged
+          ? `가장 최근에 올린 건 ${_esc(lock.fmt)}이지만 판정 가능한 표본이 0건이다. 시험 중인 포맷을 14일 잠그면 시험도 판정도 못 한다 — 깨끗한 3건이 쌓일 때까지는 고정 대상이 아니다.`
+          : lock.left > 0
+            ? `${lock.since.slice(5)}부터 ${lock.elapsed}일째다. 남은 ${lock.left}일 동안 포맷은 건드리지 않는다 — 리텐션이 떨어져도 바꾸는 건 훅이지 포맷이 아니다.`
+            : `고정 기간이 끝났다. 다음 판정을 내리고 그날부터 14일을 다시 센다.` },
     { t: "훅만 바꾼 A/B 2편",
       w: "같은 주제·같은 포맷·같은 길이로 도입부 3초만 다르게 두 편. 변수를 하나로 묶어야 다음 주에 무엇이 효과였는지 말할 수 있다." },
     { t: "발행 슬롯 21~23시 고정",
