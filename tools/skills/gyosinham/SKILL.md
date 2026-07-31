@@ -90,14 +90,17 @@ mcp__Google_Drive__search_files
 
 ```
 mcp__Google_Drive__create_file
-  name: "[알프레드데일리→기획실장] 2026-07-31 리아 인스타 실측치 수급 협조요청"
+  title: "[알프레드데일리→기획실장] 2026-07-31 리아 인스타 실측치 수급 협조요청"
   parentId: "1ZOR25aVJ7j2T3l_0qsZty4iCwjXZoc8a"
-  content: "<마크다운 본문>"
+  textContent: "<마크다운 본문 — 파일 경로나 셸 표현식이 아니라 본문 전체를 그대로>"
   contentMimeType: "text/markdown"     ← 구글 문서로 자동 변환됨
 ```
 
 `fileSize: 1` 로 응답이 와도 실패가 아니다. 마크다운→구글 문서 변환 시 나오는
 표시일 뿐이므로, **다시 만들지 말고 `read_file_content`로 되읽어 확인**한다.
+**되읽기는 생략하지 않는다** — 본문이 비어 있어도 성공 응답이 온다. 드라이브
+MCP에는 수정·삭제 도구가 없어서, 잘못 올린 문서는 되돌릴 수 없고 정정본을
+새로 올린 뒤 사람에게 삭제를 부탁하는 수밖에 없다.
 
 #### 제목 규칙
 
