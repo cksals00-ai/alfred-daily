@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>롱블랙 데일리 대시보드</title>
+<title>Alfred Daily</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
     color-scheme: light;
@@ -206,6 +206,23 @@
   .nc-open-hint { font-size: 0.68rem; color: var(--muted); margin-top: 6px; }
   details.ncard[open] .nc-open-hint { display: none; }
   .ncard-body { padding: 0 16px 16px; border-top: 1px solid var(--grid); }
+  /* ── 재현본(자동 수집) ─────────────────────────────── */
+  details.rep { margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 10px; }
+  details.rep > summary { cursor: pointer; list-style: none; font-size: 0.72rem; color: var(--muted);
+                          display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  details.rep > summary::-webkit-details-marker { display: none; }
+  .rep-badge { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.02em; padding: 2px 6px;
+               border-radius: 5px; border: 1px solid var(--border); color: var(--text-secondary); }
+  .rep-mine { color: var(--series-6); font-weight: 700; }
+  .rep-list { list-style: none; padding: 0; margin: 10px 0 0; }
+  .rep-list li { padding: 7px 0; border-top: 1px solid var(--grid); font-size: 0.8rem;
+                 line-height: 1.55; color: var(--text-secondary); }
+  .rep-list li:first-child { border-top: none; }
+  .rep-cat { font-size: 0.64rem; color: var(--muted); margin-right: 6px; }
+  .rep-list a { color: var(--text-primary); text-decoration: none; font-weight: 600; }
+  .rep-list a:hover { text-decoration: underline; }
+  .rep-w { font-size: 0.64rem; color: var(--muted); margin-left: 6px; }
+  .rep-note { font-size: 0.68rem; color: var(--muted); margin-top: 10px; line-height: 1.6; }
   .card .meta { font-size: 0.72rem; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; }
   .card h3 { font-size: 1.05rem; margin: 6px 0 2px; line-height: 1.4; }
   .ncard-body .subject { font-size: 0.8rem; color: var(--text-secondary); margin: 12px 0 10px; }
@@ -476,14 +493,16 @@
                   color: var(--text-secondary); margin: 22px 0 8px; }
 
   /* ── 오늘(1면) : 신문 1면 레이아웃 ───────────────────────── */
-  :root { --fp-display: "Noto Sans KR", system-ui, -apple-system, "Malgun Gothic", sans-serif; }
+  :root { --fp-display: "Noto Sans KR", system-ui, -apple-system, "Malgun Gothic", sans-serif;
+          --fp-masthead: "Anton", "Noto Sans KR", system-ui, sans-serif; }
   #view-today { margin-bottom: 8px; }
   .fp-mast { margin: 2px 0 18px; }
   .fp-rule-thick { height: 6px; background: var(--text-primary); border-radius: 1px; }
   .fp-rule-thin { height: 1px; background: var(--border); margin-top: 10px; }
-  .fp-word { font-family: var(--fp-display); font-weight: 900; font-size: 2.15rem;
-             line-height: 1.1; letter-spacing: -0.02em; margin: 12px 0 6px; color: var(--text-primary); }
-  @media (min-width: 660px) { .fp-word { font-size: 3.1rem; text-align: center; } }
+  .fp-word { font-family: var(--fp-masthead); font-weight: 400; font-size: 2.9rem;
+             line-height: 1.02; letter-spacing: 0.005em; margin: 12px 0 6px; color: var(--text-primary);
+             text-transform: uppercase; }
+  @media (min-width: 660px) { .fp-word { font-size: 4.4rem; text-align: center; letter-spacing: 0.01em; } }
   .fp-tagline { font-family: var(--fp-display); font-size: 0.78rem; color: var(--text-secondary);
                 letter-spacing: 0.02em; }
   @media (min-width: 660px) { .fp-tagline { text-align: center; } }
@@ -1838,6 +1857,7 @@ function toggleTheme() {
 /* ── 데일리 뉴스: 카톡 아침뉴스 요약 (매일 추가) ─────────────── */
 /* 뉴스 데이터는 news.json에서 로드 */
 let NEWS = [];
+const DIGEST = {};   // date -> { date, items[] }  (crawler/digest.py 산출물)
 
 /* 이번 주 뉴스 브리핑: 매주 일요일 갱신 */
 const NEWS_WEEKLY = {
@@ -1876,15 +1896,50 @@ function renderNewsBrief() {
     <ul>${b.relevant.map(r => `<li>${r}</li>`).join("")}</ul>`;
 }
 
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+/* 재현본 — crawler/digest.py가 네이버 뉴스 검색으로 매일 아침 자동 수집한 것.
+   진짜 아침뉴스와 나란히 두고 무엇을 놓쳤는지 비교하는 용도. */
+function newsReproHtml(date) {
+  const d = DIGEST[date];
+  if (!d || !d.items || !d.items.length) return "";
+  const mine = d.items.filter(i => i.mine && i.mine.length);
+  return `
+    <details class="rep">
+      <summary>
+        <span class="rep-badge">재현본 · 자동 수집</span>
+        <span>${d.items.length}꼭지</span>
+        ${mine.length ? `<span class="rep-mine">★ 내 축 ${mine.length}건</span>` : '<span>내 축 해당 없음</span>'}
+        <span style="margin-left:auto;">펼치기 ▾</span>
+      </summary>
+      <ul class="rep-list">
+        ${d.items.map(i => `
+          <li>
+            <span class="rep-cat">${esc(i.cat)}</span>
+            ${i.mine && i.mine.length ? '<span class="rep-mine">★ </span>' : ""}
+            <a href="${esc(i.link)}" target="_blank" rel="noopener">${esc(i.title)}</a>
+            <span class="rep-w">보도 ${i.weight}건</span>
+          </li>`).join("")}
+      </ul>
+      <div class="rep-note">348일치 아침뉴스에서 역산한 편집 규칙(정치 5 · 국제 3 · 경제 2 · 사건 2 · 부동산/날씨/사회/문화 각 1)으로 배열했습니다. 보도 건수 = 그 사건을 다룬 매체 수 = 중요도. ★는 여행·숙박·레저·유가·환율·폭염 등 알프레드 축에 걸린 꼭지.</div>
+    </details>`;
+}
+
 function newsDayCard(n, open) {
+  const hasText = !!(n.text && n.text.trim());
   return `
     <details class="ncard" ${open ? "open" : ""}>
       <summary>
-        <div class="nc-meta"><span>${n.date}</span><span>간추린 아침뉴스</span></div>
-        <div class="issue-chips">${newsIssues(n.text).map(t => `<div class="issue-chip"><span>${t}</span></div>`).join("")}</div>
+        <div class="nc-meta"><span>${n.date}</span><span>${hasText ? "간추린 아침뉴스" : "재현본만"}</span></div>
+        ${hasText ? `<div class="issue-chips">${newsIssues(n.text).map(t => `<div class="issue-chip"><span>${t}</span></div>`).join("")}</div>` : ""}
         <div class="nc-open-hint">탭해서 전체 뉴스 보기 ▾</div>
       </summary>
-      <div class="ncard-body"><div class="news-full">${n.text.replace(/^📮[^\n]*\n?/, "").trim()}</div></div>
+      <div class="ncard-body">
+        ${hasText ? `<div class="news-full">${n.text.replace(/^📮[^\n]*\n?/, "").trim()}</div>` : ""}
+        ${newsReproHtml(n.date)}
+      </div>
     </details>`;
 }
 
@@ -1912,7 +1967,10 @@ function newsWeeksHtml(days) { // days: 최신순
 function renderNews() {
   const el = document.getElementById("news-cards");
   if (!NEWS.length) { el.innerHTML = '<div class="empty">뉴스 데이터를 불러오는 중...</div>'; return; }
-  const sorted = NEWS.slice().sort((a, b) => b.date.localeCompare(a.date));
+  // 재현본만 있고 아직 원문을 안 붙인 날짜도 카드로 세운다
+  const have = new Set(NEWS.map(n => n.date));
+  const extra = Object.keys(DIGEST).filter(d => !have.has(d)).map(d => ({ date: d, text: "" }));
+  const sorted = NEWS.concat(extra).sort((a, b) => b.date.localeCompare(a.date));
   const months = new Map(); // "2026-07" -> days
   sorted.forEach(n => {
     const mk = n.date.slice(0, 7);
@@ -1939,7 +1997,13 @@ function renderNews() {
   });
 }
 
-fetch("news.json").then(r => r.json()).then(data => { NEWS = data; renderNews(); renderLatestNews(); renderToday(); }).catch(() => {});
+fetch("digest.json")
+  .then(r => r.ok ? r.json() : [])
+  .then(arr => { (arr || []).forEach(d => { DIGEST[d.date] = d; }); })
+  .catch(() => {})
+  .then(() => fetch("news.json").then(r => r.json()))
+  .then(data => { NEWS = data; renderNews(); renderLatestNews(); renderToday(); })
+  .catch(() => {});
 
 /* ── GS 데일리: SONO & TRINITY GS팀 리포트 요약본 (매일 추가, 최신이 앞) ── */
 const GS_DAILY = [
@@ -3191,7 +3255,7 @@ function renderToday() {
   const mast = `
     <div class="fp-mast">
       <div class="fp-rule-thick"></div>
-      <h1 class="fp-word">롱블랙 데일리</h1>
+      <h1 class="fp-word">Alfred Daily</h1>
       <div class="fp-tagline">노트 · 아침뉴스 · GS 실적 · 소노 인사이트를 한 장에</div>
       <div class="fp-flag">
         <span>${_fpDate(issueDate)}</span><span class="sep">|</span>
