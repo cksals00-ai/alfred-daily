@@ -1943,6 +1943,40 @@ fetch("news.json").then(r => r.json()).then(data => { NEWS = data; renderNews();
 
 /* ── GS 데일리: SONO & TRINITY GS팀 리포트 요약본 (매일 추가, 최신이 앞) ── */
 const GS_DAILY = [
+{
+  "date": "2026-07-31",
+  "kpiLine": "7월 OTB 95.4% 마감 임박 · 매출 104.4% · 8월 FCST 103.7% · TOP 쏠비치남해 +151.1%",
+  "kpi": [
+    "<strong>7월</strong> OTB 85,256실 · 달성 95.4% · 당일 순증 +105 · FCST 84,837실 (94.9%)",
+    "<strong>8월</strong> OTB 72,718실 · 달성 75.4% · 당일 순증 +1,384 · FCST 99,918실 (103.7%)",
+    "<strong>9월</strong> OTB 15,058실 · 달성 22.1% · 당일 순증 +577 · FCST 70,116실 (102.9%)",
+    "<strong>7월 매출</strong> 104.4% · RN YoY +5.0% · ADR YoY +16.5%",
+    "<strong>TOP</strong> 쏠비치남해 +151.1% · 소노문해운대 +34.2% · 델피노 +17.0%",
+    "<strong>BOTTOM</strong> 소노휴양평 -25.1% · 캄비발디 -28.1% · 소노벨단양 -31.7%"
+  ],
+  "sono": [
+    "<strong>소노 마곡 사옥, '대명' 지우고 '트리니티' 품었다</strong> — 새 정체성 공개",
+    "<strong>\"리조트 47년, 항공 2년… 소노가 치른 확장의 값\"</strong> — 확장 전략 심층 기사, 호반도 '리조트-항공 결합' 추격 보도",
+    "2026 소노 매직 아트 페스타 — 전국 8개 리조트 여름 축제 (10여 개 매체 확산)",
+    "폭우 속에도 북적 — 장마철 리조트가 휴가를 품었다 (소노캄 비발디 현장 르포)",
+    "소노펠리체 \"유럽 성에 들어온 줄\" — 럭셔리 휴가 영상 기사 확산"
+  ],
+  "hotel": [
+    "<strong>롯데호텔 서울, 객실 감축 + 의료시설 확대 확정 보도</strong> — 멤버십 최상위 '다이아몬드' 신설",
+    "<strong>한화 김동선, '50억 회원권·200억 주택' 하이엔드 제국 구상</strong> — 프리미엄 축 강화",
+    "휘닉스 평창, 한여름에 스키 시즌패스 7일 한정 판매 — 겨울 조기 선점",
+    "하이원리조트, 공연·축제 '하이원 원더버스' 첫선 — MICE 거점 행보 지속",
+    "\"고유가에 국내 호텔 꽉 찼다\" — 성수기 국내 수요 초강세, 호텔업계 '선택적 프리미엄' F&B·웰니스 강화"
+  ],
+  "ota": [
+    "<strong>트립닷컴, 야놀자·여기어때 제치고 韓 사용자 수 1위</strong> — 中 OTA의 습격",
+    "<strong>中, 트립닷컴(씨트립)에 1.1조원 반독점 과징금</strong> — 저가 경쟁에 제동",
+    "여기어때, 일본 숙박 플랫폼 '리럭스' 인수 완료 — 연내 3,000개 숙소 연동",
+    "야놀자, '오버부킹' 취소 뒤 가격 2배 재판매 논란",
+    "규제 피한 글로벌 OTA 자금력 공세 — 온라인 유입 늘어도 전환율 7%p 하락"
+  ],
+  "insight": "7월은 OTB 95.4%·매출 104.4%로 마감 구간에 들어섰지만, FCST 착지는 94.9%(84,837실)로 <strong>목표 소폭 미달 마감</strong>이 유력합니다 — 7월 예상실적은 7/14 89,300 → 7/21 86,924 → 7/28 84,837실로 3주 연속 깎이며 내려왔습니다. 반대로 <strong>8월은 진짜 신호가 좋습니다</strong>. 달성률 75.4%만 보면 불안해 보여도 리드타임 착시일 뿐, FCST 103.7%(99,918실)로 4주 연속 상향 중이고 어제 하루 순증도 +1,384실로 픽업이 가장 뜨겁습니다. 9월도 FCST 102.9%로 초과 착지 전망이나, 7/21 71,251 → 7/28 70,116실로 한 주 새 소폭 하향된 점은 다음 주 스냅샷에서 확인이 필요합니다. 뉴스 축은 '판의 재편'이 주제였습니다 — 트립닷컴이 야놀자·여기어때를 제치고 한국 사용자 1위에 오른 날, 중국은 같은 회사에 1.1조 과징금을 때렸고 여기어때는 일본 리럭스 인수를 마쳤습니다. OTA 순증의 40% 안팎을 야놀자·여기어때에 의존하는 구조에서 채널 파워의 무게중심 이동은 수수료·노출 협상 조건 변화로 직결되므로, 4번 채널별 주간 순증 차트에서 트립닷컴 비중 추이를 계속 추적할 필요가 있습니다."
+},
   {
     date: "2026-07-30",
     kpiLine: "7월 OTB 95.3% 달성 · 매출 104.3% · TOP 쏠비치남해 +150.9% · 9월 달성 21.2%",
@@ -2006,7 +2040,7 @@ const GS_DAILY = [
 ];
 
 /* GS 실적 — 원본 대시보드에서 매일 자동 추출 (gs_scrape.py) */
-const GS_PERF = {"src":"https://cksals00-ai.github.io/gs_daily_trend_news_public_temp/index.html","asOf":"20260729","asOfLabel":"07/29","curMonth":"7월","months":[{"label":"7월","actual":85160,"budget":89360,"ach":95.3,"fcst":84837,"fcstAch":94.9,"todayNet":196.0,"yoyRn":5.1,"yoyRev":22.4,"yoyAdr":16.6,"cyRn":85690,"lyRn":81563},{"label":"8월","actual":71264,"budget":96433,"ach":73.9,"fcst":99918,"fcstAch":103.7,"todayNet":1551.0,"yoyRn":11.7,"yoyRev":0.0,"yoyAdr":null,"cyRn":79585,"lyRn":71229},{"label":"9월","actual":14465,"budget":68231,"ach":21.2,"fcst":70116,"fcstAch":102.9,"todayNet":520.0,"yoyRn":-3.6,"yoyRev":null,"yoyAdr":null,"cyRn":16242,"lyRn":16844}],"daily":{"cy":[{"l":"07/17","p":5020,"c":3018,"n":2002},{"l":"07/18","p":4468,"c":2752,"n":1716},{"l":"07/19","p":5838,"c":3272,"n":2566},{"l":"07/20","p":10178,"c":6112,"n":4066},{"l":"07/21","p":8118,"c":4688,"n":3430},{"l":"07/22","p":8343,"c":4376,"n":3967},{"l":"07/23","p":7929,"c":5135,"n":2794},{"l":"07/24","p":8473,"c":5452,"n":3021},{"l":"07/25","p":5607,"c":3335,"n":2272},{"l":"07/26","p":6253,"c":3597,"n":2656},{"l":"07/27","p":9211,"c":6339,"n":2872},{"l":"07/28","p":9227,"c":5365,"n":3862},{"l":"07/29","p":6620,"c":4535,"n":2085},{"l":"07/30","p":451,"c":316,"n":135}],"ly":[{"l":"07/18","p":6745,"c":4322,"n":2423},{"l":"07/19","p":4481,"c":2825,"n":1656},{"l":"07/20","p":5432,"c":3182,"n":2250},{"l":"07/21","p":7624,"c":5179,"n":2445},{"l":"07/22","p":7533,"c":4383,"n":3150},{"l":"07/23","p":6858,"c":4294,"n":2564},{"l":"07/24","p":6937,"c":4190,"n":2747},{"l":"07/25","p":8723,"c":9102,"n":-379},{"l":"07/26","p":4633,"c":2575,"n":2058},{"l":"07/27","p":5252,"c":2828,"n":2424},{"l":"07/28","p":7594,"c":4302,"n":3292},{"l":"07/29","p":6368,"c":3487,"n":2881},{"l":"07/30","p":5745,"c":3442,"n":2303},{"l":"07/31","p":5548,"c":3303,"n":2245}]},"seg":{"weekly":{"OTA":[1553,1140,817,722,1213,1549,878,1444,1469,1404,1388,1729,1784,1524],"G-OTA":[602,699,664,625,927,1105,720,745,852,929,1040,1027,1085,906],"Inbound":[413,97,101,177,126,137,122,87,115,123,109,85,91,88]},"today":{"OTA":{"booking":2460,"cancel":1197,"net":1263,"net_rev":3.5},"G-OTA":{"booking":2318,"cancel":1103,"net":1215,"net_rev":3.0},"Inbound":{"booking":38,"cancel":46,"net":-8,"net_rev":-0.0}},"labels":["07/17","07/18","07/19","07/20","07/21","07/22","07/23","07/24","07/25","07/26","07/27","07/28","07/29","07/30"],"allToday":[{"n":"OTA","net":1263,"pickup":2460,"cancel":1197},{"n":"G-OTA","net":1215,"pickup":2318,"cancel":1103},{"n":"회원PKG","net":242,"pickup":818,"cancel":576},{"n":"자사 패키지","net":164,"pickup":934,"cancel":770},{"n":"일반단체","net":21,"pickup":23,"cancel":2},{"n":"D멤버스","net":9,"pickup":29,"cancel":20},{"n":"Inbound","net":-8,"pickup":38,"cancel":46},{"n":"FIT","net":-99,"pickup":0,"cancel":99},{"n":"H/U","net":-722,"pickup":0,"cancel":722}]},"chan":[{"l":"06/22","ch":{"야놀자":1584,"여기어때":1263,"트립닷컴":359,"트립비토즈":508,"아고다":-458,"스마트인피니":319,"기타":688},"total":4263},{"l":"06/29","ch":{"야놀자":1266,"여기어때":731,"트립닷컴":600,"트립비토즈":927,"아고다":-532,"스마트인피니":21,"기타":959},"total":3972},{"l":"07/06","ch":{"야놀자":992,"여기어때":662,"트립닷컴":691,"트립비토즈":220,"아고다":206,"스마트인피니":547,"기타":1264},"total":4582},{"l":"07/13","ch":{"야놀자":890,"여기어때":403,"트립닷컴":549,"트립비토즈":315,"아고다":46,"스마트인피니":445,"기타":1033},"total":3681},{"l":"07/20","ch":{"야놀자":1767,"여기어때":867,"트립닷컴":1160,"트립비토즈":271,"아고다":291,"스마트인피니":562,"기타":2025},"total":6943},{"l":"07/27","ch":{"야놀자":923,"여기어때":508,"트립닷컴":666,"트립비토즈":554,"아고다":713,"스마트인피니":379,"기타":1586},"total":5329}],"prop":[{"n":"쏠비치 남해","cy":4022,"ly":1592,"pct":152.6},{"n":"소노문 해운대","cy":2655,"ly":1938,"pct":37.0},{"n":"델피노","cy":8655,"ly":7356,"pct":17.7},{"n":"소노벨 천안","cy":4364,"ly":3846,"pct":13.5},{"n":"소노벨 변산","cy":3981,"ly":3617,"pct":10.1},{"n":"소노벨 비발디파크","cy":11048,"ly":10479,"pct":5.4},{"n":"쏠비치 양양","cy":3917,"ly":3763,"pct":4.1},{"n":"쏠비치 삼척","cy":6324,"ly":6290,"pct":0.5},{"n":"오션월드빌리지","cy":30,"ly":30,"pct":0.0},{"n":"소노벨 제주","cy":3323,"ly":3512,"pct":-5.4},{"n":"소노캄 거제","cy":3800,"ly":4039,"pct":-5.9},{"n":"소노펠리체 빌리지 비발디파크","cy":1183,"ly":1271,"pct":-6.9},{"n":"소노캄 제주","cy":1313,"ly":1420,"pct":-7.5},{"n":"소노캄 고양","cy":7063,"ly":7678,"pct":-8.0},{"n":"소노벨 청송","cy":1599,"ly":1780,"pct":-10.2},{"n":"소노캄 여수","cy":1139,"ly":1289,"pct":-11.6},{"n":"소노문 비발디파크","cy":1046,"ly":1186,"pct":-11.8},{"n":"소노펠리체 비발디파크","cy":2743,"ly":3198,"pct":-14.2},{"n":"쏠비치 진도","cy":4656,"ly":6101,"pct":-23.7},{"n":"소노휴 양평","cy":547,"ly":723,"pct":-24.3},{"n":"소노펫 비발디파크","cy":1154,"ly":1535,"pct":-24.8},{"n":"소노캄 비발디파크","cy":2001,"ly":2783,"pct":-28.1},{"n":"소노문 단양","cy":4196,"ly":6137,"pct":-31.6}],"topbot":{"top":[{"n":"쏠비치남해","a":150.9},{"n":"소노문해운대","a":34.9},{"n":"델피노","a":17.0}],"bot":[{"n":"펫비발디","a":-24.9},{"n":"캄비발디","a":-28.1},{"n":"소노벨단양","a":-31.6}]},"revAch":104.3,"otbYoy":4.4,"segMonth":{"segs":["전체","OTA","G-OTA","Inbound"],"labels":["7월","8월","9월"],"data":{"7월":{"전체":{"budget":89370,"actual":85160,"ach":95.3,"fcst":84837,"fcstAch":94.9,"todayNet":196},"OTA":{"budget":49645,"actual":49972,"ach":100.7,"fcst":50005,"fcstAch":100.7,"todayNet":75},"G-OTA":{"budget":35055,"actual":29972,"ach":85.5,"fcst":30026,"fcstAch":85.7,"todayNet":121},"Inbound":{"budget":4670,"actual":5246,"ach":112.3,"fcst":5265,"fcstAch":112.7,"todayNet":0}},"8월":{"전체":{"budget":96390,"actual":71264,"ach":73.9,"fcst":99918,"fcstAch":103.7,"todayNet":1551},"OTA":{"budget":56850,"actual":40460,"ach":71.2,"fcst":58899,"fcstAch":103.6,"todayNet":845},"G-OTA":{"budget":35380,"actual":27400,"ach":77.4,"fcst":36750,"fcstAch":103.9,"todayNet":706},"Inbound":{"budget":4160,"actual":3423,"ach":82.3,"fcst":4269,"fcstAch":102.6,"todayNet":0}},"9월":{"전체":{"budget":68140,"actual":14465,"ach":21.2,"fcst":70116,"fcstAch":102.9,"todayNet":520},"OTA":{"budget":36445,"actual":6580,"ach":18.1,"fcst":37280,"fcstAch":102.3,"todayNet":245},"G-OTA":{"budget":27155,"actual":6379,"ach":23.5,"fcst":27915,"fcstAch":102.8,"todayNet":268},"Inbound":{"budget":4540,"actual":1506,"ach":33.2,"fcst":4921,"fcstAch":108.4,"todayNet":7}}}},"fcstTrend":{"segs":["전체","OTA","G-OTA","Inbound"],"months":[{"label":"7월","key":"2026-07","dates":["6/1","6/8","6/16","6/23","6/30","7/7","7/14","7/21","7/28"],"series":{"전체":[87834,87409,87409,88055,89411,89728,89300,86924,84837],"OTA":[48390,47815,47815,48290,49590,51660,52185,50890,49965],"G-OTA":[35455,35520,35520,35270,34700,32770,31860,30823,29628],"Inbound":[3989,4074,4074,4495,5121,5298,5255,5211,5244]},"budget":{"전체":89370,"OTA":49645,"G-OTA":35055,"Inbound":4670}},{"label":"8월","key":"2026-08","dates":["6/8","6/16","6/23","6/30","7/7","7/14","7/21","7/28"],"series":{"전체":[97150,97150,98496,99140,98299,99379,99567,99918],"OTA":[57345,57345,57525,58110,57945,58682,58740,58899],"G-OTA":[35935,35935,37040,37040,36355,36672,36640,36750],"Inbound":[3870,3870,3931,3990,3999,4025,4187,4269]},"budget":{"전체":96390,"OTA":56850,"G-OTA":35380,"Inbound":4160}},{"label":"9월","key":"2026-09","dates":["7/7","7/14","7/21","7/28"],"series":{"전체":[68853,70882,71251,70116],"OTA":[36650,37965,38160,37280],"G-OTA":[27490,28080,28240,27915],"Inbound":[4713,4837,4851,4921]},"budget":{"전체":68140,"OTA":36445,"G-OTA":27155,"Inbound":4540}}]},"refresh":"2026-07-31 05:01 KST","fcstAsOf":"2026-07-28"};
+const GS_PERF = {"src":"https://cksals00-ai.github.io/gs_daily_trend_news_public_temp/index.html","asOf":"20260730","asOfLabel":"07/30","curMonth":"7월","months":[{"label":"7월","actual":85256,"budget":89367,"ach":95.4,"fcst":84837,"fcstAch":94.9,"todayNet":105.0,"yoyRn":5.0,"yoyRev":22.4,"yoyAdr":16.5,"cyRn":85797,"lyRn":81687},{"label":"8월","actual":72718,"budget":96443,"ach":75.4,"fcst":99918,"fcstAch":103.7,"todayNet":1384.0,"yoyRn":14.1,"yoyRev":0.0,"yoyAdr":null,"cyRn":81304,"lyRn":71229},{"label":"9월","actual":15058,"budget":68136,"ach":22.1,"fcst":70116,"fcstAch":102.9,"todayNet":577.0,"yoyRn":0.3,"yoyRev":null,"yoyAdr":null,"cyRn":16893,"lyRn":16844}],"daily":{"cy":[{"l":"07/18","p":4468,"c":2752,"n":1716},{"l":"07/19","p":5838,"c":3272,"n":2566},{"l":"07/20","p":10178,"c":6112,"n":4066},{"l":"07/21","p":8120,"c":4690,"n":3430},{"l":"07/22","p":8343,"c":4376,"n":3967},{"l":"07/23","p":7943,"c":5135,"n":2808},{"l":"07/24","p":8473,"c":5452,"n":3021},{"l":"07/25","p":5607,"c":3335,"n":2272},{"l":"07/26","p":6253,"c":3597,"n":2656},{"l":"07/27","p":9211,"c":6339,"n":2872},{"l":"07/28","p":9228,"c":5365,"n":3863},{"l":"07/29","p":6626,"c":4540,"n":2086},{"l":"07/30","p":7235,"c":5152,"n":2083},{"l":"07/31","p":670,"c":366,"n":304}],"ly":[{"l":"07/19","p":4481,"c":2825,"n":1656},{"l":"07/20","p":5432,"c":3182,"n":2250},{"l":"07/21","p":7624,"c":5179,"n":2445},{"l":"07/22","p":7533,"c":4383,"n":3150},{"l":"07/23","p":6858,"c":4294,"n":2564},{"l":"07/24","p":6937,"c":4190,"n":2747},{"l":"07/25","p":8723,"c":9102,"n":-379},{"l":"07/26","p":4633,"c":2575,"n":2058},{"l":"07/27","p":5252,"c":2828,"n":2424},{"l":"07/28","p":7594,"c":4302,"n":3292},{"l":"07/29","p":6368,"c":3487,"n":2881},{"l":"07/30","p":5745,"c":3442,"n":2303},{"l":"07/31","p":5548,"c":3303,"n":2245},{"l":"08/01","p":5868,"c":3407,"n":2461}]},"seg":{"weekly":{"OTA":[1553,1140,817,722,1213,1549,878,1444,1469,1404,1388,1729,1803,1549],"G-OTA":[602,699,664,625,927,1105,720,745,852,929,1040,1027,1103,940],"Inbound":[413,97,101,177,126,137,122,87,115,123,109,85,91,88]},"today":{"OTA":{"booking":2696,"cancel":1532,"net":1164,"net_rev":3.2},"G-OTA":{"booking":2397,"cancel":1342,"net":1055,"net_rev":2.6},"Inbound":{"booking":191,"cancel":39,"net":152,"net_rev":0.1}},"labels":["07/18","07/19","07/20","07/21","07/22","07/23","07/24","07/25","07/26","07/27","07/28","07/29","07/30","07/31"],"allToday":[{"n":"OTA","net":1164,"pickup":2696,"cancel":1532},{"n":"G-OTA","net":1055,"pickup":2397,"cancel":1342},{"n":"Inbound","net":152,"pickup":191,"cancel":39},{"n":"자사 패키지","net":142,"pickup":1073,"cancel":931},{"n":"회원PKG","net":114,"pickup":796,"cancel":682},{"n":"일반단체","net":52,"pickup":53,"cancel":1},{"n":"D멤버스","net":10,"pickup":28,"cancel":18},{"n":"단체COMP","net":1,"pickup":1,"cancel":0},{"n":"H/U","net":-607,"pickup":0,"cancel":607}]},"chan":[{"l":"06/22","ch":{"야놀자":1564,"여기어때":1256,"트립닷컴":355,"트립비토즈":502,"아고다":-475,"스마트인피니":319,"기타":670},"total":4191},{"l":"06/29","ch":{"야놀자":1247,"여기어때":715,"트립닷컴":594,"트립비토즈":905,"아고다":-552,"스마트인피니":14,"기타":915},"total":3838},{"l":"07/06","ch":{"야놀자":964,"여기어때":649,"트립닷컴":669,"트립비토즈":212,"아고다":183,"스마트인피니":547,"기타":1212},"total":4436},{"l":"07/13","ch":{"야놀자":842,"여기어때":388,"트립닷컴":529,"트립비토즈":301,"아고다":-14,"스마트인피니":445,"기타":948},"total":3439},{"l":"07/20","ch":{"야놀자":1688,"여기어때":828,"트립닷컴":1076,"트립비토즈":248,"아고다":186,"스마트인피니":477,"기타":1866},"total":6369},{"l":"07/27","ch":{"야놀자":962,"여기어때":597,"트립닷컴":745,"트립비토즈":666,"아고다":860,"스마트인피니":438,"기타":1777},"total":6045}],"prop":[{"n":"쏠비치 남해","cy":4025,"ly":1592,"pct":152.8},{"n":"소노문 해운대","cy":2655,"ly":1948,"pct":36.3},{"n":"델피노","cy":8656,"ly":7355,"pct":17.7},{"n":"소노벨 천안","cy":4364,"ly":3846,"pct":13.5},{"n":"소노벨 변산","cy":3981,"ly":3618,"pct":10.0},{"n":"소노벨 비발디파크","cy":11056,"ly":10481,"pct":5.5},{"n":"쏠비치 양양","cy":3917,"ly":3763,"pct":4.1},{"n":"쏠비치 삼척","cy":6324,"ly":6290,"pct":0.5},{"n":"오션월드빌리지","cy":30,"ly":30,"pct":0.0},{"n":"소노벨 제주","cy":3323,"ly":3514,"pct":-5.4},{"n":"소노캄 거제","cy":3800,"ly":4039,"pct":-5.9},{"n":"소노캄 제주","cy":1328,"ly":1424,"pct":-6.7},{"n":"소노펠리체 빌리지 비발디파크","cy":1192,"ly":1285,"pct":-7.2},{"n":"소노캄 고양","cy":7080,"ly":7694,"pct":-8.0},{"n":"소노벨 청송","cy":1614,"ly":1793,"pct":-10.0},{"n":"소노문 비발디파크","cy":1046,"ly":1186,"pct":-11.8},{"n":"소노캄 여수","cy":1146,"ly":1305,"pct":-12.2},{"n":"소노펠리체 비발디파크","cy":2748,"ly":3210,"pct":-14.4},{"n":"쏠비치 진도","cy":4659,"ly":6104,"pct":-23.7},{"n":"소노휴 양평","cy":560,"ly":744,"pct":-24.7},{"n":"소노펫 비발디파크","cy":1154,"ly":1536,"pct":-24.9},{"n":"소노캄 비발디파크","cy":2001,"ly":2783,"pct":-28.1},{"n":"소노문 단양","cy":4207,"ly":6147,"pct":-31.6}],"topbot":{"top":[{"n":"쏠비치남해","a":151.1},{"n":"소노문해운대","a":34.2},{"n":"델피노","a":17.0}],"bot":[{"n":"양평","a":-25.1},{"n":"캄비발디","a":-28.1},{"n":"소노벨단양","a":-31.7}]},"revAch":104.4,"otbYoy":4.4,"segMonth":{"segs":["전체","OTA","G-OTA","Inbound"],"labels":["7월","8월","9월"],"data":{"7월":{"전체":{"budget":89370,"actual":85256,"ach":95.4,"fcst":84837,"fcstAch":94.9,"todayNet":105},"OTA":{"budget":49645,"actual":50016,"ach":100.7,"fcst":50000,"fcstAch":100.7,"todayNet":46},"G-OTA":{"budget":35055,"actual":30024,"ach":85.6,"fcst":30035,"fcstAch":85.7,"todayNet":59},"Inbound":{"budget":4670,"actual":5246,"ach":112.3,"fcst":5250,"fcstAch":112.4,"todayNet":0}},"8월":{"전체":{"budget":96390,"actual":72718,"ach":75.4,"fcst":99918,"fcstAch":103.7,"todayNet":1384},"OTA":{"budget":56850,"actual":41253,"ach":72.6,"fcst":58899,"fcstAch":103.6,"todayNet":778},"G-OTA":{"budget":35380,"actual":28057,"ach":79.3,"fcst":36750,"fcstAch":103.9,"todayNet":604},"Inbound":{"budget":4160,"actual":3427,"ach":82.4,"fcst":4269,"fcstAch":102.6,"todayNet":2}},"9월":{"전체":{"budget":68140,"actual":15058,"ach":22.1,"fcst":70116,"fcstAch":102.9,"todayNet":577},"OTA":{"budget":36445,"actual":6818,"ach":18.7,"fcst":37280,"fcstAch":102.3,"todayNet":240},"G-OTA":{"budget":27155,"actual":6633,"ach":24.4,"fcst":27915,"fcstAch":102.8,"todayNet":232},"Inbound":{"budget":4540,"actual":1607,"ach":35.4,"fcst":4921,"fcstAch":108.4,"todayNet":105}}}},"fcstTrend":{"segs":["전체","OTA","G-OTA","Inbound"],"months":[{"label":"7월","key":"2026-07","dates":["6/1","6/8","6/16","6/23","6/30","7/7","7/14","7/21","7/28"],"series":{"전체":[87834,87409,87409,88055,89411,89728,89300,86924,84837],"OTA":[48390,47815,47815,48290,49590,51660,52185,50890,49965],"G-OTA":[35455,35520,35520,35270,34700,32770,31860,30823,29628],"Inbound":[3989,4074,4074,4495,5121,5298,5255,5211,5244]},"budget":{"전체":89370,"OTA":49645,"G-OTA":35055,"Inbound":4670}},{"label":"8월","key":"2026-08","dates":["6/8","6/16","6/23","6/30","7/7","7/14","7/21","7/28"],"series":{"전체":[97150,97150,98496,99140,98299,99379,99567,99918],"OTA":[57345,57345,57525,58110,57945,58682,58740,58899],"G-OTA":[35935,35935,37040,37040,36355,36672,36640,36750],"Inbound":[3870,3870,3931,3990,3999,4025,4187,4269]},"budget":{"전체":96390,"OTA":56850,"G-OTA":35380,"Inbound":4160}},{"label":"9월","key":"2026-09","dates":["7/7","7/14","7/21","7/28"],"series":{"전체":[68853,70882,71251,70116],"OTA":[36650,37965,38160,37280],"G-OTA":[27490,28080,28240,27915],"Inbound":[4713,4837,4851,4921]},"budget":{"전체":68140,"OTA":36445,"G-OTA":27155,"Inbound":4540}}]},"refresh":"2026-07-31 08:13 KST","fcstAsOf":"2026-07-28"};
 
 
 /* ══════════ GS 실적 시각화 ══════════ */
@@ -2470,6 +2504,90 @@ function renderGs() {
 
 /* ── 뉴스 인사이트: 소노·레저 데일리 + 주간 검색어 트렌드 ────────── */
 const INSIGHT_DAILY = [
+{
+  "date": "2026-07-31",
+  "headline": "트립닷컴이 한국 OTA 왕좌를 가져간 날, 소노는 사옥에서 '대명'을 지우고 새 이름을 새겼습니다",
+  "sono": [
+    {
+      "t": "'대명' 지우고 '트리니티' 품었다… 소노 마곡 사옥에 담긴 새 정체성",
+      "p": "뉴스투데이",
+      "u": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE1kajdMM1U1ME9Zd01QWEdJeXRqT1dGZFpGbVozellvcElqdU5lbkdmWTdER2hVQW9rTHRES0dsdU5XMXFyTVJDTkE3M1g1UEdTbkFENUFFaGNVcW9sZXc?oc=5"
+    },
+    {
+      "t": "리조트 47년, 항공 2년∙∙∙소노가 치른 확장의 값",
+      "p": "kmnanews.com",
+      "u": "https://news.google.com/rss/articles/CBMiakFVX3lxTE9IZHBBbE9zNm9DekI4RXBEdjFWMjFfcV9VZXktMTNuemhNSnJNdUVET2J2MV9SODhMZmlDQXdBZ2JTWEdmRmd4dFdxVF9lb05WWXBPbVVRaWFEaU94OExybXV0TlRSUkZtTVE?oc=5"
+    },
+    {
+      "t": "\"국내외 선례 다수\" 소노 이어 호반도 리조트-항공 결합 노리나",
+      "p": "newstopkorea.com",
+      "u": "https://news.google.com/rss/articles/CBMib0FVX3lxTFBjZUlkY2g2TDJOV1JaSFdrWVd4VWRJWk1WbHJPMVgyczlYTXp2eURqd3l5bmkwanlIV3hNMUNIY3BOc2h3M0g0R2syTVNiNnpNWnJJa2wya0xHMHJQczBpdEpoVVhERGJVRGViMnVMTQ?oc=5"
+    },
+    {
+      "t": "'특별한 여름밤' 소노인터내셔널, 2026 소노 매직 아트 페스타 개최",
+      "p": "스포츠조선",
+      "u": "https://news.google.com/rss/articles/CBMieEFVX3lxTE5ldGFNQVhzTXFjcU5MajNkRmcwdnpNV29pWmFTd0VBRzFBNm5vVU85Zy1idjJRaVdCNk96QmtzYi1mR2hTLUVwc2o3cmc5Y0lwb0xYcWtFMk9UR0lXUHZSWlprSjktTjNjeDhldDYyZ0VZUFdwTEg1bQ?oc=5"
+    },
+    {
+      "t": "폭우 속에도 북적…장마철 리조트가 휴가를 품었다 [현장+]",
+      "p": "한국경제",
+      "u": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE45RS1OSXVoUlJKN2VpQXBmaVc4bWVFbEJWaVNYcW1PaV9IUkhKMEw5R3lIMjVnWXR2MjcyTndCWjhEaTNJUjNEblZkVmpwYkJLUm5CdjB2NlNhUQ?oc=5"
+    },
+    {
+      "t": "\"유럽 성에 들어온 줄\"…휴가철에도 북적임 없는 '럭셔리 휴가' [영상]",
+      "p": "네이트",
+      "u": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBqWktOaUNETG5iR1lJbTZsaDBMVTJyZzcta3VmVVJVTExwUGlzLXhQMl9CRWFjVFBtdkRZamxsdzFSalhnRElYNWJjR2NCUG9HalhDOS1NUkZWYVBjc0dqRg?oc=5"
+    },
+    {
+      "t": "超럭셔리 호텔 공세 속 '펫·항공 MRO' 승부수…소노만의 성장 스토리 주목",
+      "p": "Investing.com 한국어",
+      "u": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1jUzQ5ZzBYYUZVeFNKdkFiMjNyWEhUUHhJNldEdk1YZF9odFI1amM5ZndPcV82M3RhMk5FckZHZGMyMGloZTNKdGozX0R2TVczbVRNa295eW83ZHkxTndldVNuTkFLbll1aWdiTkhKUXk?oc=5"
+    }
+  ],
+  "leisure": [
+    {
+      "t": "中 OTA의 습격…트립닷컴, 야놀자·여기어때 제치고 韓 사용자 수 1위",
+      "p": "전자신문",
+      "u": "https://news.google.com/rss/articles/CBMiTkFVX3lxTE8yeFRlcURQNm84TVF4Z0ZOUlFEUG9MN0FtR0thRVB5VlN5cDZxbXgyRDFFeVpHZUZuTjRjZGRKOS1ObXlSeUgtbm5aT1V5Zw?oc=5"
+    },
+    {
+      "t": "트립닷컴 반독점 벌금 1.1조 폭탄…中, 저가 경쟁에 강력 메시지",
+      "p": "v.daum.net",
+      "u": "https://news.google.com/rss/articles/CBMiRkFVX3lxTFBQc0ZGNTdsREJDMjVxX0JPODVZU25CcGt0UlFsS2llejU2T0hGS2pKT25QSGNSRTk4U2cwLWtuVWRhOVBnRFE?oc=5"
+    },
+    {
+      "t": "여기어때, 일본 숙박 플랫폼 '리럭스' 인수 완료…연내 3000개 숙소 연동",
+      "p": "전자신문",
+      "u": "https://news.google.com/rss/articles/CBMiTkFVX3lxTE1VRkgyNzZtTmUwbUs3bk91Rlh2clBscVJKZTNrRGNNRlpZSmFuS1hzZk0zS1BiTVNWY3lxWUhJRG9YZloxcmpQRzFJcjI5QQ?oc=5"
+    },
+    {
+      "t": "롯데호텔 서울, 객실 줄이고 의료시설 확대…멤버십도 개편(종합)",
+      "p": "연합뉴스",
+      "u": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE1zWlYxN01fdF95MEQ5Rld5aGx2R2ZhVncwVjhaZ3pkUlh1eDlHRUx6YTJtWEExWWV2MjFlYm9rS1IyT2xLMm9uRzE5dGk4Z0MyeTZMc25FQjMwd210VWhIU9IBYEFVX3lxTE1zWlYxN01fdF95MEQ5Rld5aGx2R2ZhVncwVjhaZ3pkUlh1eDlHRUx6YTJtWEExWWV2MjFlYm9rS1IyT2xLMm9uRzE5dGk4Z0MyeTZMc25FQjMwd210VWhIUw?oc=5"
+    },
+    {
+      "t": "“50억 회원권에 200억 주택”…‘하이엔드’ 제국 판 짜는 김동선의 ‘마이웨이’",
+      "p": "v.daum.net",
+      "u": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE1nS1JLMlYxY1ZGSHdYM29HRzNqU0FyVHFLZlRDOUxzNG12aUI2NDU4REdHa204ZTNLbG9lSXcwa2xlRWFtTVhiNmsybnFScTg?oc=5"
+    },
+    {
+      "t": "한여름에 겨울을 판다…휘닉스 평창, 시즌패스 7일 한정",
+      "p": "천지일보",
+      "u": "https://news.google.com/rss/articles/CBMiakFVX3lxTE1PdGlNVmZCd2xhWUFkSEhUU19vdnBkWnRRdEEwV0t0cHl1TDIxclZoQ2VwWTFuZVRxT2ItZVZuSmxZYWRDSm5LVHp2bnNQMjJudWVSX3pJUTNlUm1ydUtCU1Uwb2pmc0JGVXc?oc=5"
+    },
+    {
+      "t": "“오버부킹이라 예약 취소한다”던 야놀자...가격 두배 올려 재판매",
+      "p": "서울경제TV",
+      "u": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE9PMFJLTUN3UjZGTFNBSk95OFJLYWNkN0JzOGQ0T1lncEQxN0hOLTQ4SGhTT1ZVWWttb0NwT2FyNlg4SWRMdGhmVFpQOVJOeUR4UC16VEx6MWRtUnZqaFh1QUszN3Q?oc=5"
+    },
+    {
+      "t": "온라인 유입 늘었지만 예약 실적은 엇박자…글로벌 OTA 전환율 7%p 하락",
+      "p": "여행신문",
+      "u": "https://news.google.com/rss/articles/CBMickFVX3lxTE93dDdOcWVqbHQ0VGlkRGVtSmFzUFlPNmQzNERILWZDeHU1X3JpT2g2TFE1Mm44bkkxUVBHVmRPZ1RKS0Vta19LYl82MTAtVTd2SS13STZ6V3MwTlhnTkVXYmNLdmhzM2ZWQjVRX3hsVVN4Zw?oc=5"
+    }
+  ],
+  "insight": "오늘의 큰 그림은 <strong>'판을 쥔 자가 바뀌는 날'</strong>입니다. 트립닷컴이 야놀자·여기어때를 제치고 한국 사용자 수 1위에 올랐는데, 같은 날 중국 당국은 그 트립닷컴에 1.1조원 반독점 과징금을 부과했고, 여기어때는 일본 리럭스 인수를 마무리하며 밖으로 나갔습니다 — 국내 OTA 시장은 '한국 회사끼리의 순위 싸움'에서 '글로벌 자본 대 로컬 플랫폼의 체제 경쟁'으로 국면이 넘어갔습니다. 공급자 쪽도 같은 날 대비가 선명합니다. 소노는 마곡 사옥에서 '대명'을 지우고 트리니티를 품으며 정체성을 다시 썼고, \"리조트 47년, 항공 2년\"이라는 확장 결산 기사와 호반의 추격 보도까지 겹치며 '리조트-항공 결합'이 업계 표준 전략이 될 조짐입니다. 반면 롯데호텔은 객실을 줄여 의료시설을 넣고, 한화 김동선은 50억 회원권의 하이엔드 제국을 그립니다 — 몸집을 키우는 쪽과 단가를 올리는 쪽으로 전략이 갈라지는 중입니다. 채널이 요동칠수록 결국 남는 질문은 '누구의 이름으로 팔리는가'이고, 그래서 오늘 소노의 개명(改名)은 단순한 간판 교체가 아니라 유통 격변기에 브랜드 자산을 세우는 방어 전략으로 읽힙니다."
+},
   {
     date: "2026-07-30",
     headline: "소노가 경주 감포로 44곳 체제를 완성한 날, 롯데호텔은 객실을 줄이고 의료시설을 넣었습니다",
