@@ -1992,15 +1992,11 @@ function copyComment(id, btn) {
 }
 
 /* ── 노트 전용: 발행일(date)과 등록일(added) 구분 ──────────────
-   date  = 롱블랙에 실제로 실린 날. 주차 그룹핑은 계속 이 값을 쓴다.
+   date  = 롱블랙에 실제로 실린 날. 화면에 보이는 날짜는 언제나 이 값이다.
    added = 이 대시보드에 올린 날. 없으면 date와 같다고 본다.
-   상단 '가장 최근 노트' 핀만 added 기준으로 고른다(노트 탭 한정). */
+   added는 화면에 노출하지 않는다(정렬용 내부 값). 상단 '가장 최근 노트'
+   핀을 고르는 데만 쓰고, 주차 그룹핑·기간 타일·카드 날짜는 전부 date를 쓴다. */
 function noteAddedOf(n) { return n.added || n.date; }
-function noteDateLabel(n) {
-  return (n.added && n.added !== n.date)
-    ? `발행 ${n.date} · 등록 ${n.added}`
-    : n.date;
-}
 
 function noteCard(n, filter, opt) {
   opt = opt || {};
@@ -2010,7 +2006,7 @@ function noteCard(n, filter, opt) {
   return `
     <details class="ncard" ${opt.open ? "open" : ""}>
       <summary>
-        <div class="nc-meta"><span>${noteDateLabel(n)}</span><span>#${n.id}</span><span class="nc-scores">${miniScores}</span></div>
+        <div class="nc-meta"><span>${n.date}</span><span>#${n.id}</span><span class="nc-scores">${miniScores}</span></div>
         <div class="nc-title">${n.title}</div>
         <div class="nc-sum">${n.summary}</div>
         <div class="nc-open-hint">탭해서 전체 보기 ▾</div>
@@ -2071,10 +2067,11 @@ function renderLatestNote() {
   if (!NOTES.length) return;
   /* 노트에 한해 '가장 최근'은 발행일(date)이 아니라 등록일(added)로 정한다.
      added가 없으면 date로 대체한다. 같은 날 등록된 게 여럿이면 배열 순서(맨 앞이 최신)를 따른다 —
-     Array.prototype.sort가 안정 정렬이므로 slice() 순서가 그대로 동점 처리 기준이 된다. */
+     Array.prototype.sort가 안정 정렬이므로 slice() 순서가 그대로 동점 처리 기준이 된다.
+     added는 고르는 기준으로만 쓰고 화면에는 찍지 않는다. 표기는 발행일. */
   const n = NOTES.slice().sort((a, b) => noteAddedOf(b).localeCompare(noteAddedOf(a)))[0];
   _pinWrap("latest-note", "var(--series-1)", "가장 최근 노트",
-    `${n.added ? "등록 " + n.added : n.date} · #${n.id}${n.comment ? " · 커피챗 댓글 초안 포함" : ""}`,
+    `${n.date} · #${n.id}${n.comment ? " · 커피챗 댓글 초안 포함" : ""}`,
     noteCard(n, "all", { open: true, pre: "top-" }));
 }
 
