@@ -3871,6 +3871,40 @@ function _fpLatestNote(arr) {
     ? arr.slice().sort((a, b) => noteAddedOf(b).localeCompare(noteAddedOf(a)))[0] : null;
 }
 
+/* ── 재상정 안건: 기획실장 0801 지시 — 8/3(월) 브리핑 맨 위 ──
+   보류는 취소가 아니다. 표시 기간이 지나면 자동으로 내려간다.        */
+const TODAY_AGENDA = {
+  from: "2026-08-03", until: "2026-08-05",
+  kicker: "재상정 안건 3건 · 기획실장 0801 지시 · 대표님 처분 대기",
+  note: "7/31 일일보고 §6의 6건 중 대표님이 「차주 월요일 진행」으로 보류하신 3건입니다. 보류는 취소가 아닙니다.",
+  items: [
+    { rank: "1순위", title: "☎1345 통화 (대표님 직접 · 5분) — 사실 확인",
+      body: "법무부 외국인종합안내센터 1345. 「동남아 3개국(필리핀·인도네시아·베트남) 단체관광 비자 발급대상 확대 시범운영이 2026년 6월 이후에도 유효합니까? 필리핀 국적 일반 관광객 3인 단체가 지금 대상입니까?」 — 이 답 하나에 P-1 상품의 법적 근거 전체가 걸려 있습니다. 수수료 면제(①·12/31까지 확정)와 발급대상 확대(②·6월 종료 예정, 이후 미확인)는 다른 제도이고, P-1이 타는 것은 ②입니다." },
+    { rank: "2순위", title: "기업 인센티브 관광단 pivot 사전 승인 (즉답)",
+      body: "1번 답이 「② 종료」면 일반 관광객 3인 구조를 기업 인센티브 관광단(5인 이상) 구조로 즉시 전환. 사전 승인의 값어치는 시간 — 미리 받으면 그 자리에서 전환, 안 받으면 일주일 재소요. 참고: 3인은 제도 하한이지 여행사 실무 하한이 아님(다수 최소 15인)." },
+    { rank: "3순위", title: "통관·세무 자문 계약·예산 (결재)",
+      body: "굿즈 가격표 확정·발주에 필요 — 원가가 안 닫혀 가격표가 안 닫힘. 권고 2단계: ① KOTRA 마닐라 무역관 무료 상담으로 쟁점 축소(비용 0) → ② 좁혀진 쟁점에만 유료 자문." },
+  ],
+  sameDay: "같은 날 확인: 8/1 A편 게시 결과·영상 길이 수신 여부 / 이미지 생성 도구 승인 여부(승인 시 기준 얼굴표 A1~A5 최우선) / apply-ria-retention.yml 실행 결과 / 8/4 리아 통보 시한(MV2 골격 전면 수정 시에 한함)",
+};
+function _agendaBox() {
+  const d = new Date();
+  const local = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  if (local < TODAY_AGENDA.from || local > TODAY_AGENDA.until) return "";
+  const items = TODAY_AGENDA.items.map(it => `
+    <li style="margin:0.45rem 0;">
+      <b style="color:var(--series-1);">${it.rank}</b> · <b>${it.title}</b>
+      <div style="margin-top:0.15rem;color:var(--text-secondary);font-size:0.82rem;line-height:1.55;">${it.body}</div>
+    </li>`).join("");
+  return `
+    <section class="fp-box" style="border:2px solid var(--series-1);margin-bottom:1.1rem;">
+      <div class="fp-box-head" style="color:var(--series-1);">${TODAY_AGENDA.kicker}</div>
+      <div class="fp-lede">${TODAY_AGENDA.note}</div>
+      <ul class="fp-list" style="list-style:none;padding-left:0;">${items}</ul>
+      <div style="font-size:0.75rem;color:var(--text-secondary);line-height:1.5;border-top:1px dashed var(--border-color, #ccc);padding-top:0.4rem;">${TODAY_AGENDA.sameDay}</div>
+    </section>`;
+}
+
 function renderToday() {
   const el = document.getElementById("view-today");
   if (!el) return;
@@ -3992,7 +4026,7 @@ function renderToday() {
       <button class="fp-more" onclick="goTab('notes')">브리핑 전체 →</button>
     </section>`;
 
-  el.innerHTML = mast + verse + lead +
+  el.innerHTML = mast + _agendaBox() + verse + lead +
     `<div class="fp-grid">${gsBox}${insBox}${newsBox}${briefBox}</div>` +
     `<div class="fp-foot">이 1면은 각 탭의 가장 최근 항목만 모아 자동으로 다시 그려집니다 ·
       노트 ${NOTES.length}개 · 아침뉴스 ${(typeof NEWS !== "undefined" ? NEWS.length : 0)}일치 ·
