@@ -65,10 +65,45 @@ score.py   채점 → rubric.json                   (재현율·정확도·누�
 - [ ] 숫자 보존 — desc 에서 수치 표현을 우선 남기는 재작성 규칙
 - [ ] 두 문장 재작성 (현재는 제목+요약 그대로 붙임)
 
+## 신선도 점검 (freshness.py)
+
+score.py 가 "재현본이 얼마나 정확한가"를 본다면, freshness.py 는 그 앞의 질문 —
+**"애초에 갱신이 돌긴 했는가"** — 를 본다. 둘은 다른 실패다. digest.py 가 컨테이너에서
+사라진 채 몇 주를 돌았을 때 화면은 멀쩡했다. 어제 데이터가 남아 있으면 오늘 것처럼
+읽히기 때문이다. 그 침묵을 깨는 게 이 스크립트다.
+
+12개 소스의 **최신 날짜만** 읽는다. 담당 예약작업을 함께 찍어서, 멈춘 축이 있으면
+어느 작업을 봐야 하는지가 바로 나온다.
+
+| 축 | 담당 예약작업 | 임계(정상/주의) |
+|---|---|---|
+| news.json · digest.json | Alfred Daily 07:00 `trig_01AJNUPpjXMmddzqkpoQJ2iX` | 1일 / 2일 |
+| insta.json | 같은 작업 §0 (교신함 수급) | 1일 / 2일 |
+| GS_DAILY · INSIGHT_DAILY | GS·인사이트 09:00 `trig_01QM65z2VTBqfM4AB5Zgd9dD` | 1영업일 / 2영업일 |
+| GS_PERF.asOf | 같은 작업 §1-b | 2영업일 / 3영업일 |
+| GS_PERF.fcstAsOf | 같은 작업 (주간 스냅샷) | 7일 / 10일 |
+| TREND_PLAN | 같은 작업 §3 (일요일만) | 7일 / 9일 |
+| WEEKLY_BRIEF · NEWS_WEEKLY | 주간 브리핑 일 07:00 `trig_01NqusWzxt6ikGFZkKwRJ15C` | 7일 / 9일 |
+| NOTES · TODAY_AGENDA | 없음 — 손으로 채운다 | 수동(참고만) |
+
+설계상 지켜야 할 것 세 가지.
+
+1. **GS 계열은 달력일이 아니라 영업일로 센다.** 출처 페이지가 주말·공휴일에 갱신되지
+   않기 때문이다. 토요일마다 "하루 밀렸다"고 울리는 경보는 곧 아무도 안 본다.
+2. **GS_PERF.asOf 는 임계를 한 칸 밀어 놓았다.** 출처가 전일 실적을 싣는 구조라
+   1영업일 지연이 정상이다. 구조적 지연을 고장으로 부르지 않는다.
+3. **수동 축은 실패로 세지 않는다.** 롱블랙 노트는 alfred 가 링크를 보낼 때만 늘어난다.
+   공백은 고장이 아니라 그냥 공백이다. 경과일은 보여주되 판정은 「수동」으로 남긴다.
+
+파일·상수를 못 읽으면 「조회실패 + 사유」로 남기고 넘어간다. 0으로도, 추정치로도
+채우지 않는다.
+
 ## 사용법
 
 ```bash
 python3 tools/crawler/digest.py            # 오늘치 재현본 생성 + digest.json 갱신
 python3 tools/crawler/score.py 2026-08-03  # 하루 채점
 python3 tools/crawler/score.py --all       # 정본 전체 누적 + rubric.json 기록
+python3 tools/crawler/freshness.py         # 12개 소스 신선도 표 + freshness.json 기록
+python3 tools/crawler/freshness.py --line  # 보고용 한 줄만
 ```
