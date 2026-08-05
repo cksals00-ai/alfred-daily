@@ -25,7 +25,10 @@ SEEDS = {
     "경제·시장": ["코스피", "환율", "국제유가", "실적 발표", "반도체", "과징금"],
     "부동산":    ["아파트 매매", "부동산 세제", "전세"],
     "사건·사고": ["구속", "화재", "사고 사망"],
-    "날씨·기후": ["폭염", "열대야", "호우", "태풍"],
+    # 2차 피해 씨앗 — 8/6 원문의 날씨 8꼭지 중 6꼭지가 기온 자체가 아니라 그 결과였다
+    # (당근값·조류경보·프로야구 취소·산불·정전·태풍 북상). 기온 씨앗만으로는 안 잡힌다.
+    "날씨·기후": ["폭염", "열대야", "호우", "태풍 북상",
+                "온열질환", "폭염 피해", "산불", "농작물 피해"],
     "사회·생활": ["청년 취업난", "응급실", "국민연금 개혁", "출산율"],
     "문화·스포츠": ["아시안게임 대표팀", "박스오피스", "프로야구 순위"],
 }
@@ -48,6 +51,13 @@ FOCUS = {
     "날씨·기후": r"(기상청|경보|주의보|특보|열대야|태풍|호우|폭우|폭설|한파|가뭄|산불|"
                 r"장마|\d+\s*도(?![가-힣])|기온|사망|환자|피해|이재민|실종|온열질환|고수온)",
 }
+# 하위 정원 — 슬롯이 커진 카테고리가 '한 사건의 여러 판본'으로 채워지는 것을 막는다.
+# 8/6 재현본의 날씨 5꼭지는 39도·40도·폭염특보·폭염중대경보·이슈종합이었다. 사실상 한 꼭지다.
+# 반면 원문의 날씨 8꼭지 중 기온 예보는 2꼭지뿐이고 나머지는 2차 피해였다.
+SUBQUOTA = {
+    "날씨·기후": (r"(\d+\s*도(?![가-힣])|폭염\s*(특보|경보|중대경보|주의보)|"
+                r"오늘\s*날씨|\[날씨\]|이번\s*주\s*날씨|당분간)", 2),
+}
 # 알프레드 축 — 재현물 위에 따로 태깅해서 대시보드가 뽑아 쓴다
 MY_AXIS = ["여행", "호텔", "리조트", "레저", "항공", "숙박", "관광", "워터파크", "스키",
            "야놀자", "여기어때", "OTA", "국제유가", "환율", "폭염", "열대야", "내수", "소비심리", "숙박쿠폰"]
@@ -61,7 +71,13 @@ STOP = set("있다 했다 한다 대한 위해 관련 이날 오늘 우리 지�
 SHARE_TRIGGER = 1 / 3      # 한 카테고리가 전날 원문의 1/3을 넘으면 발동
 BOOST_CAP = 5              # 늘릴 수 있는 상한
 STRETCH = 1                # 발동일에 한해 총 꼭지수를 16 → 17까지 허용
-DONORS = ["문화·스포츠", "사회·생활", "부동산"]   # 줄이는 순서(바닥 0)
+# 기증 순서 — 정본 4일(8/3~8/6) 실측으로 뒤집었다.
+#   부동산    : 4/4일 등장 (5꼭지)  ← 매일 나온다. 기증자에서 뺀다.
+#   사건·사고 : 1/4일 등장 (2꼭지)  ← 가끔 나온다. 바닥 1 을 남긴다.
+#   사회·생활 : 0/4일 등장 (0꼭지)  ← 한 번도 안 나왔다. 제일 먼저 내준다.
+# 8/6 은 옛 순서 때문에 부동산이 1→0 으로 깎였고, 원문의 부동산·세제 3꼭지 중 2꼭지를 놓쳤다.
+DONORS = ["사회·생활", "문화·스포츠", "사건·사고"]
+FLOOR = {"사건·사고": 1}                 # 명시 없으면 바닥 0
 # 동점일 때는 '넓은 카테고리'가 아니라 '좁은 카테고리'를 택한다.
 # 정치·국회·사건·사고 가드는 사실상 모든 기사에 걸리는 포괄어라 동점 승자가 되면 안 된다.
 SPECIFICITY = ["날씨·기후", "부동산", "경제·시장", "문화·스포츠",
@@ -120,7 +136,8 @@ def elastic_slots(base=None, path=None, before=None):
         if need <= 0:
             break
         i = idx[d]
-        cut = min(need, slots[i][1])
+        cut = min(need, slots[i][1] - FLOOR.get(d, 0))
+        cut = max(cut, 0)
         if cut:
             slots[i][1] -= cut; need -= cut; gave.append(f"{d}−{cut}")
     total = TARGET_ITEMS
@@ -236,6 +253,17 @@ def is_pr(it):
     return bool(PR_ACTOR.search(t))
 
 
+# 칼럼·사설·기고 — 아침뉴스 원문은 사건만 싣는다. 필자 이름을 단 브래킷이 표식이다.
+# (8/6 오탐: 「[윤준의 부동산수첩] 집값보다 먼저 닫힌 '대출문'」이 부동산 슬롯을 먹었다.)
+COLUMN = re.compile(r"^\s*[\[〈<【][^\]〉>】]{0,24}"
+                    r"(수첩|칼럼|기고|시론|사설|데스크|기자의\s?눈|취재파일|현장에서|초점|진단)"
+                    r"[^\]〉>】]{0,10}[\]〉>】]")
+
+
+def is_column(it):
+    return bool(COLUMN.search(it["title"]))
+
+
 CREDIT = re.compile(
     r"(\s*/\s*[가-힣A-Za-z0-9]{1,12}\s*$)"      # … /뉴스1  /연합뉴스
     r"|(\s*[\w.\-]+@[\w.\-]+\s*$)"               # … chocrystal@newsis.com
@@ -274,7 +302,7 @@ def candidates(cat):
         for it in search(q):
             it = {"title": clean(it["title"]), "desc": clean(it["description"]),
                   "link": it.get("originallink") or it["link"], "pub": it["pubDate"]}
-            if is_junk(it) or is_pr(it):
+            if is_junk(it) or is_pr(it) or is_column(it):
                 continue
             pool.append(it)
     out = []
@@ -307,6 +335,7 @@ def build(date=None):
           " ".join(f"{c}{n}" for c, n in slots) + f" = {target}")
     cands = {cat: candidates(cat) for cat, _ in slots}
     picked, seen = [], set()
+    subq = collections.Counter()
 
     def take(c):
         if c["title"] in seen:
@@ -314,6 +343,11 @@ def build(date=None):
         if any(same_story(c["toks"], p["toks"]) or dup_title(c["ttoks"], p["ttoks"])
                for p in picked):
             return False          # 다른 카테고리에서 이미 뽑힌 사건
+        q = SUBQUOTA.get(c["cat"])
+        if q and re.search(q[0], c["title"]):
+            if subq[c["cat"]] >= q[1]:
+                return False      # 같은 종류(기온 예보)로 슬롯을 다 채우는 것을 막는다
+            subq[c["cat"]] += 1
         seen.add(c["title"]); picked.append(c)
         return True
 
