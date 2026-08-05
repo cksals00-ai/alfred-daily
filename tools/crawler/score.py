@@ -102,21 +102,21 @@ def score(date):
     st = [(s, keys(s)) for s in src]
     rt = [(i, keys(i["title"] + " " + i["desc"][:80])) for i in rep]
 
-    used = set()
-    hits, misses = [], []
-    for s, a in st:
-        best, bj = 0.0, None
-        for j, (i, b) in enumerate(rt):
-            if j in used:
-                continue
-            v = match(a, b)
-            if v > best:
-                best, bj = v, j
-        if best >= THRESH:
-            used.add(bj)
-            hits.append((s, rep[bj]["title"], round(best, 2)))
-        else:
-            misses.append(s)
+    # 전역 배정 — 원문 순서대로 탐욕적으로 집으면 앞 꼭지가 뒤 꼭지의 짝을 가로챈다.
+    # (8/5: 세제 꼭지가 형소법 재현본을 0.40에 선점해 진짜 형소법 꼭지가 누락으로 밀렸다.)
+    # 모든 쌍을 점수순으로 세워 높은 쌍부터 확정한다.
+    pairs = sorted(((match(a, b), i, j) for i, (s, a) in enumerate(st)
+                    for j, (it, b) in enumerate(rt) if match(a, b) >= THRESH),
+                   key=lambda x: -x[0])
+    used, taken, hits = set(), {}, []
+    for v, i, j in pairs:
+        if i in taken or j in used:
+            continue
+        taken[i] = j; used.add(j)
+    for i, (s, a) in enumerate(st):
+        if i in taken:
+            hits.append((s, rep[taken[i]]["title"], round(match(a, rt[taken[i]][1]), 2)))
+    misses = [s for i, (s, a) in enumerate(st) if i not in taken]
     extras = [rep[j] for j in range(len(rt)) if j not in used]
 
     return {
