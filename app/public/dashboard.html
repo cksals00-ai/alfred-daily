@@ -23,6 +23,7 @@
     --series-3: #e87ba4; /* 브랜딩 */
     --series-6: #eb6834; /* 뉴스 액센트 */
     --series-5: #1baf7a; /* GS 액센트 */
+    --series-total: #3f3f3b; /* 세그 「전체」 = 합계선 — 색상(hue)이 아니라 잉크. 세그 색과 겹치지 않게 중립으로 뺐다 */
     --series-7: #4a3aa7; /* 뉴스 인사이트 액센트 */
     --chip-bg: #f0efec;
   }
@@ -42,6 +43,7 @@
       --series-3: #d55181;
       --series-6: #d95926;
       --series-5: #199e70;
+      --series-total: #e6e5df;
       --series-7: #9085e9;
       --chip-bg: #262624;
     }
@@ -61,6 +63,7 @@
     --series-3: #d55181;
     --series-6: #d95926;
     --series-5: #199e70;
+      --series-total: #e6e5df;
       --series-7: #9085e9;
     --chip-bg: #262624;
   }
@@ -3478,7 +3481,7 @@ function _chanTable() {
 
 /* ── 세그먼트 토글 (색은 이름에 고정 — 숨겨도 남은 색은 그대로) ── */
 const SEG_COLOR = {
-  "전체": "var(--series-5)", "OTA": "var(--series-1)",
+  "전체": "var(--series-total)", "OTA": "var(--series-1)",
   "G-OTA": "var(--series-2)", "Inbound": "var(--series-3)",
 };
 const _segOff1 = new Set((((typeof GS_PERF !== "undefined" && GS_PERF.segMonth) || {}).segs || []).filter(sg => sg !== "전체"));   // 월별 목표 대비: 기본은 '전체'만 (칩으로 켠다)
