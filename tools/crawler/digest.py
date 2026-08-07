@@ -155,9 +155,13 @@ def _cred():
     return cred(".naver.json", "NAVER_CLIENT_ID", "NAVER_CLIENT_SECRET")
 
 
+CALLS = [0]                       # 이번 실행이 실제로 쓴 API 콜 수 (apiusage.py 가 기록한다)
+
+
 def search(q, display=30, sort="date"):
     """NAVER API HUB (네이버 클라우드 플랫폼) 뉴스 검색."""
     cid, csec = _cred()
+    CALLS[0] += 1
     url = "https://naverapihub.apigw.ntruss.com/search/v1/news?" + urllib.parse.urlencode(
         {"query": q, "display": display, "sort": sort})
     req = urllib.request.Request(url, headers={
@@ -401,3 +405,14 @@ if __name__ == "__main__":
     print(to_text(d))
     print(f"\n[archive] {d['date']} · 총 {n}일치 · {len(d['items'])}꼭지 · "
           f"알프레드 축 {sum(1 for i in d['items'] if i['mine'])}건")
+    # 실제로 쓴 콜 수를 기록한다. 실패해도 재현본 자체는 이미 저장됐으니 죽이지 않는다.
+    try:
+        import apiusage
+        apiusage.record("재현본", CALLS[0], d["date"])
+        print(f"[apiusage] 재현본 {CALLS[0]}콜 기록")
+        try:
+            apiusage.sync_radar()      # 일요일 레이더 실행분을 TREND_PLAN 에서 옮겨 적는다
+        except Exception as e2:
+            print(f"[apiusage] 레이더 동기화 건너뜀 — {e2}")
+    except Exception as e:
+        print(f"[apiusage] 기록 실패 — {e}")

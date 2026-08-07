@@ -4894,34 +4894,74 @@ const TREND_PLAN = {
  ]
 };
 
-/* 무료 한도 대비 호출량 설계치 (공식 문서 기준) */
-const API_QUOTA = [
-  { name: "검색 API (뉴스)",  used: 300, cap: 775000, unit: "월", note: "주 1회 레이더 ~70콜 · 일 한도 25,000", live: true },
-  { name: "검색어 트렌드",     used: 0,   cap: 30000,  unit: "월", note: "구독 대기 · 승인 시 주 1콜", live: false },
-  { name: "쇼핑 인사이트",     used: 0,   cap: 30000,  unit: "월", note: "구독 대기 · 승인 시 주 1콜", live: false }
+/* 무료 한도 대비 실제 호출량.
+   2026-08-07 까지는 손으로 박아둔 상수(300)를 띄웠다. 한 번도 안 변했고, 매일 도는
+   재현본 수집(씨앗어 수만큼 호출)은 아예 세어지지도 않았다 — 설계치를 실측처럼
+   보여주는 미터는 미터가 아니다. 지금은 각 작업이 그날 쓴 콜 수를 apiusage.json 에
+   적어 쌓고, 여기서 이번 달치만 더한다. 기록이 없는 달은 0으로 채우지 않는다.
+   0 은 「측정된 0」을 뜻하기 때문이다. */
+let API_USAGE = null;
+
+const API_CAP = [
+  { name: "검색 API (뉴스)", jobs: ["재현본", "레이더"], cap: 775000,
+    idle: "일 한도 25,000" },
+  { name: "검색어 트렌드",    jobs: [], cap: 30000, idle: "구독 대기 · 아직 호출한 적 없음" },
+  { name: "쇼핑 인사이트",    jobs: [], cap: 30000, idle: "구독 대기 · 아직 호출한 적 없음" }
 ];
+
+function _ymKst() {
+  const d = new Date(Date.now() + (new Date().getTimezoneOffset() * 60000) + 9 * 3600000);
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+}
 
 function renderInsightBrief() {
   const latest = INSIGHT_DAILY[0];
-  const q = API_QUOTA.map(a => {
-    const pct = (a.used / a.cap * 100);
+  const ym = _ymKst(), rows = API_USAGE || [];
+  const mrows = rows.filter(r => r.date.indexOf(ym) === 0);
+  const sum = j => mrows.filter(r => r.job === j).reduce((a, r) => a + r.calls, 0);
+  const cnt = j => mrows.filter(r => r.job === j).length;
+  const since = rows.length ? rows[0].date : null;
+
+  const q = API_CAP.map(a => {
+    if (!a.jobs.length) {
+      return `<div class="quota-row">
+        <div class="q-name">${a.name}<span class="q-note">${a.idle}</span></div>
+        <div class="q-bar"><span style="width:0.6%"></span></div>
+        <div class="q-num">0 / ${a.cap.toLocaleString()} <em>0%</em></div>
+      </div>`;
+    }
+    const used = a.jobs.reduce((t, j) => t + sum(j), 0);
+    const has = a.jobs.some(j => cnt(j) > 0);
+    // 기록이 없는 작업을 「0회 0콜」로 적지 않는다 — 0 은 「측정된 0」을 뜻한다.
+    const detail = a.jobs.map(j => cnt(j) ? `${j} ${cnt(j)}회 ${sum(j).toLocaleString()}콜`
+                                          : `${j} 기록 없음`).join(" · ");
+    if (!has) {
+      return `<div class="quota-row">
+        <div class="q-name">${a.name}<span class="q-note">${ym} 기록 없음 · ${a.idle}</span></div>
+        <div class="q-bar"><span style="width:0.6%"></span></div>
+        <div class="q-num">기록 없음</div>
+      </div>`;
+    }
+    const pct = used / a.cap * 100;
     const p = pct < 0.01 ? "<0.01" : pct.toFixed(2);
     return `<div class="quota-row">
-      <div class="q-name">${a.name}<span class="q-note">${a.note}</span></div>
+      <div class="q-name">${a.name}<span class="q-note">${detail} · ${a.idle}</span></div>
       <div class="q-bar"><span style="width:${Math.max(pct, 0.6)}%"></span></div>
-      <div class="q-num">${a.used.toLocaleString()} / ${a.cap.toLocaleString()} <em>${p}%</em></div>
+      <div class="q-num">${used.toLocaleString()} / ${a.cap.toLocaleString()} <em>${p}%</em></div>
     </div>`;
   }).join("");
   document.getElementById("insight-brief").innerHTML = `
     <div class="b-kicker" style="color: var(--series-7);">뉴스 인사이트 · 매일 갱신</div>
     <h2>소노 · 레저 데일리 + 주간 키워드 레이더</h2>
     <div class="b-period">최신: ${latest ? latest.date : "-"} · 소노 ${latest ? latest.sono.length : 0}건 · 레저 ${latest ? latest.leisure.length : 0}건</div>
-    <p>매일 소노·호텔·레저 기사를 원문 링크째로 쌓고, 주 1회 네이버 검색 API로 20개 키워드의 기사 발생량을 지난주와 맞대어 봅니다.
+    <p>매일 소노·호텔·레저 기사를 원문 링크째로 쌓고, 주 1회 네이버 검색 API로 ${TREND_PLAN.groups.reduce((a, g) => a + g.kw.length, 0)}개 키워드의 기사 발생량을 지난주와 맞대어 봅니다.
     <a class="link" href="https://cksals00-ai.github.io/gs_daily_trend_news_public_temp/index.html" target="_blank">뉴스 원본 →</a></p>
     <div class="quota">
-      <div class="quota-title">무료 한도 대비 호출량 설계치</div>
+      <div class="quota-title">무료 한도 대비 실제 호출량 · ${ym}</div>
       ${q}
-      <div class="quota-foot">세 API 모두 무료 구간 안에서만 돕니다. 10배로 늘려도 유료 구간에 닿지 않습니다.</div>
+      <div class="quota-foot">${since ? `${since}부터 각 작업이 그날 쓴 콜 수를 직접 기록합니다 — 그 이전은 기록이 없고, 추정치로 채우지 않습니다.`
+        : "아직 기록이 없습니다. 다음 07:00 재현본 실행부터 쌓입니다."}
+        세 API 모두 무료 구간 안에서만 돕니다.</div>
     </div>`;
 }
 
@@ -5554,6 +5594,10 @@ renderNews();
 renderLatestNews();
 
 renderRia();
+fetch("apiusage.json").then(r => r.ok ? r.json() : null)
+  .then(d => { if (Array.isArray(d)) { API_USAGE = d; renderInsightBrief(); } })
+  .catch(() => {});
+
 fetch("insta.json").then(r => r.ok ? r.json() : null)
   .then(d => { if (d && (d.posts || d.account || d.media)) { RIA = d; renderRia(); } })
   .catch(() => {});

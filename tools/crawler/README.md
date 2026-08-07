@@ -134,4 +134,21 @@ python3 tools/crawler/score.py 2026-08-03  # 하루 채점
 python3 tools/crawler/score.py --all       # 정본 전체 누적 + rubric.json 기록
 python3 tools/crawler/freshness.py         # 12개 소스 신선도 표 + freshness.json 기록
 python3 tools/crawler/freshness.py --line  # 보고용 한 줄만
+python3 tools/crawler/apiusage.py 레이더 84 # 네이버 검색 API 실제 호출 수 기록
 ```
+
+## 호출량 기록 (apiusage.py)
+
+화면의 「무료 한도 대비 호출량」은 2026-08-07 까지 손으로 박아둔 상수 300 이었다.
+한 번도 안 변했고, 매일 도는 재현본 수집(씨앗어 37개 = 37콜)은 세어지지도 않았다.
+설계치를 미터 모양으로 그려 놓으면 보는 사람은 그걸 실측으로 읽는다.
+
+지금은 `digest.py` 의 `search()` 가 호출을 세고, 실행 끝에 `apiusage.record("재현본", n)`
+으로 `app/public/apiusage.json` 에 적는다. 주간 레이더는 예약작업 프롬프트를 고치는
+대신 `apiusage.sync_radar()` 가 `dashboard.html` 의 `TREND_PLAN.calls` / `updated` 를
+읽어 옮긴다 — 레이더는 원래부터 그 두 값을 쓰고 있었으므로 새로 시킬 일이 없다.
+07:00 실행이 매일 한 번씩 이 동기화를 부른다. 같은 (날짜, 작업) 기록은 덮어쓴다 —
+재실행이 누적을 부풀리면 안 된다.
+
+기록이 없는 날은 **0으로 채우지 않는다.** 0 은 「측정된 0」을 뜻한다. 화면도
+「기록 없음」으로 남기고 실측 시작일을 같이 보여준다.
