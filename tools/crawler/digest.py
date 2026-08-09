@@ -7,6 +7,16 @@ import json, re, os, urllib.request, urllib.parse, collections, datetime
 HERE = os.path.dirname(os.path.abspath(__file__))
 from _paths import cred, PUBLIC  # noqa: E402
 
+# ── 커밋 작성자 강제 (프롬프트 지시가 누락돼도 Unverified 커밋이 안 생기게) ──
+try:
+    import sys as _sys, os as _os
+    _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), ".."))
+    from gitid import ensure as _ensure_gitid
+    _ensure_gitid()
+except Exception as _e:
+    print(f"[gitid] 건너뜀 — {_e}")
+
+
 # ── 348일치에서 역산한 편집 규칙 ──────────────────────────────
 TARGET_ITEMS = 16                      # 평균 16.5꼭지
 SLOTS = [                              # (카테고리, 배정 꼭지수) — 위치가 곧 중요도

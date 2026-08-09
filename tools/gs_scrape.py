@@ -8,6 +8,16 @@
 """
 import re, json, urllib.request
 
+# ── 커밋 작성자 강제 (프롬프트 지시가 누락돼도 Unverified 커밋이 안 생기게) ──
+try:
+    import sys as _sys, os as _os
+    _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "."))
+    from gitid import ensure as _ensure_gitid
+    _ensure_gitid()
+except Exception as _e:
+    print(f"[gitid] 건너뜀 — {_e}")
+
+
 BASE = "https://cksals00-ai.github.io/gs_daily_trend_news_public_temp/"
 SRC = BASE + "index.html"
 OTB = BASE + "data/otb_data.json"

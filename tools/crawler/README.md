@@ -137,6 +137,26 @@ python3 tools/crawler/freshness.py --line  # 보고용 한 줄만
 python3 tools/crawler/apiusage.py 레이더 84 # 네이버 검색 API 실제 호출 수 기록
 ```
 
+## 커밋 작성자 (gitid.py)
+
+예약작업 프롬프트에는 「커밋 전에 `git config user.email noreply@anthropic.com` 을 걸어라」가
+적혀 있다. 그런데 지시는 지켜질 때도 있고 아닐 때도 있었다 — 2026-07-31(b3af2b8)과
+2026-08-09(95a3155) 두 번은 누락돼 `Higgsfield Agent <agent@higgsfield.ai>` 로 커밋이
+올라갔고 GitHub 에서 **Unverified** 로 표시됐다.
+
+그래서 지시를 더 크게 적는 대신 **실행되게** 만들었다. `tools/gitid.py` 의 `ensure()` 가
+레포의 user.email/user.name 을 맞추고, 예약작업이 반드시 부르는 두 스크립트가 시작할 때
+이걸 호출한다.
+
+| 작업 | 부르는 스크립트 | 훅 위치 |
+|---|---|---|
+| 07:00 재현본 | `tools/crawler/digest.py` | `_paths` import 직후 |
+| 09:00 GS·인사이트 | `tools/gs_scrape.py` | 최상단 import 직후 |
+| 일 07:00 주간 브리핑 | (레포 스크립트를 안 쓴다) | 프롬프트 §0 에 명시 |
+
+git 이 없거나 레포가 아니면 조용히 넘어간다 — 이 훅 때문에 수집이 죽으면 안 된다.
+이미 올바르게 설정돼 있으면 아무것도 하지 않는다.
+
 ## 호출량 기록 (apiusage.py)
 
 화면의 「무료 한도 대비 호출량」은 2026-08-07 까지 손으로 박아둔 상수 300 이었다.
