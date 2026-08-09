@@ -125,6 +125,15 @@ def wonmun_shares(path=None, before=None):
     return row["date"], {k: v / n for k, v in cnt.items()}, n
 
 
+ANCHOR_MAX_AGE = 2      # 탄력 배분 기준 정본이 며칠 전까지 유효한가
+
+
+def _days_between(a, b):
+    da = datetime.date(*map(int, a.split("-")))
+    db = datetime.date(*map(int, b.split("-")))
+    return (db - da).days
+
+
 def elastic_slots(base=None, path=None, before=None):
     """전날 원문 점유율로 슬롯을 재배분한다. 반환: (슬롯목록, 총꼭지수, 설명)."""
     base = base or SLOTS
@@ -133,6 +142,15 @@ def elastic_slots(base=None, path=None, before=None):
     date, share, n = wonmun_shares(path, before)
     if not share:
         return [tuple(x) for x in slots], TARGET_ITEMS, "탄력 배분 미발동(기준 원문 없음)"
+
+    # 기준 정본이 오래됐으면 발동하지 않는다 (2026-08-10 근거).
+    # 8/10 은 직전 정본이 8/6 이라 나흘 전 분포로 날씨에 5칸을 주고 문화·스포츠와
+    # 사회·생활을 0으로 깎았는데, 정작 그날 원문의 6꼭지가 그 두 칸에 있었다.
+    # 어제 날씨가 몰렸다는 신호는 오늘 쓸 수 있지만, 나흘 전 신호는 잡음에 가깝다.
+    if before and _days_between(date, before) > ANCHOR_MAX_AGE:
+        return ([tuple(x) for x in slots], TARGET_ITEMS,
+                f"탄력 배분 미발동 — 기준 정본 {date} 이 {_days_between(date, before)}일 전"
+                f"({ANCHOR_MAX_AGE}일 초과)")
 
     cat, top = max(share.items(), key=lambda kv: kv[1])
     if top <= SHARE_TRIGGER or cat in DONORS:
