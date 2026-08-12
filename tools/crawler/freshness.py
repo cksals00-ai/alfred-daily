@@ -37,7 +37,7 @@ OK, WARN, FAIL, MANUAL, UNREAD = "정상", "주의", "실패", "수동", "조회
 
 # 카테고리 → 그걸 실제로 굴리는 예약작업. 담당자가 없는 축은 None 이다.
 OWNER = {
-    "daily": "Alfred Daily 07:00 (trig_01AJNUPpjXMmddzqkpoQJ2iX)",
+    "daily": "Alfred Daily 07:00 (trig_01QSnb9cSoQyNvLku62aKCA4)",
     "gs":    "GS·인사이트 09:00 (trig_01QM65z2VTBqfM4AB5Zgd9dD)",
     "weekly": "주간 브리핑 일 07:00 (trig_01NqusWzxt6ikGFZkKwRJ15C)",
     "manual": "없음 — 손으로 채운다",

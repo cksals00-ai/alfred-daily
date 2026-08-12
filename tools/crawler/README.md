@@ -123,7 +123,7 @@ score.py 가 "재현본이 얼마나 정확한가"를 본다면, freshness.py �
 
 | 축 | 담당 예약작업 | 임계(정상/주의) |
 |---|---|---|
-| news.json · digest.json | Alfred Daily 07:00 `trig_01AJNUPpjXMmddzqkpoQJ2iX` | 1일 / 2일 |
+| news.json · digest.json | Alfred Daily 07:00 `trig_01QSnb9cSoQyNvLku62aKCA4` | 1일 / 2일 |
 | insta.json | 같은 작업 §0 (교신함 수급) | 1일 / 2일 |
 | GS_DAILY · INSIGHT_DAILY | GS·인사이트 09:00 `trig_01QM65z2VTBqfM4AB5Zgd9dD` | 1영업일 / 2영업일 |
 | GS_PERF.asOf | 같은 작업 §1-b | 2영업일 / 3영업일 |
