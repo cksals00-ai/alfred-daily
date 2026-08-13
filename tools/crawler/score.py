@@ -128,10 +128,22 @@ def score(date):
     misses = [s for i, (s, a) in enumerate(st) if i not in taken]
     extras = [rep[j] for j in range(len(rt)) if j not in used]
 
+    # 구조 한계 — 각 칸 안에서 완벽히 골랐다고 가정했을 때의 적중 상한.
+    # 원문의 카테고리 분포와 재현본의 카테고리 분포를 겹쳐 min 을 더한다.
+    # 이 값이 낮으면 문제는 「무엇을 골랐나」가 아니라 「몇 칸을 줬나」에 있다.
+    from digest import classify as _classify   # noqa: E402
+    won_c = collections.Counter(_classify(m) for m in src); won_c.pop(None, None)
+    rep_c = collections.Counter(i["cat"] for i in rep)
+    ceil = sum(min(won_c[c], rep_c[c]) for c in set(won_c) | set(rep_c))
+
     return {
         "date": date,
         "원문": len(src), "재현본": len(rep),
         "적중": len(hits), "누락": len(misses), "오탐": len(extras),
+        "구조한계": ceil,
+        "구조한계율": round(ceil / max(1, len(src)), 3),
+        "배분손실": round(1 - ceil / max(1, len(src)), 3),
+        "선택손실": round(max(0.0, ceil / max(1, len(src)) - len(hits) / max(1, len(src))), 3),
         "재현율": round(len(hits) / max(1, len(src)), 3),
         "정확도": round(len(hits) / max(1, len(rep)), 3),
         "누락_카테고리": collections.Counter(categorize(m) for m in misses),
@@ -147,6 +159,8 @@ def report(r):
     L = [f"■ {r['date']}  원문 {r['원문']}꼭지 / 재현본 {r['재현본']}꼭지",
          f"  적중 {r['적중']} · 누락 {r['누락']} · 오탐 {r['오탐']}"
          f"  → 재현율 {r['재현율']:.0%} · 정확도 {r['정확도']:.0%}",
+         f"  구조 한계 {r['구조한계율']:.0%} (칸 안에서 완벽히 골라도 여기까지)"
+         f" · 배분손실 {r['배분손실']:.0%} · 선택손실 {r['선택손실']:.0%}",
          "  누락 카테고리: " + ", ".join(f"{k} {v}" for k, v in r["누락_카테고리"].most_common())]
     L += ["  [누락] " + m for m in r["누락목록"]]
     L += ["  [오탐] " + e for e in r["오탐목록"]]
@@ -167,13 +181,16 @@ if __name__ == "__main__":
             if not r.get("error"):
                 agg.update(r["누락_카테고리"])
                 rows.append({k: r[k] for k in
-                             ("date", "원문", "재현본", "적중", "누락", "오탐", "재현율", "정확도")})
+                             ("date", "원문", "재현본", "적중", "누락", "오탐", "재현율", "정확도",
+                              "구조한계", "구조한계율", "배분손실", "선택손실")})
         print(f"== 정본 {len(rows)}일 누적 누락 카테고리 ==")
         for k, v in agg.most_common():
             print(f"  {k}: {v}")
         if rows:
             avg = sum(x["재현율"] for x in rows) / len(rows)
-            print(f"== 평균 재현율 {avg:.0%} ==")
+            cap = sum(x["구조한계율"] for x in rows) / len(rows)
+            print(f"== 평균 재현율 {avg:.0%} · 구조 한계 {cap:.0%} ==")
+            print(f"   손실 분해 — 배분(슬롯) {1 - cap:.0%} · 선택(칸 안) {cap - avg:.0%}")
         json.dump({"rows": rows, "누락_카테고리": dict(agg)},
                   open(os.path.join(HERE, "rubric.json"), "w", encoding="utf-8"),
                   ensure_ascii=False, indent=1)
