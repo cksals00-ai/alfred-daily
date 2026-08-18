@@ -1,9 +1,8 @@
 name: Template CI
 
+# 히그스필드 전용 러너(arc-runners-frontend)라 GitHub 에서는 실행 불가.
+# 큐에 영원히 걸리는 것을 막기 위해 수동 실행 전용으로 전환 (2026-08-19).
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
