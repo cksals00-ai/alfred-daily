@@ -443,6 +443,19 @@ def archive(d, path=ARCHIVE):
 
 
 if __name__ == "__main__":
+    # 같은 날 재현본이 이미 있으면 다시 만들지 않는다 — 07:00 정시분 보호.
+    # 수동 재실행이 정시 크롤을 덮어쓰면 채점 기준 풀이 바뀐다(2026-08-19 실증).
+    # 의도적 재실행(A/B 실험 등)은 DIGEST_FORCE=1 로 명시한다.
+    if os.environ.get("DIGEST_FORCE") != "1":
+        try:
+            _cur = json.load(open(ARCHIVE, encoding="utf-8"))
+        except (FileNotFoundError, ValueError):
+            _cur = []
+        import datetime as _dt
+        _today = _dt.date.today().isoformat()
+        if any(x["date"] == _today for x in _cur):
+            print(f"[skip] {_today} 재현본이 이미 있다 — 덮어쓰지 않는다 (의도적 재실행은 DIGEST_FORCE=1)")
+            raise SystemExit(0)
     d = build()
     json.dump(d, open(os.path.join(HERE, "digest.json"), "w", encoding="utf-8"),
               ensure_ascii=False, indent=1)

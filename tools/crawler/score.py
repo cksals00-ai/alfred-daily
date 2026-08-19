@@ -191,6 +191,15 @@ if __name__ == "__main__":
             cap = sum(x["구조한계율"] for x in rows) / len(rows)
             print(f"== 평균 재현율 {avg:.0%} · 구조 한계 {cap:.0%} ==")
             print(f"   손실 분해 — 배분(슬롯) {1 - cap:.0%} · 선택(칸 안) {cap - avg:.0%}")
+        # 기존 rubric 의 비고(정시 아닌 실행 표시)를 날짜 기준으로 보존한다.
+        try:
+            _old = json.load(open(os.path.join(HERE, "rubric.json"), encoding="utf-8"))
+            _memo = {r["date"]: r["비고"] for r in _old.get("rows", []) if r.get("비고")}
+            for r in rows:
+                if r["date"] in _memo:
+                    r["비고"] = _memo[r["date"]]
+        except (FileNotFoundError, ValueError):
+            pass
         json.dump({"rows": rows, "누락_카테고리": dict(agg)},
                   open(os.path.join(HERE, "rubric.json"), "w", encoding="utf-8"),
                   ensure_ascii=False, indent=1)
