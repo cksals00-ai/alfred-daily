@@ -1,0 +1,43 @@
+# 07:00 KST 아침뉴스 파이프라인 — 재현본 생성 → 채점 → 신선도 → 커밋/푸시
+# (푸시되면 pages.yml 이 대시보드를 자동 재배포한다)
+# 시크릿: 레포 Settings → Secrets and variables → Actions 의
+#   NAVER_CLIENT_ID / NAVER_CLIENT_SECRET  (값은 여기·로그 어디에도 적지 않는다)
+name: Daily news (07:00 KST)
+
+on:
+  schedule:
+    - cron: '0 22 * * *'   # UTC 22:00 = KST 07:00
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-news
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 재현본 생성 · 채점 · 신선도
+        env:
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+          TZ: Asia/Seoul
+        # 주의: head 등으로 출력을 자르면 SIGPIPE 로 아카이브 단계가 죽는다. tee 만 쓴다.
+        run: |
+          python3 tools/crawler/digest.py 2>&1 | tee /tmp/digest.log
+          python3 tools/crawler/score.py --all 2>&1 | tee /tmp/score.log
+          python3 tools/crawler/freshness.py 2>&1 | tee /tmp/freshness.log
+      - name: 커밋 · 푸시
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/public tools/crawler
+          if git diff --cached --quiet; then
+            echo "변경 없음 — 커밋 생략"
+          else
+            git commit -m "0700 자동: 재현본·채점·신선도 ($(TZ=Asia/Seoul date +%m/%d))"
+            git push
+          fi

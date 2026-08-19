@@ -1,0 +1,38 @@
+# 09:00 KST GS 데일리 — 공개 GS 대시보드에서 실적 추출 → dashboard.html 반영
+# 출처가 미갱신이면 diff 가 없어 커밋이 생기지 않는다(정상). 출처 접속 실패면 워크플로가 실패로 남는다.
+name: GS daily (09:00 KST)
+
+on:
+  schedule:
+    - cron: '0 0 * * *'    # UTC 00:00 = KST 09:00
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gs-daily
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: GS 추출 · 반영
+        env:
+          TZ: Asia/Seoul
+        run: |
+          sudo mkdir -p /home/claude/work && sudo chown "$USER" /home/claude/work
+          python3 tools/gs_scrape.py 2>&1 | tee /tmp/gs_scrape.log
+          python3 tools/gs_apply.py 2>&1 | tee /tmp/gs_apply.log
+      - name: 커밋 · 푸시
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/public/dashboard.html
+          if git diff --cached --quiet; then
+            echo "변경 없음(출처 미갱신) — 커밋 생략"
+          else
+            git commit -m "0900 자동: GS 데일리 반영 ($(TZ=Asia/Seoul date +%m/%d))"
+            git push
+          fi
