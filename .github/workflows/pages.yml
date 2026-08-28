@@ -5,6 +5,15 @@ name: Deploy dashboard to Pages
 on:
   push:
     branches: [main]
+  # 데이터 워크플로가 GITHUB_TOKEN 으로 푸시하면 push 트리거가 안 걸린다(GitHub 재귀 방지).
+  # 8/23~28 실측: 스케줄 daily-news 푸시 뒤 push 배포가 한 번도 안 돌았고, 로컬 예약의
+  # 별도 푸시가 공백을 가려왔다. 그래서 완료 이벤트로 직접 잇는다 (2026-08-29).
+  workflow_run:
+    workflows:
+      - "Daily news (07:00 KST)"
+      - "GS daily (09:00 KST)"
+      - "Weekly keyword radar (Sun 07:20 KST)"
+    types: [completed]
   workflow_dispatch:
 
 permissions:

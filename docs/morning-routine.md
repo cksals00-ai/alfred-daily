@@ -186,6 +186,13 @@ out = s[:k] + b + s[k:]
   "Daily news (07:00 KST)" 오늘 실행이 success 인가
 - `tools/crawler/freshness.json` 신선도
 - 라이브 `https://cksals00-ai.github.io/alfred-daily/digest.json` 이 레포와 일치하는가
+- **Actions 가 푸시한 날은 Pages 배포가 따라 돌았는지도 본다.** GITHUB_TOKEN 푸시는
+  push 트리거를 못 깨운다(재귀 방지) — 8/23~28 내내 스케줄 daily-news 푸시 뒤 배포가
+  한 번도 안 돌았고 로컬 예약의 별도 푸시가 가려왔다(2026-08-29 실측). `pages.yml` 에
+  `workflow_run` 연결을 넣어 고쳤지만, 배포가 결번이면 `pages.yml` 을 `workflow_dispatch`
+  로 직접 돌린다.
+- **클라우드 루틴에서는 github.io 직접 조회가 이그레스 정책에 막힐 수 있다** — 그때는
+  「라이브 조회 불가 + 사유」로 남기고 Pages 배포 success 를 대체 증거로 쓴다. 추정 금지.
 
 ### 5. 커밋 · 푸시 · 라이브 검증
 
