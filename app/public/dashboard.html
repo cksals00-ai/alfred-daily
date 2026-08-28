@@ -345,6 +345,12 @@
   :root[data-theme="dark"] { --series-8: #e66767; --dv-pos: #3987e5; --dv-neg: #e66767; }
 
   #gs-perf { margin-bottom: 22px; }
+  /* 2026-08-28 통합 뉴스 탭 — 오늘 / 주간 / 아카이브 구분 */
+  .nv-sec { margin-bottom: 30px; }
+  .nv-h { font-size: 0.72rem; font-weight: 700; letter-spacing: .12em;
+          color: var(--muted); text-transform: uppercase;
+          padding-bottom: 7px; margin-bottom: 14px;
+          border-bottom: 1px solid var(--line); }
   .perf-head { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; margin: 4px 0 8px; }
   .perf-head h3 { font-size: 0.98rem; margin: 0; }
   .perf-when { font-size: 0.68rem; color: var(--text-secondary); }
@@ -715,8 +721,7 @@
   <button class="tab active" data-tab="today">🗞 오늘</button>
   <button class="tab" data-tab="notes">📚 롱블랙 노트</button>
   <button class="tab" data-tab="news">📮 데일리 뉴스</button>
-  <button class="tab" data-tab="gs">🏨 GS 데일리</button>
-  <button class="tab" data-tab="insight">🔍 뉴스 인사이트</button>
+  <button class="tab" data-tab="app">📱 앱 개발</button>
   <button class="tab" data-tab="ria">📸 리아 인스타</button>
 </div>
 
@@ -751,24 +756,34 @@
 </div><!-- /view-notes -->
 
 <div id="view-news" style="display:none;">
-  <div id="latest-news"></div>
-  <div class="brief" id="news-brief" style="border-left-color: var(--series-6, #eb6834);"></div>
-  <div id="news-cards"></div>
+  <!-- 2026-08-28 통합: 「데일리 뉴스」 + 「뉴스 인사이트」를 한 탭으로. 순서는 오늘 → 주간 → 아카이브. -->
+  <div class="nv-sec">
+    <div class="nv-h">오늘</div>
+    <div id="latest-news"></div>
+    <div id="latest-insight"></div>
+  </div>
+  <div class="nv-sec">
+    <div class="nv-h">주간</div>
+    <div class="brief" id="news-brief" style="border-left-color: var(--series-6, #eb6834);"></div>
+    <div class="brief" id="insight-brief" style="border-left-color: var(--series-7, #4a3aa7);"></div>
+    <div id="insight-trend"></div>
+  </div>
+  <div class="nv-sec">
+    <div class="nv-h">아카이브</div>
+    <div id="news-cards"></div>
+    <div class="gs-news-head" style="margin-top:26px">소노 · 경쟁사 뉴스 인사이트</div>
+    <div id="insight-cards"></div>
+  </div>
 </div><!-- /view-news -->
 
-<div id="view-gs" style="display:none;">
-  <div class="brief" id="gs-brief" style="border-left-color: var(--series-5, #1baf7a);"></div>
-  <div id="gs-perf"></div>
-  <div class="gs-news-head">뉴스 · 이슈 아카이브</div>
-  <div id="gs-cards"></div>
-</div><!-- /view-gs -->
+<!-- 2026-08-28 GS 데일리 탭 제거(대표 지시). GS_DAILY·GS_PERF 데이터와 renderGs* 함수는
+     되살릴 수 있도록 파일에 남겨두되 호출하지 않는다. -->
+<div id="view-app" style="display:none;">
+  <div class="ria-head"><h2>앱 개발</h2><span class="ria-when" id="app-when"></span></div>
+  <div id="app-log"></div>
+</div><!-- /view-app -->
 
-<div id="view-insight" style="display:none;">
-  <div id="latest-insight"></div>
-  <div class="brief" id="insight-brief" style="border-left-color: var(--series-7, #4a3aa7);"></div>
-  <div id="insight-trend"></div>
-  <div id="insight-cards"></div>
-</div><!-- /view-insight -->
+<!-- view-insight 는 2026-08-28 view-news 로 흡수됐다. -->
 
 <div id="view-ria" style="display:none;">
   <div class="ria-head">
@@ -5105,6 +5120,8 @@ function _gsDailyFor(asOf) {
 }
 
 function renderGsPerf() {
+  // 2026-08-28 GS 탭 제거 — 대상 DOM 이 없으면 조용히 끝낸다.
+  if (!document.getElementById("gs-perf")) return;
   const el = document.getElementById("gs-perf");
   if (!el || typeof GS_PERF === "undefined") return;
   const P = GS_PERF;
@@ -5230,10 +5247,13 @@ function renderGsPerf() {
 let _gsRz;
 window.addEventListener("resize", () => {
   clearTimeout(_gsRz);
-  _gsRz = setTimeout(() => { if (document.getElementById("view-gs").style.display !== "none") renderGsPerf(); }, 220);
+  // 2026-08-28 GS 탭 제거 — view-gs 가 없으므로 null 검사를 넣는다(리사이즈 때 죽지 않게).
+  _gsRz = setTimeout(() => { const v = document.getElementById("view-gs"); if (v && v.style.display !== "none") renderGsPerf(); }, 220);
 });
 
 function renderGsBrief() {
+  // 2026-08-28 GS 탭 제거 — 대상 DOM 이 없으면 조용히 끝낸다.
+  if (!document.getElementById("gs-brief")) return;
   const latest = GS_DAILY[0];
   document.getElementById("gs-brief").innerHTML = `
     <div class="b-kicker" style="color: var(--series-5);">GS 데일리 요약 · 원본 대시보드 요약본</div>
@@ -5270,6 +5290,8 @@ function gsDayCard(g) {
 }
 
 function renderGs() {
+  // 2026-08-28 GS 탭 제거 — 대상 DOM 이 없으면 조용히 끝낸다.
+  if (!document.getElementById("gs-cards")) return;
   const el = document.getElementById("gs-cards");
   const sorted = GS_DAILY.slice().sort((a, b) => b.date.localeCompare(a.date));
   const groups = new Map();
@@ -6934,28 +6956,8 @@ function renderToday() {
   }
 
   /* GS 데일리 */
+  /* 2026-08-28 GS 데일리 탭 제거(대표 지시) — 오늘 탭 카드도 내린다. */
   let gsBox = "";
-  if (gs || typeof GS_PERF !== "undefined") {
-    let rows = "";
-    if (typeof GS_PERF !== "undefined" && GS_PERF.segMonth) {
-      rows = GS_PERF.segMonth.labels.map(L => {
-        const d = GS_PERF.segMonth.data[L]["전체"];
-        if (!d) return "";
-        const st = _landing(d.fcstAch);
-        return `<div class="fp-mrow"><span class="m">${L}</span>
-          <span class="a">진행 <b>${d.ach.toFixed(1)}%</b></span>
-          <span class="b" style="color:${st.c};border-color:${st.c}">${st.t} ${d.fcstAch ? d.fcstAch.toFixed(1) + "%" : ""}</span></div>`;
-      }).join("");
-    }
-    gsBox = `
-      <section class="fp-box">
-        <div class="fp-box-head" style="color:var(--series-5)">GS 데일리</div>
-        <div class="fp-when">${gs ? gs.date : (GS_PERF.asOfLabel || "")} · 예상 착지 기준</div>
-        ${gs && gs.kpiLine ? `<div class="fp-kpi">${gs.kpiLine}</div>` : ""}
-        ${rows}
-        <button class="fp-more" onclick="goTab('gs')">실적 전체 →</button>
-      </section>`;
-  }
 
   /* 뉴스 인사이트 */
   let insBox = "";
@@ -6970,7 +6972,7 @@ function renderToday() {
         <div class="fp-when">${ins.date} · 소노 ${(ins.sono || []).length}건 · 레저 ${(ins.leisure || []).length}건</div>
         <div class="fp-lede">${ins.headline || ""}</div>
         <ul class="fp-list">${li}</ul>
-        <button class="fp-more" onclick="goTab('insight')">인사이트 전체 →</button>
+        <button class="fp-more" onclick="goTab('news')">인사이트 전체 →</button>
       </section>`;
   }
 
@@ -7296,6 +7298,39 @@ function renderRiaExec() {
          14일마다 — 포맷 고정을 해제하고 다시 판정한다.</div></div>`;
 }
 
+/* ── 앱 개발 ──────────────────────────────────────────────────────────
+   2026-08-28 신설. GS 데일리 탭을 대체한다.
+   내용은 대표가 클레어(다른 세션)에게 받아 넘겨주면 APP_LOG 에 쌓는다.
+   항목 스키마: { date, title, status, body[], links[{t,u}] }
+   status 는 "진행"·"완료"·"보류" 셋 중 하나. 값이 없으면 없다고 적고 추정하지 않는다. */
+const APP_LOG = [];
+
+function renderApp() {
+  const host = document.getElementById("app-log");
+  const when = document.getElementById("app-when");
+  if (!host) return;
+  if (when) when.textContent = APP_LOG.length ? APP_LOG[0].date : "";
+  if (!APP_LOG.length) {
+    host.innerHTML = `<div class="brief" style="border-left-color:var(--series-3)">
+      <b>아직 기록이 없습니다.</b><br>
+      앱 개발 진행 내용을 넘겨주시면 여기에 날짜순으로 쌓입니다.
+      대표님이 클레어에게 받은 내용을 주시면 <code>APP_LOG</code> 에 넣습니다.</div>`;
+    return;
+  }
+  const S = { "진행": "var(--series-1)", "완료": "var(--series-5)", "보류": "var(--muted)" };
+  host.innerHTML = APP_LOG.map(a => `
+    <section class="card">
+      <div class="card-head">
+        <span class="card-date">${_esc(a.date || "")}</span>
+        ${a.status ? `<span class="chip" style="border-color:${S[a.status] || "var(--muted)"};color:${S[a.status] || "var(--muted)"}">${_esc(a.status)}</span>` : ""}
+      </div>
+      <h3>${_esc(a.title || "(제목 없음)")}</h3>
+      ${(a.body || []).map(p => `<p>${p}</p>`).join("")}
+      ${(a.links || []).length ? `<ul class="fp-list">${a.links.map(l =>
+        `<li><a href="${_esc(l.u)}" target="_blank" rel="noopener">${_esc(l.t)}</a></li>`).join("")}</ul>` : ""}
+    </section>`).join("");
+}
+
 function renderRia() {
   const w = document.getElementById("ria-when");
   if (w) w.textContent = RIA && RIA.asOf ? RIA.asOf + " 기준" : "데이터 연결 대기";
@@ -7316,20 +7351,20 @@ document.querySelectorAll(".ria-step").forEach(b =>
 
 function goTab(name) {
   document.querySelectorAll(".tab").forEach(x => x.classList.toggle("active", x.dataset.tab === name));
-  ["today", "notes", "news", "gs", "insight", "ria"].forEach(v => {
+  ["today", "notes", "news", "app", "ria"].forEach(v => {
     const n = document.getElementById("view-" + v);
     if (n) n.style.display = v === name ? "" : "none";
   });
   const hd = document.querySelector("header");
   if (hd) hd.style.display = name === "today" ? "none" : "";
-  if (name === "gs") renderGsPerf();
+  if (name === "app") renderApp();
   if (name === "ria" && RIA_STEP === "perf") renderRiaPerf();
   window.scrollTo(0, 0);
 }
 
 document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => goTab(t.dataset.tab)));
 
-renderGsBrief();
+// renderGsBrief();  // 2026-08-28 GS 탭 제거로 호출 중단
 renderGsPerf();
 renderGs();
 

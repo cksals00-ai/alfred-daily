@@ -154,12 +154,10 @@ def run():
     check("리아 인스타 (insta.json)", OWNER["daily"] + " · 교신함 수급", 1, 2, insta,
           note="수집기는 자격증명 없음 — 기획실장 교신함 수급이 유일한 경로")
 
-    check("GS 데일리 (GS_DAILY)", OWNER["gs"], 1, 2,
-          lambda: d(dates_in(s, "GS_DAILY")[-1]), biz=True)
-    check("뉴스 인사이트 (INSIGHT_DAILY)", OWNER["gs"], 1, 2,
-          lambda: d(dates_in(s, "INSIGHT_DAILY")[-1]), biz=True)
     # 출처 페이지는 '전일까지의 실적'을 싣는다. 그래서 asOf 는 구조적으로 1영업일
     # 뒤처진다 — 그걸 매일 경보로 올리면 경보가 무의미해진다. 임계를 한 칸 민다.
+    # 2026-08-28 GS 데일리 탭 제거 — GS_DAILY·INSIGHT_DAILY 감시는 뺐다.
+    # GS_PERF 는 09:00 워크플로가 계속 채우므로 남겨 둔다(오늘 탭에는 안 뜬다).
     check("GS 실적 (GS_PERF.asOf)", OWNER["gs"], 2, 3,
           lambda: d(kv(s, "GS_PERF", "asOf")), biz=True,
           note="refresh=%s · 출처가 전일 실적을 싣는 구조라 1영업일 지연은 정상" %
