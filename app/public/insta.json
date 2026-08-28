@@ -1,14 +1,14 @@
 {
- "_source": "리아 회차 보고 2026-08-19 18:00 (교신함 · 리아 → 기획실장, 문서 1dJTaVvBG2i2nZR_Eo8tJkVQU6Yc98EI0Gqg9pDeUP6g) · 이전 기준: 리아 회차 보고 2026-08-18 08:39 (문서 1JT-1ALBOpljcWA0DX10dWKHu1iOME-VEHNo0pRV9VaY)",
+ "_source": "리아 회차 보고 2026-08-27 08:3X (교신함 · 리아 → 기획실장, 문서 1BM71-g9QSAwN4L15qjFYYidAUP-49LnAIhhQZfguWz8) · 이전 기준: 리아 회차 보고 2026-08-19 18:00 (문서 1dJTaVvBG2i2nZR_Eo8tJkVQU6Yc98EI0Gqg9pDeUP6g)",
  "_rule": "기획실장 0730 지시서 v2 — 관리 지표는 리텐션(평균 시청시간 ÷ 영상 길이) 하나. 리텐션은 수급값을 그대로 쓰고 대시보드가 다시 계산하지 않는다. 값이 없으면 없다고 적는다.",
- "asOf": "2026-08-19 18:00 KST",
- "collectedAtKst": "2026-08-19T18:00:00+09:00",
+ "asOf": "2026-08-27 08:3X KST",
+ "collectedAtKst": "2026-08-27T08:21:02+09:00",
  "retentionSource": "supplied",
  "account": {
   "username": "lia_park55",
-  "followers": 924,
+  "followers": 905,
   "following": 29,
-  "posts": 39
+  "posts": 42
  },
  "posts": [
   {
@@ -143,7 +143,24 @@
    "comments": 0,
    "contaminated": false,
    "note": "8/18 08:39 교신함 회차 실측(게시 8일 경과). 8/16 14:37 이래 3회차 연속 전 항목 불변. 길이 미수급 — 리텐션 계산 안 함. S1 성과 판정은 기획실장 계류(기한 8/20 12:00)."
+  },
+  {
+   "ts": "2026-08-27T08:30:00+09:00",
+   "title": "해와 달 (동화)",
+   "format": "동화 릴",
+   "len_s": 31.2,
+   "reach": null,
+   "views": null,
+   "avg_watch_s": null,
+   "retention": null,
+   "like": null,
+   "saved": null,
+   "shares": null,
+   "comments": null,
+   "contaminated": false,
+   "permalink": "https://www.instagram.com/reel/DchYFOEkckv/",
+   "note": "8/27 08:3X 수동 게시(68h 공백 종료). 검증창(21:00) 밖 게시 — v5 원칙 위반을 리아가 자인, 손실 기록. 지표 미실측 — 24h 판정은 8/28 회차(통과선 평균시청 7.8초, 1차 지표 공유율). 첫 댓글 등록·AI 고지 있음·해시태그 10개."
   }
  ],
- "_notes": "followers·posts는 2026-08-18 08:39 실측. following은 8/18 회차에 없어 7/30 실측(29)을 유지 — 갱신값 아님. EP.3·S1은 영상 길이 미수급이라 리텐션을 계산하지 않는다. 8/19 18:00 회차는 계정 실측만 수급(팔로워 924 — 17:1X 실측, 게시물 39건 전건 생존, 제3자 댓글 0건, 마지막 게시 8/10). 게시물별 지표 미실측 — posts 값은 8/18 08:39 실측 유지."
+ "_notes": "followers 905·posts 42는 2026-08-27 08:3X 회차 실측(8/24 911 대비 팔로워 -6, 게시 공백 68h 구간). following은 회차에 없어 7/30 실측(29) 유지 — 갱신값 아님. 해와 달(8/27)은 게시 직후라 도달·조회 등 전 지표 미실측 — 24h 판정 8/28 회차 예정. 기존 posts 실측값 유지. 회차 경고: 예약 실행 3연속 무효(8/22·8/25 게시분, kyoshin-check 5회) — 8/24 05:00 이후 교신함 발신 0건, 리아는 예약 세션 도구 미승인 가설(단정 아님)."
 }
