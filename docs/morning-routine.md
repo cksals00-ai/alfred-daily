@@ -213,8 +213,17 @@ out = s[:k] + b + s[k:]
   한 번도 안 돌았고 로컬 예약의 별도 푸시가 가려왔다(2026-08-29 실측). `pages.yml` 에
   `workflow_run` 연결을 넣어 고쳤지만, 배포가 결번이면 `pages.yml` 을 `workflow_dispatch`
   로 직접 돌린다.
-- **클라우드 루틴에서는 github.io 직접 조회가 이그레스 정책에 막힐 수 있다** — 그때는
-  「라이브 조회 불가 + 사유」로 남기고 Pages 배포 success 를 대체 증거로 쓴다. 추정 금지.
+- **클라우드 루틴에서는 github.io 직접 조회가 막힌다**(CONNECT 403, 캐시 우회로도 안 된다.
+  2026-08-29 실측). 「라이브 조회 불가 + 사유」로 남기고 **배포 SHA 대조**를 대체 증거로 쓴다 —
+  이게 배포 success 만 보는 것보다 강하다. 배포된 커밋이 내 HEAD 와 같은지까지 확인되기 때문이다.
+
+```bash
+curl -s "https://api.github.com/repos/cksals00-ai/alfred-daily/deployments?environment=github-pages&per_page=1"
+# → sha 가 git rev-parse HEAD 와 일치하는지 대조
+curl -s ".../deployments/<id>/statuses?per_page=1"   # → state 가 success 인지
+```
+
+  둘이 일치하고 success 면 「그 커밋이 라이브에 올랐다」가 확정된다. 추정으로 채우지 않는다.
 
 ### 5. 커밋 · 푸시 · 라이브 검증
 
