@@ -1,7 +1,30 @@
 # 아침 루틴 — 「아침 자료」 메일 처리 절차
 
-기준 문서 확인: 이 문서(2026-08-26 신설 · 2026-08-28 2회 구성으로 개정)
-대상 예약작업 2개 (07:30 · 09:00 KST)
+기준 문서 확인: 이 문서(2026-08-26 신설 · 2026-08-28 2회 구성으로 개정 · 같은 날 클라우드 이관 반영)
+대상 예약 3개 (매일 07:30 · 09:00, 주일 08:30 KST) — **2026-08-28부터 claude.ai 클라우드 루틴**
+(alfred-daily 가 소스로 연결된 클레어 세션에 바인딩)
+
+## 🚨 클라우드 루틴이 못 하는 일 — 맥 예약을 지우면 안 되는 이유 (2026-08-29 실측)
+
+클라우드 환경은 **allowlist 이그레스**다. 실측 결과 `api.github.com` 만 열려 있고
+**`longblack.co`·`cksals00-ai.github.io`·`openapi.naver.com`·일반 웹은 전부 차단**된다
+(curl 코드 000 = CONNECT 거부). MCP 커넥터(Gmail·드라이브·캘린더)는 Anthropic 프록시를
+지나므로 정상 작동한다.
+
+| 일 | 클라우드 | 비고 |
+|---|---|---|
+| [클레어] 메일 확인·보고 발송 | ✅ | Gmail 커넥터 |
+| 교신함 폴링 | ✅ | 드라이브 커넥터 |
+| 재현본 생성 | ✅ **간접** | NAVER 도메인·시크릿 둘 다 없음 → `daily-news.yml` 을 `workflow_dispatch` 로 |
+| 채점·신선도 | ✅ | 레포 안 파일 연산이라 네트워크 불필요 |
+| 커밋·푸시·Actions 조작 | ✅ | api.github.com |
+| **롱블랙 노트 읽기** | ❌ **불가** | longblack.co 차단. 아침 루틴의 절반이다 |
+| 라이브 대시보드 검증 | ❌ 불가 | github.io 차단 → Pages 배포 success 를 대체 증거로 |
+
+**그래서 맥 로컬 예약 3개를 지우면 안 된다.** 노트 처리 경로가 통째로 사라진다.
+둘을 다 살리되 **역할을 나눈다** — 클라우드=뉴스·채점·파이프라인·보고 / 맥=롱블랙 노트.
+멱등성 검사가 있으니 겹쳐 돌아도 중복 처리는 나지 않는다.
+**대표가 환경 네트워크 정책에 `longblack.co` 를 열어주면** 그때 맥 예약을 접는다.
 
 ## 왜 레포에 있나
 
@@ -40,6 +63,9 @@
 TZ=Asia/Seoul python3 tools/crawler/digest.py    # 같은 날 재현본이 있으면 스스로 건너뛴다
 ```
 
+**클라우드 루틴에서는** NAVER 시크릿이 없어 위 명령이 안 된다 — 대신 `daily-news.yml` 을
+`workflow_dispatch` 로 트리거하고 success 를 확인한 뒤 `git pull` 한다. 비고 규칙은 동일.
+
 `digest.py` 에는 같은 날 덮어쓰기 가드가 있어(2026-08-19 반영) 이미 있으면 아무 일도
 일어나지 않는다. 안전하게 불러도 된다. **다만 정시분이 아니므로** 채점 후
 `rubric.json` 의 그 줄에 `비고` 를 달아 추세 비교에서 뺀다 — 예:
@@ -72,6 +98,15 @@ TZ=Asia/Seoul python3 tools/crawler/digest.py    # 같은 날 재현본이 있�
 ## 절차
 
 ### 0. 준비
+
+**클라우드 루틴(2026-08-28 이관, 현행)** — 레포가 세션에 소스로 연결되어 이미 클론돼 있다.
+`git pull origin main` 으로 최신화만 하고 시작한다. 커밋·푸시는 세션의 깃 자격증명으로
+main 에 직접 한다 — PAT·`.secrets` 불필요. **NAVER 시크릿은 세션에 없다** — 재현본이
+필요한데 07:00 Actions 가 결번이면 크롤을 직접 돌리는 대신 GitHub Actions
+`daily-news.yml` 을 `workflow_dispatch` 로 트리거하고, 완료를 기다렸다가 pull 한다
+(정시분이 아니므로 `rubric.json` 비고 규칙은 그대로 적용).
+
+**맥 로컬(구, Cowork — 참고용으로 남김)**
 
 1. `request_cowork_directory` 로 `/Users/chanminpark/Documents/sacratery` 연결
    (승인은 저장돼 자동 적용). `.secrets/github_token` 을 푸시에 쓴다.
@@ -173,6 +208,13 @@ out = s[:k] + b + s[k:]
   "Daily news (07:00 KST)" 오늘 실행이 success 인가
 - `tools/crawler/freshness.json` 신선도
 - 라이브 `https://cksals00-ai.github.io/alfred-daily/digest.json` 이 레포와 일치하는가
+- **Actions 가 푸시한 날은 Pages 배포가 따라 돌았는지도 본다.** GITHUB_TOKEN 푸시는
+  push 트리거를 못 깨운다(재귀 방지) — 8/23~28 내내 스케줄 daily-news 푸시 뒤 배포가
+  한 번도 안 돌았고 로컬 예약의 별도 푸시가 가려왔다(2026-08-29 실측). `pages.yml` 에
+  `workflow_run` 연결을 넣어 고쳤지만, 배포가 결번이면 `pages.yml` 을 `workflow_dispatch`
+  로 직접 돌린다.
+- **클라우드 루틴에서는 github.io 직접 조회가 이그레스 정책에 막힐 수 있다** — 그때는
+  「라이브 조회 불가 + 사유」로 남기고 Pages 배포 success 를 대체 증거로 쓴다. 추정 금지.
 
 ### 5. 커밋 · 푸시 · 라이브 검증
 
