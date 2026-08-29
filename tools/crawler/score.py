@@ -192,15 +192,21 @@ if __name__ == "__main__":
             print(f"== 평균 재현율 {avg:.0%} · 구조 한계 {cap:.0%} ==")
             print(f"   손실 분해 — 배분(슬롯) {1 - cap:.0%} · 선택(칸 안) {cap - avg:.0%}")
         # 기존 rubric 의 비고(정시 아닌 실행 표시)를 날짜 기준으로 보존한다.
+        # 「미채점」 등 이 함수가 만들지 않는 키도 함께 보존한다 — 예전에는 두 키로
+        # 통째로 덮어써서, 원문이 안 온 날을 닫아둔 기록이 다음 --all 에서 사라졌다
+        # (2026-08-30 발견·수정). 침묵하는 소실을 만들지 않는다.
+        _keep = {}
         try:
             _old = json.load(open(os.path.join(HERE, "rubric.json"), encoding="utf-8"))
             _memo = {r["date"]: r["비고"] for r in _old.get("rows", []) if r.get("비고")}
             for r in rows:
                 if r["date"] in _memo:
                     r["비고"] = _memo[r["date"]]
+            _keep = {k: v for k, v in _old.items()
+                     if k not in ("rows", "누락_카테고리")}
         except (FileNotFoundError, ValueError):
             pass
-        json.dump({"rows": rows, "누락_카테고리": dict(agg)},
+        json.dump({"rows": rows, "누락_카테고리": dict(agg), **_keep},
                   open(os.path.join(HERE, "rubric.json"), "w", encoding="utf-8"),
                   ensure_ascii=False, indent=1)
     else:
