@@ -3,17 +3,30 @@
  "rows": [
   {
    "항목": "데일리 뉴스 (news.json)",
+<<<<<<< Updated upstream
    "최신": "2026-08-31",
    "경과": 3,
    "담당": "Alfred Daily 07:00 (trig_01QSnb9cSoQyNvLku62aKCA4)",
    "판정": "실패",
    "비고": "src=원문 · 총 374일",
+=======
+   "최신": "2026-09-02",
+   "경과": 1,
+   "담당": "Alfred Daily 07:00 (trig_01QSnb9cSoQyNvLku62aKCA4)",
+   "판정": "정상",
+   "비고": "src=원문 · 총 375일",
+>>>>>>> Stashed changes
    "단위": "일"
   },
   {
    "항목": "재현본 아카이브 (digest.json)",
+<<<<<<< Updated upstream
    "최신": "2026-09-03",
    "경과": 0,
+=======
+   "최신": "2026-09-02",
+   "경과": 1,
+>>>>>>> Stashed changes
    "담당": "Alfred Daily 07:00 (trig_01QSnb9cSoQyNvLku62aKCA4)",
    "판정": "정상",
    "비고": "16꼭지 · digest.py 산출",
@@ -91,5 +104,9 @@
    "비고": "KeyError: 'const TODAY_AGENDA 를 dashboard.html 에서 찾지 못했다'"
   }
  ],
+<<<<<<< Updated upstream
  "line": "[신선도] 정상 5 · 주의 1 · 실패 2 · 조회실패 1 · 수동 1 — 데일리 뉴스(3일), 리아 인스타(7일), GS 예상착지(9일), 오늘 안건(조회실패)"
+=======
+ "line": "[신선도] 정상 6 · 주의 1 · 실패 1 · 조회실패 1 · 수동 1 — 리아 인스타(7일), GS 예상착지(9일), 오늘 안건(조회실패)"
+>>>>>>> Stashed changes
 }
