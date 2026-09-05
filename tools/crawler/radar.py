@@ -187,15 +187,30 @@ def apply(plan, path=DASHBOARD):
     b = s.index("=", i) + 1
     while s[b].isspace():
         b += 1
-    d, k = 0, b
+    # 문자열·이스케이프를 인식하는 괄호 균형 파서. 2026-08-30 첫 실행 때 문자열
+    # 안의 「[주말&호텔·리...」 같은 잘린 제목의 '[' 를 괄호로 세는 바람에 끝을
+    # 못 찾고 TREND_PLAN 뒤의 스크립트 34,179자(render 함수 24개·</html>)를
+    # 통째로 잘라냈다. 9/6 복구. 끝을 못 찾으면 덮어쓰지 않고 예외를 낸다.
+    d, k, q = 0, b, None
     while k < len(s):
-        if s[k] in "[{":
+        c = s[k]
+        if q:
+            if c == "\\":
+                k += 2
+                continue
+            if c == q:
+                q = None
+        elif c in "\"'`":
+            q = c
+        elif c in "[{":
             d += 1
-        elif s[k] in "]}":
+        elif c in "]}":
             d -= 1
             if d == 0:
                 break
         k += 1
+    if k >= len(s):
+        raise SystemExit("TREND_PLAN 의 끝을 찾지 못했다 — 파일을 건드리지 않는다")
     body = json.dumps(plan, ensure_ascii=False, indent=1)
     out = s[:b] + body + s[k + 1:]
     open(path, "w", encoding="utf-8").write(out)
